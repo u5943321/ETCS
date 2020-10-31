@@ -255,3 +255,5 @@ val ax7 = new_axiom("ax7",
 val ax8 = new_axiom("ax8",
                    “∃X x1 x2. x1∶ one → X ∧ x2∶ one → X ∧ x1 ≠ x2”)
                                         
+
+(*shortcut key for inserting Unicode*)
