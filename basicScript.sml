@@ -177,21 +177,16 @@ fs[] >>
 fs[]
 QED
 
-metis_tac[ax1_3,p1_of_pa,compose_hom]
-
-
-
-   ∧
-  p2 P Q ∘ ⟨i ∘ p1 C D,j ∘ p2 C D⟩ ∘ ⟨f ∘ p1 A B,g ∘ p2 A B⟩ =
-  (p2 P Q ∘ ⟨i ∘ p1 C D,j ∘ p2 C D⟩) ∘ ⟨f ∘ p1 A B,g ∘ p2 A B⟩’
-  by metis_tac[ax1_3,compose_hom,compose_assoc]
-
-metis_tac[compose_hom,ax1_3,compose_assoc]
-
-
-      rw[] (* 2 *)
->- ‘’
-                      
+Theorem parallel_p_one_side:
+∀A B C D f g.f∶ B → C ∧ g∶ C→ D ⇒
+             ⟨p1 A B,g o f o p2 A B⟩ =
+             ⟨p1 A C, g o p2 A C⟩ o ⟨p1 A B, f o p2 A B⟩
+Proof
+rw[] >> 
+‘id A∶A → A ∧ f  B → D ∧ i∶C → P ∧ j∶D → Q ⇒
+              ⟨i ∘ p1 C D,j ∘ p2 C D⟩ ∘ ⟨f ∘ p1 A B,g ∘ p2 A B⟩ =
+              ⟨i ∘ f ∘ p1 A B,j ∘ g ∘ p2 A B⟩’
+                           
                       
 Theorem iterated_p_eq:
 ∀X A B C f g. f∶X → ((A×B)×C) ∧ g∶X → ((A×B)×C) ⇒
