@@ -2,6 +2,7 @@ val _ = new_type ("arrow", 0)
 val _ = new_type ("object", 0)
 val _ = new_constant("dom", “:arrow -> object”)
 val _ = new_constant("cod", “:arrow -> object”)
+open HolKernel Parse boolLib bossLib;
 
 
 Definition hom_def:
@@ -111,7 +112,7 @@ val _ = new_constant("i1",“:object -> object -> arrow”)
 
 val _ = new_constant("i2",“:object -> object -> arrow”)            
 
-val ax1_3 = new_axiom("ax1_4",
+val ax1_4 = new_axiom("ax1_4",
                       “∀A B. (i1 A B) ∶ A → (copo A B) ∧
                              (i2 A B) ∶ B → (copo A B)∧
                              ∀X f g. f∶ A → X ∧ g∶ B → X ⇒
@@ -221,7 +222,7 @@ End
 
         
 Definition are_iso_def:
-are_iso A B ⇔ ∃f g. dom f = A ∧ cod f = B ∧ dom g = B ∧ cod g = A ∧
+are_iso A B ⇔ ∃f g. f∶ A → B ∧ g∶ B → A ∧
                     f o g = id B ∧ g o f = id A
 End
 

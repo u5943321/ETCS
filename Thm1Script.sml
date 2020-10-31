@@ -1,4 +1,4 @@
-
+(*
 Overload product_obj = “λA B. po A B”
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   fixity = Infix (NONASSOC,450), 
@@ -9,8 +9,9 @@ Overload exp_notation = “λB A. exp A B”
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   fixity = Infix (NONASSOC,450), 
                   pp_elements = [TOK "^"], 
-                  term_name = "exp_notation", paren_style = OnlyIfNecessary}
-
+                  term_name = "exp_notation",
+                  paren_style = OnlyIfNecessary}
+*)
 (*why HOL cannot recognize this notation?*)
           
 (*why the three lines does not work...?*)
