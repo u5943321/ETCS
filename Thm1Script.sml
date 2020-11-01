@@ -23,13 +23,65 @@ val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   term_name = "pa", paren_style = OnlyIfNecessary}
 
                   
+Theorem Thm1_case_1_comm_condition_left:
+∀B f g. f∶ N → B ∧ g∶ one → B ⇒
+          (f o z = g  ⇔ ⟨id N,f⟩ o z = ⟨z,g⟩)
+Proof
+rw[] >>
+‘⟨id N,f⟩∶ N → (N× B) ∧ ⟨z,g⟩∶ one → (N×B) ∧ ⟨id N,f⟩ o z∶ one → (N×B)’
+ by metis_tac[id1,pa_hom,compose_hom,ax3] >>
+‘z∶ one → N’ by metis_tac[ax3] >>
+‘f o z ∶ one → B’ by metis_tac[compose_hom] >>
+rw[EQ_IMP_THM] (* 2 *)
+>- (irule to_p_eq_applied >> qexistsl_tac [‘N’,‘B’,‘one’] >> rw[] (* 2 *)
+   >- (‘p1 N B ∘ ⟨z,f ∘ z⟩ = z’ by metis_tac[p1_of_pa] >>
+      ‘p1 N B ∘ ⟨id N,f⟩ ∘ z = (p1 N B ∘ ⟨id N,f⟩) ∘ z’ by metis_tac[compose_assoc,p1_hom] >>
+      metis_tac[idL,id1,p1_of_pa])
+   >- (‘p2 N B ∘ ⟨z,f ∘ z⟩ = f o z’ by metis_tac[p2_of_pa] >>
+      ‘p2 N B ∘ ⟨id N,f⟩ ∘ z = (p2 N B ∘ ⟨id N,f⟩) ∘ z’ by metis_tac[compose_assoc,p2_hom] >>
+      metis_tac[idL,id1,p2_of_pa]))
+>- (‘p2 N B o ⟨id N,f⟩ ∘ z = p2 N B o ⟨z,g⟩’ by metis_tac[] >>
+   ‘p2 N B ∘ ⟨id N,f⟩ ∘ z = (p2 N B ∘ ⟨id N,f⟩) ∘ z’ by metis_tac[compose_assoc,p2_hom] >>
+   ‘(p2 N B ∘ ⟨id N,f⟩) = f’ by metis_tac[id1,p2_of_pa] >>
+    metis_tac[p2_of_pa])
+QED
 
+Theorem Thm1_case_1_comm_condition_right:
+∀B f h. f∶ N → B ∧ h∶ N×B → B ⇒
+        (h o ⟨id N,f⟩ = f o s ⇔ ⟨s o p1 N B, h⟩ o ⟨id N, f⟩ = ⟨id N, f⟩ o s)
+Proof
+cheat
+QED         
 
 Theorem Thm1_case_1:
 ∀B g h. g∶ one → B ∧ h∶ po N B → B ⇒
         ∃!f. f∶ N → B ∧ f o z = g ∧ f o s = h o ⟨id N, f⟩
 Proof
-cheat
+rw[EXISTS_UNIQUE_ALT] >>
+‘⟨z,g⟩∶ one → (N× B)’ by metis_tac[ax3,pa_hom] >>
+‘⟨s o p1 N B,h⟩∶ (N× B) → (N × B)’ by metis_tac[ax3,pa_hom,p1_hom,compose_hom] >>
+drule_all ax3_conj2 >> strip_tac >>
+qabbrev_tac ‘f' =  N_ind ⟨z,g⟩ ⟨s ∘ p1 N B,h⟩’ >>
+‘f'∶ N → (N × B)’ by metis_tac[] >>
+‘p1 N B o f' = id N’ by cheat (* lemma later *) >>
+‘p2 N B o f'∶ N → B’ by metis_tac[p2_hom,compose_hom] >>
+qabbrev_tac ‘f = p2 N B o f'’ >>
+qexists_tac ‘f’ >>
+‘f' = ⟨id N, f⟩’ by cheat (* lemma later*) >>
+‘∀f0. f0∶N → B ⇒ (f0 ∘ z = g ∧ f0 ∘ s = h ∘ ⟨id N,f0⟩ ⇔
+                 ⟨id N,f0⟩ o z = ⟨z,g⟩ ∧  ⟨s o p1 N B, h⟩ o ⟨id N, f0⟩ = ⟨id N, f0⟩ o s)’
+  by metis_tac[Thm1_case_1_comm_condition_left,Thm1_case_1_comm_condition_right] >>
+‘f∶N → B ∧ f ∘ z = g ∧ f ∘ s = h ∘ ⟨id N,f⟩ ∧
+∀f0. f0∶N → B ∧ f0 ∘ z = g ∧ f0 ∘ s = h ∘ ⟨id N,f0⟩ ⇒ f0 = f’ suffices_by metis_tac[] >>
+‘∀f0. f0∶N → B ∧ ⟨id N,f0⟩ ∘ z = ⟨z,g⟩ ∧ ⟨id N,f0⟩ ∘ s = ⟨s ∘ p1 N B,h⟩ ∘ ⟨id N,f0⟩ ⇔
+      f0 = f’
+  by (rw[EQ_IMP_THM] (* 3 *)
+     >- (‘⟨id N,f0⟩∶ N → (N×B)’ by metis_tac[pa_hom,id1] >>
+        ‘⟨id N,f0⟩ = ⟨id N,f⟩’ by metis_tac[] >>
+        (*lemma here*) cheat)
+     >- metis_tac[]
+     >- metis_tac[]) >>
+metis_tac[]     
 QED
                 
 Theorem Thm1_comm_eq_left:
