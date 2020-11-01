@@ -236,23 +236,33 @@ qabbrev_tac ‘l = ⟨⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A 
 ‘f ∘ ⟨p1 A N,s ∘ p2 A N⟩∶ A × N → B’ by metis_tac[compose_hom] >>    
 ‘tp (h ∘ l) ∘ ⟨id N,tp f⟩ = tp (h ∘ ⟨id (A×N),f⟩) ∧
  tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) = tp f o s’
- suffices_by metis_tac[tp_eq] >> strip_tac (* 2 *)
+ suffices_by metis_tac[tp_eq] >> strip_tac (* 2 *) >- 
 (* tp (h ∘ l) ∘ ⟨id N,tp f⟩ = tp (h ∘ ⟨id (A × N),f⟩)*)
-irule is_tp >> qexistsl_tac [‘A’,‘B’,‘N’] >> rw[] >>
-
-
-
-      (*before lunch*)
+irule is_tp >> qexistsl_tac [‘A’,‘B’,‘N’] >>
+‘tp (h o l)∶ (N × exp A B) → exp A B’ by metis_tac[tp_hom] >>
+‘p2 A N∶ (A×N) → N’ by metis_tac[p2_hom] >>
+‘(tp (h ∘ l) ∘ ⟨id N,tp f⟩) ∘ p2 A N = tp (h ∘ l) ∘ ⟨id N,tp f⟩ ∘ p2 A N’
+   by metis_tac[compose_assoc] >> (*before lunch*)
 ‘⟨p1 A N,(tp (h ∘ l) ∘ ⟨id N,tp f⟩) ∘ p2 A N⟩ =
  ⟨p1 A (N× (exp A B)), (tp (h ∘ l)) o p2 A (N× (exp A B))⟩ o
- ⟨p1 A N, ⟨id N,tp f⟩ o p2 A N⟩’ by cheat (*lemma for this pattern*) >>
+ ⟨p1 A N, ⟨id N,tp f⟩ o p2 A N⟩’
+  by
+   (simp[] >>irule parallel_p_one_side >> metis_tac[]) >>
+ (*lemma for this pattern parallel_p_one_side*) >>
 simp[] >>
 ‘ev A B ∘ ⟨p1 A (N×(exp A B)),tp (h ∘ l) ∘ p2 A (N×(exp A B))⟩ = h o l’
-  by cheat >>
+  by metis_tac[ev_of_tp] >>
 ‘ev A B ∘ ⟨p1 A (N×(exp A B)),tp (h ∘ l) ∘ p2 A (N×(exp A B))⟩ ∘
         ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
  (ev A B ∘ ⟨p1 A (N×(exp A B)),tp (h ∘ l) ∘ p2 A (N×(exp A B))⟩) ∘
-        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’ by cheat >> fs[] >>
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’ by irule compose_assoc_SYM >> metis_tac[]
+
+
+(*******)
+
+
+        
+cheat >> fs[] >>
 ‘l o ⟨p1 A N,⟨id N,tp f⟩ o p2 A N⟩ =  ⟨id (A×N),f⟩’ suffices_by cheat >>
 ‘l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩∶ A× N → ((A×N)×B )∧
  ⟨id (A×N),f⟩∶ A×N → ((A×N)×B)’ by cheat >>
