@@ -94,11 +94,31 @@ rw[EXISTS_UNIQUE_ALT] >>
 drule_all ax3_conj2 >> strip_tac >>
 qabbrev_tac ‘f' =  N_ind ⟨z,g⟩ ⟨s ∘ p1 N B,h⟩’ >>
 ‘f'∶ N → (N × B)’ by metis_tac[] >>
-‘p1 N B o f' = id N’ by cheat (* lemma later *) >>
+‘p1 N B o f' = id N’
+  by (‘p1 N B ∘ f'∶ N → N’ by metis_tac[p1_hom,compose_hom] >> irule comm_with_s_id >> rw[] >>
+      ‘f' ∘ s = ⟨s ∘ p1 N B,h⟩ ∘ f'’ by metis_tac[] >>
+      ‘p1 N B o f' ∘ s = p1 N B o ⟨s ∘ p1 N B,h⟩ ∘ f'’ by metis_tac[] >>
+      ‘p1 N B o f' ∘ s = (p1 N B ∘ f') ∘ s ∧ p1 N B o ⟨s ∘ p1 N B,h⟩ ∘ f' = s ∘ p1 N B ∘ f'’
+        suffices_by metis_tac[] >> strip_tac
+      >- metis_tac[p1_hom,ax3,compose_assoc]
+      >- (‘p1 N B ∘ ⟨s ∘ p1 N B,h⟩ ∘ f' = (p1 N B ∘ ⟨s ∘ p1 N B,h⟩) ∘ f'’
+           by metis_tac[p1_hom,ax3,compose_assoc] >>
+         rw[] >>
+         ‘s ∘ p1 N B ∘ f' = (s ∘ p1 N B) ∘ f'’ by metis_tac[p1_hom,ax3,compose_assoc] >>
+         ‘s ∘ p1 N B∶ (N×B) → N’ by metis_tac[compose_hom,ax3,p1_hom] >>
+         ‘(p1 N B ∘ ⟨s ∘ p1 N B,h⟩) = s ∘ p1 N B’ by metis_tac[p1_of_pa] >>
+         metis_tac[])) (* lemma later  comm_with_s_id *) >>
 ‘p2 N B o f'∶ N → B’ by metis_tac[p2_hom,compose_hom] >>
 qabbrev_tac ‘f = p2 N B o f'’ >>
 qexists_tac ‘f’ >>
-‘f' = ⟨id N, f⟩’ by cheat (* lemma later*) >>
+‘f' = ⟨id N, f⟩’
+  by
+   ()
+
+
+
+
+cheat (* lemma later*) >>
 ‘∀f0. f0∶N → B ⇒ (f0 ∘ z = g ∧ f0 ∘ s = h ∘ ⟨id N,f0⟩ ⇔
                  ⟨id N,f0⟩ o z = ⟨z,g⟩ ∧  ⟨s o p1 N B, h⟩ o ⟨id N, f0⟩ = ⟨id N, f0⟩ o s)’
   by metis_tac[Thm1_case_1_comm_condition_left,Thm1_case_1_comm_condition_right] >>
