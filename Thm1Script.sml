@@ -238,74 +238,169 @@ qabbrev_tac ‘l = ⟨⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A 
  tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) = tp f o s’
  suffices_by metis_tac[tp_eq] >> strip_tac (* 2 *) >- 
 (* tp (h ∘ l) ∘ ⟨id N,tp f⟩ = tp (h ∘ ⟨id (A × N),f⟩)*)
-irule is_tp >> qexistsl_tac [‘A’,‘B’,‘N’] >>
+(irule is_tp >> qexistsl_tac [‘A’,‘B’,‘N’] >>
 ‘tp (h o l)∶ (N × exp A B) → exp A B’ by metis_tac[tp_hom] >>
 ‘p2 A N∶ (A×N) → N’ by metis_tac[p2_hom] >>
 ‘(tp (h ∘ l) ∘ ⟨id N,tp f⟩) ∘ p2 A N = tp (h ∘ l) ∘ ⟨id N,tp f⟩ ∘ p2 A N’
-   by metis_tac[compose_assoc] >> (*before lunch*)
+   by metis_tac[compose_assoc] >> 
 ‘⟨p1 A N,(tp (h ∘ l) ∘ ⟨id N,tp f⟩) ∘ p2 A N⟩ =
  ⟨p1 A (N× (exp A B)), (tp (h ∘ l)) o p2 A (N× (exp A B))⟩ o
  ⟨p1 A N, ⟨id N,tp f⟩ o p2 A N⟩’
   by
    (simp[] >>irule parallel_p_one_side >> metis_tac[]) >>
- (*lemma for this pattern parallel_p_one_side*) >>
+ (*lemma for this pattern parallel_p_one_side*) 
 simp[] >>
 ‘ev A B ∘ ⟨p1 A (N×(exp A B)),tp (h ∘ l) ∘ p2 A (N×(exp A B))⟩ = h o l’
   by metis_tac[ev_of_tp] >>
+‘⟨id N,tp f⟩ ∘ p2 A N∶ (A×N) → (N× (exp A B))’ by metis_tac[compose_hom] >>
+‘⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩∶(A× N) → (A× (N× (exp A B)))’ by metis_tac[pa_hom] >>
+‘ev A B∶A × exp A B → B’ by metis_tac[ev_hom] >>
+‘⟨p1 A (N × exp A B),tp (h ∘ l) ∘ p2 A (N × exp A B)⟩∶A × (N × exp A B) →  (A × exp A B)’
+  by metis_tac[compose_hom,pa_hom] >>
 ‘ev A B ∘ ⟨p1 A (N×(exp A B)),tp (h ∘ l) ∘ p2 A (N×(exp A B))⟩ ∘
         ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
  (ev A B ∘ ⟨p1 A (N×(exp A B)),tp (h ∘ l) ∘ p2 A (N×(exp A B))⟩) ∘
-        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’ by irule compose_assoc_SYM >> metis_tac[]
-
-
-(*******)
-
-
-        
-cheat >> fs[] >>
-‘l o ⟨p1 A N,⟨id N,tp f⟩ o p2 A N⟩ =  ⟨id (A×N),f⟩’ suffices_by cheat >>
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+   by metis_tac[compose_assoc] >> 
+‘l o ⟨p1 A N,⟨id N,tp f⟩ o p2 A N⟩ =  ⟨id (A×N),f⟩’
+  suffices_by
+    (fs[] >> strip_tac >>
+    ‘(h ∘ l) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩  = h ∘ l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+      by metis_tac[compose_assoc] >> metis_tac[]) >> 
 ‘l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩∶ A× N → ((A×N)×B )∧
- ⟨id (A×N),f⟩∶ A×N → ((A×N)×B)’ by cheat >>
-(*lemma on equality between iterated product*)
+ ⟨id (A×N),f⟩∶ A×N → ((A×N)×B)’
+  by (rw[] >> metis_tac[pa_hom,compose_hom]) >>
+(*lemma on equality between iterated product iterated_p_eq_applied *)
 irule iterated_p_eq_applied >>
 qexistsl_tac [‘A’,‘N’,‘B’,‘A×N’] >> rw[] (* 3 *)
->- ‘(p1 (A×N) B) o l =
-    ⟨p1 A (N×(pow A B)),p1 N (pow A B) ∘ p2 A (N×(pow A B))⟩’
-    by cheat >>
-   ‘(p1 A N) o ⟨p1 A (N×(pow A B)),p1 N (pow A B) ∘ p2 A (N×(pow A B))⟩=
-    p1 A (N×(pow A B))’ by cheat >>
-   ‘(p1 A (N×(pow A B))) o ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
-        p1 A N ∘ p1 (A×N) B ∘ ⟨id (A×N),f⟩’ suffices_by cheat >>
-   (*LHS = RHS = p1 A N*) cheat
->- (*p2 A N*)   
->- ‘p2 (A×N) B ∘ l =
+>- (‘(p1 (A×N) B) o l =
+    ⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩’
+     by
+      (simp[Abbr‘l’] >> metis_tac[p1_of_pa]) >>
+   ‘(p1 A N) o ⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩=
+     p1 A (N×(exp A B))’
+     by metis_tac[p1_of_pa] >> 
+   ‘(p1 A (N×(exp A B))) o ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+        p1 A N ∘ p1 (A×N) B ∘ ⟨id (A×N),f⟩’
+      suffices_by
+        (rw[] >>
+         ‘p1 (A × N) B ∘ l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+          (p1 (A × N) B ∘ l) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+           by metis_tac[compose_assoc_SYM,p1_hom] >>
+          rw[] >>
+         ‘p1 A N ∘ ⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩ ∘
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+         (p1 A N ∘ ⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩) ∘
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’ by metis_tac[compose_assoc_SYM,p1_hom] >>
+          rw[]) >>
+   ‘p1 (A × N) B ∘ ⟨id (A × N),f⟩ = id (A × N)’ by metis_tac[id1,p1_of_pa] >> rw[] >>
+   ‘p1 A N ∘ id (A × N) = p1 A N’ by metis_tac[idR] >>
+   ‘p1 A (N × exp A B) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ = p1 A N’ by metis_tac[id1,p1_of_pa] >>
+   rw[]) (*1 out of 3*)
+   (*LHS = RHS = p1 A N*) 
+>- (‘(p1 (A×N) B) o l =
+    ⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩’
+     by
+      (simp[Abbr‘l’] >> metis_tac[p1_of_pa]) >>
+   ‘(p2 A N) o ⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩=
+    p1 N (exp A B) ∘ p2 A (N×(exp A B))’
+     by metis_tac[p2_of_pa] >> 
+   ‘p1 (A × N) B ∘ l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+    (p1 (A × N) B ∘ l) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’ by metis_tac[compose_assoc,p1_hom] >>
+   rw[] >>
+   ‘p2 A N ∘ ⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩ ∘
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+    (p2 A N ∘ ⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩) ∘
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’ by metis_tac[compose_assoc,p1_hom] >>
+   ‘p2 A N ∘ ⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩ =
+    p1 N (exp A B) ∘ p2 A (N × exp A B)’ by metis_tac[p2_of_pa] >>
+   rw[] >>
+   ‘(p1 N (exp A B) ∘ p2 A (N × exp A B)) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩  =
+    p1 N (exp A B) ∘ p2 A (N × exp A B) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+     by metis_tac[compose_assoc,p1_hom] >>
+   rw[] >>
+   ‘p2 A (N × exp A B) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ = ⟨id N,tp f⟩ ∘ p2 A N’
+     by metis_tac[p2_of_pa,id1] >> rw[] >>
+   ‘p1 N (exp A B) ∘ ⟨id N,tp f⟩ ∘ p2 A N = (p1 N (exp A B) ∘ ⟨id N,tp f⟩) ∘ p2 A N’
+     by metis_tac[compose_assoc,p1_hom] >>
+   ‘(p1 N (exp A B) ∘ ⟨id N,tp f⟩) = id N’ by metis_tac[p1_of_pa,id1] >>
+   metis_tac[p1_of_pa,p2_of_pa,idL,idR])
+   (*p2 A N 2 out of 3*)   
+>- (‘p2 (A×N) B ∘ l =
     ev A B ∘
-           ⟨p1 A (N×(pow A B)),p2 N (pow A B) ∘ p2 A (N×(pow A B))⟩’
-     by cheat >>
+           ⟨p1 A (N×(exp A B)),p2 N (exp A B) ∘ p2 A (N×(exp A B))⟩’
+     by (simp[Abbr‘l’] >> metis_tac[p2_of_pa]) >>
    ‘p2 (A×N) B ∘ l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ = f’
-     suffices_by cheat >>
-   ‘⟨p1 A (N×pow A B),p2 N (pow A B) ∘ p2 A (N×pow A B)⟩ ∘
+     suffices_by
+      (rw[] >> metis_tac[p2_of_pa]) >>
+   ‘p2 (A × N) B ∘ l ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+   (p2 (A × N) B ∘ l) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ ’
+    by (irule compose_assoc_SYM >> metis_tac[p2_hom]) >> rw[] >>
+   ‘⟨p1 A (N×exp A B),p2 N (exp A B) ∘ p2 A (N×exp A B)⟩ ∘
         ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩∶ (A×N) → (A× (exp A B)) ∧ 
-        ⟨p1 A N,tp f ∘ p2 A N⟩∶(A×N) → (A× (exp A B))’ by cheat >>
-   ‘⟨p1 A (N×pow A B),p2 N (pow A B) ∘ p2 A (N×pow A B)⟩ o
+    ⟨p1 A N,tp f ∘ p2 A N⟩∶(A×N) → (A× (exp A B))’
+     by
+      (rw[] (* 2 same *) >>
+       metis_tac[id1,p1_hom,p2_hom,pa_hom,compose_hom]) >>
+   ‘⟨p1 A (N×exp A B),p2 N (exp A B) ∘ p2 A (N×exp A B)⟩ o
     ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩  =
-    ⟨p1 A N,(tp f) o p2 A N⟩’ by
-    irule to_p_eq_applied >>
-    qexistsl_tac [‘A’,‘exp A B’,‘A×N’] >> rw[] (* 2 *)
-    >- (*p1 A N*)
-    >- (*RHS (tp f ∘ p2 A N)
-         LHS ... *)
-       ‘p2 A (exp A B) ∘ ⟨p1 A (N×pow A B),p2 N (pow A B) ∘ p2 A (N×pow A B)⟩ = p2 N (pow A B) ∘ p2 A (N×pow A B)’ by cheat >>
-       ‘p2 N (pow A B) ∘ p2 A (N×pow A B) o ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ = (tp f ∘ p2 A N)’ suffices_by cheat >>
-       ‘p2 N (pow A B) o ⟨id N,tp f⟩ ∘ p2 A N = ⟨id N,tp f⟩ ∘ p2 A N’
-        by cheat
-   
-
-cheat >>
-
-
-
-
+    ⟨p1 A N,(tp f) o p2 A N⟩’
+     by
+      (irule to_p_eq_applied >>
+      qexistsl_tac [‘A’,‘exp A B’,‘A×N’] >> rw[] (* 2 *)
+      >- (‘p1 A (exp A B) ∘ ⟨p1 A N,tp f ∘ p2 A N⟩ = p1 A N’
+           by (irule p1_of_pa >> metis_tac[p1_hom,p2_hom,compose_hom]) >>
+          rw[] >>
+          ‘p1 A (exp A B) ∘
+             ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩ ∘
+             ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+           (p1 A (exp A B) ∘
+             ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩) ∘
+             ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+            by (irule compose_assoc_SYM >> metis_tac[p1_hom]) >>
+          rw[] >>
+          ‘p1 A (exp A B) ∘
+           ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩ = p1 A (N × exp A B)’
+           by metis_tac[p1_of_pa,p1_hom,p2_hom] >>
+          rw[] >> 
+          metis_tac[p1_of_pa,p1_hom,p2_hom]  
+           )
+          (*p1 A N 1 out of 2*)
+      >- (*RHS (tp f ∘ p2 A N)   LHS ... *)
+          (‘p2 A (exp A B) ∘ ⟨p1 A (N×exp A B),p2 N (exp A B) ∘ p2 A (N×exp A B)⟩ =
+           p2 N (exp A B) ∘ p2 A (N×exp A B)’
+            by metis_tac[p2_of_pa,p1_hom,p2_hom] >> 
+          ‘p2 N (exp A B) ∘ p2 A (N×exp A B) o ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+           (tp f ∘ p2 A N)’
+           suffices_by
+            (rw[] >>
+             ‘p2 A (exp A B) ∘ ⟨p1 A N,tp f ∘ p2 A N⟩ = tp f ∘ p2 A N’
+               by metis_tac[p1_hom,p2_hom,p2_of_pa,compose_hom] >>
+             ‘p2 A (exp A B) ∘ ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩ ∘
+              ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+               (p2 A (exp A B) ∘
+                ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩) ∘
+               ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+               by (irule compose_assoc_SYM >> metis_tac[p2_hom]) >>
+              rw[] >>
+              ‘(p2 N (exp A B) ∘ p2 A (N × exp A B)) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+               p2 N (exp A B) ∘ p2 A (N × exp A B) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+               suffices_by metis_tac[] >>
+             metis_tac[compose_assoc]) (*end of suffices*) >>
+           ‘p2 A (N × exp A B) ∘ ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ = ⟨id N,tp f⟩ ∘ p2 A N’
+             by metis_tac[p2_of_pa,p1_hom,p2_hom] >> rw[] >>
+           ‘p2 N (exp A B) ∘ ⟨id N,tp f⟩ ∘ p2 A N =  (p2 N (exp A B) ∘ ⟨id N,tp f⟩) ∘ p2 A N’
+             by (irule compose_assoc_SYM >> metis_tac[p2_of_pa,p2_hom,compose_hom,pa_hom,id1]) >>
+           ‘(p2 N (exp A B) ∘ ⟨id N,tp f⟩) = tp f’ by metis_tac[p2_of_pa,p2_hom,id1] >>
+           rw[])) >>
+            (*end of thebig by tactic*)
+    ‘(ev A B ∘ ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩) ∘
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩ =
+     ev A B ∘ ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩ ∘
+        ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
+      by (irule compose_assoc >> metis_tac[p2_of_pa,p2_hom,compose_hom,pa_hom,id1]) >>
+    rw[] >> metis_tac[ev_of_tp]))               
+(*match the two big case dividing*)
 (*tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) = tp f ∘ s*)  
 
 
