@@ -452,28 +452,76 @@ qabbrev_tac ‘h' = tp (h o
                       ⟨⟨p1 A (po N (exp A B)), (p1 N (exp A B)) o p2 A (po N (exp A B))⟩,
                       (ev A B) o
                       ⟨p1 A (po N (exp A B)), (p2 N (exp A B)) o p2 A (po N (exp A B))⟩⟩)’>>
-‘g'∶ one → exp A B’ by cheat >>                                                            ‘h'∶ po N (exp A B) → exp A B’ by cheat >>
+‘p1 A one∶ (A×one)→ A’ by metis_tac[p1_hom] >>
+‘g o p1 A one∶ (A×one) → B’ by metis_tac[compose_hom] >>                
+‘g'∶ one → exp A B’ by (simp[Abbr‘g'’] >> metis_tac[tp_hom]) >>
+rw[] >> 
+qabbrev_tac ‘l = ⟨⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩,ev A B ∘
+           ⟨p1 A (N×(exp A B)),p2 N (exp A B) ∘ p2 A (N×(exp A B))⟩⟩’ >>
+‘id (A× N)∶ (A× N)→ (A×N)’ by metis_tac[id1] >>
+‘p1 A (N × exp A B)∶ (A × ((N × exp A B))) → A’ by metis_tac[p1_hom]>>
+‘p2 A (N × exp A B)∶ (A × ((N × exp A B))) → (N × exp A B)’
+  by metis_tac[p2_hom] >>
+‘p1 N (exp A B)∶ (N × exp A B) → N’ by metis_tac[p1_hom] >>
+‘p2 N (exp A B)∶ (N × exp A B) → exp A B’ by metis_tac[p2_hom] >>
+‘p2 N (exp A B) ∘ p2 A (N × exp A B)∶ (A × ((N × exp A B))) → exp A B’ by metis_tac[compose_hom]>>
+‘p1 N (exp A B) ∘ p2 A (N × exp A B)∶ (A × ((N × exp A B))) → N’ by metis_tac[compose_hom] >>
+‘⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩∶ (A × ((N × exp A B))) → (A×N)’
+  by metis_tac[pa_hom] >>
+‘⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩∶ (A × ((N × exp A B))) → (A× (exp A B))’
+  by metis_tac[pa_hom] >>
+‘ev A B ∘ ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩∶ (A × ((N × exp A B))) → B’
+  by metis_tac[ev_hom,compose_hom] >> 
+‘l∶ (A × ((N × exp A B))) → ((A×N)× B)’
+  by (simp[Abbr‘l’] >> metis_tac[pa_hom]) >>
+‘h o l∶ (A × ((N × exp A B))) → B’ by metis_tac[compose_hom] >>
+(*‘tp f∶ N → exp A B’ by metis_tac[tp_hom] >>
+‘⟨id N,tp f⟩∶ N → (N× (exp A B))’ by metis_tac[pa_hom,id1] >>
+‘tp (h ∘ l) ∘ ⟨id N,tp f⟩ ∶ N → exp A B’ by metis_tac[tp_hom,compose_hom] >>
+‘p1 A N∶ A× N → A’ by metis_tac[p1_hom] >>
+‘p2 A N∶ A× N → N’ by metis_tac[p2_hom] >>
+‘s o (p2 A N)∶ A× N → N’ by metis_tac[compose_hom,ax3] >>
+‘⟨p1 A N,s ∘ p2 A N⟩∶A× N→ (A × N)’ by metis_tac[pa_hom] >> 
+     
+‘’*)
+‘h'∶ (N ×(exp A B)) → exp A B’ by (simp[Abbr‘h'’] >> metis_tac[tp_hom]) >>
 drule_all Thm1_case_1 >> strip_tac >>
 fs[Once EXISTS_UNIQUE_ALT] >>
 qexists_tac ‘(ev A B) o ⟨p1 A N, f o (p2 A N)⟩’ >>
 ‘f∶N → exp A B’ by metis_tac[] >>
 rename [‘fb∶ N → exp A B’] >>
 qabbrev_tac ‘f = ev A B ∘ ⟨p1 A N,fb ∘ p2 A N⟩’ >>
-‘f∶A×N → B’ by cheat >>
+‘f∶A×N → B’ by (simp[Abbr‘f’] >> metis_tac[ev_of_pair_hom]) >>
 simp[EQ_IMP_THM] >> strip_tac >> strip_tac (* 2 *)
->- rw[] >>
-   ‘ tp f' ∘ z = tp (g ∘ p1 A one) ∧
+>- (rw[] >>
+   ‘tp f' ∘ z = tp (g ∘ p1 A one) ∧
           tp
             (h ∘
              ⟨⟨p1 A (N×exp A B),p1 N (exp A B) ∘ p2 A (N×exp A B)⟩,ev A B ∘
              ⟨p1 A (N×exp A B),p2 N (exp A B) ∘ p2 A (N×exp A B)⟩⟩) ∘
           ⟨id N,tp f'⟩ =
           tp f' ∘ s’ by metis_tac[Thm1_comm_eq_condition] >>
-    ‘tp f' = fb’ by cheat >>
-    ‘tp f = fb’ by cheat >>
-    (*tp eq implies original eq*) >>
-    metis_tac[tp_eq]
->- strip_tac >>
+    ‘tp (h ∘ l) ∘ ⟨id N,tp f'⟩ =  tp f' ∘ s’ by metis_tac[Abbr‘l’] >>
+    ‘tp f' = fb’
+      by
+       (‘tp f'∶N → exp A B ∧ tp f' ∘ z = g' ∧ tp f' ∘ s = h' ∘ ⟨id N,tp f'⟩’
+          suffices_by metis_tac[] >>
+        ‘tp f'∶N→ exp A B’ by metis_tac[tp_hom] >>
+        ‘tp f' ∘ z = g'’ by metis_tac[Abbr‘g’] >>
+        ‘tp f' ∘ s = h' ∘ ⟨id N,tp f'⟩’ by metis_tac[Abbr‘h'’] >>
+        metis_tac[]) >>
+    ‘tp f = fb’
+      by
+       (‘tp f∶N → exp A B ∧ tp f ∘ z = g' ∧ tp f ∘ s = h' ∘ ⟨id N,tp f⟩’ suffices_by metis_tac[]>>
+        ‘tp f∶N → exp A B’ by metis_tac[tp_hom] >> 
+        rpt strip_tac (* 3 *)
+        >- rw[]
+        >- (rw[Abbr‘f’] >> rw[Abbr‘g'’] >> metis_tac[ev_of_tp])
+        >- (rw[Abbr‘f’] >>
+            ‘ev A B ∘ ⟨p1 A N,tp f' ∘ p2 A N⟩ = f'’ by metis_tac[ev_of_tp] >>
+            rw[] >> rw[Abbr‘h'’])) >>
+    metis_tac[tp_eq])
+>- (strip_tac >>
    ‘tp f' ∘ z = tp (g ∘ p1 A one) ∧
           tp
             (h ∘
@@ -482,6 +530,10 @@ simp[EQ_IMP_THM] >> strip_tac >> strip_tac (* 2 *)
           ⟨id N,tp f'⟩ =
           tp f' ∘ s’ suffices_by metis_tac[Thm1_comm_eq_condition] >>
     fs[] >>
-    ‘tp f = fb’ by cheat >> metis_tac[]
+    ‘tp f = fb’
+     by (rw[Abbr‘f’] >>
+         ‘fb = tp (ev A B ∘ ⟨p1 A N,fb ∘ p2 A N⟩)’ suffices_by metis_tac[] >>
+        irule is_tp >> metis_tac[]) >>
+     metis_tac[])
 QED    
 (*outlined*)
