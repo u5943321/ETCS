@@ -399,37 +399,28 @@ qexistsl_tac [‘A’,‘N’,‘B’,‘A×N’] >> rw[] (* 3 *)
      ev A B ∘ ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩ ∘
         ⟨p1 A N,⟨id N,tp f⟩ ∘ p2 A N⟩’
       by (irule compose_assoc >> metis_tac[p2_of_pa,p2_hom,compose_hom,pa_hom,id1]) >>
-    rw[] >> metis_tac[ev_of_tp]))               
+    rw[] >> metis_tac[ev_of_tp]))     >>          
 (*match the two big case dividing*)
 (*tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) = tp f ∘ s*)  
-
-
-      
-‘(tp f o s)∶ N → exp A B’ by cheat >>
-‘tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) ∶ N → exp A B’ by cheat >>
-‘f ∘ ⟨p1 A N,s ∘ p2 A N⟩∶A×N → B’ by cheat
-‘tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) =
- tp f o s’
- by
-  (‘(ev A B) o ⟨p1 A N,(tp f ∘ s) ∘ p2 A N⟩ = (f ∘ ⟨p1 A N,s ∘ p2 A N⟩)’
+‘(tp f o s)∶ N → exp A B’ by metis_tac[ax3,compose_hom] >>
+‘tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) ∶ N → exp A B’ by metis_tac[tp_hom] >>
+‘(ev A B) o ⟨p1 A N,(tp f ∘ s) ∘ p2 A N⟩ = (f ∘ ⟨p1 A N,s ∘ p2 A N⟩)’
      suffices_by
        (strip_tac >> simp[EQ_SYM_EQ] >> irule is_tp >>
         qexistsl_tac [‘A’,‘B’,‘N’] >> rw[]) >>
-  ‘⟨p1 A N,(tp f ∘ s) ∘ p2 A N⟩ =
-   ⟨p1 A N, (tp f) o (p2 A N)⟩ o ⟨p1 A N, s o (p2 A N)⟩’
-    by cheat >>
-  fs[] >>
-  ‘ev A B ∘ ⟨p1 A N,tp f ∘ p2 A N⟩ = f’ by cheat >>
-  cheat (*assoc of composition*)
-   )
-   
-
-
-
-cheat >>
-‘(h ∘ ⟨id (A×N),f⟩)∶ A×N → B ∧
- (f ∘ ⟨p1 A N,s ∘ p2 A N⟩)∶ A×N → B’ by cheat >>
-metis_tac[tp_eq]
+‘⟨p1 A N,(tp f ∘ s) ∘ p2 A N⟩ =
+ ⟨p1 A N, (tp f) o (p2 A N)⟩ o ⟨p1 A N, s o (p2 A N)⟩’
+ by
+  (irule parallel_p_one_side' >> metis_tac[ax3]) >>
+rw[] >>
+‘⟨p1 A N,s ∘ p2 A N⟩∶(A × N) → (A × N)’ by metis_tac[p1_hom,p2_hom,pa_hom,compose_hom,ax3] >>
+‘⟨p1 A N,tp f ∘ p2 A N⟩∶(A×N) → (A×(exp A B))’ by metis_tac[pa_hom,compose_hom,p1_hom,p2_hom] >> 
+‘ev A B ∘ ⟨p1 A N,tp f ∘ p2 A N⟩ ∘ ⟨p1 A N,s ∘ p2 A N⟩ =
+ (ev A B ∘ ⟨p1 A N,tp f ∘ p2 A N⟩) ∘ ⟨p1 A N,s ∘ p2 A N⟩’
+by (irule compose_assoc_SYM >> metis_tac[ev_hom]) >> 
+rw[] >>
+‘(ev A B ∘ ⟨p1 A N,tp f ∘ p2 A N⟩) = f’ by metis_tac[ev_of_tp] >>
+metis_tac[]
 QED        
 
 
