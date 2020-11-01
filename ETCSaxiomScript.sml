@@ -188,13 +188,13 @@ val _ = new_constant("z",“:arrow”)
 
 val _ = new_constant("s",“:arrow”)
 
-val _ = new_constant("N_induce",“:arrow -> arrow -> arrow”)    
+val _ = new_constant("N_ind",“:arrow -> arrow -> arrow”)    
  
 val ax3 = new_axiom("ax3",
                    “z∶ one → N ∧ s∶ N → N ∧
                    ∀X x0 t. x0∶ one → X ∧ t∶ X → X ⇒
                      !x. (x∶ N → X ∧ x o z = x0 ∧ x o s = t o x) ⇔
-                         x = N_induce x0 t”)    
+                         x = N_ind x0 t”)    
       
 
 (*ax4 f ≠ g ⇒ ∃a. a ∈ A ∧ f a ≠ g a*)

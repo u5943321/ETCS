@@ -203,23 +203,46 @@ Theorem Thm1_comm_eq_right:
 
            ) o  ⟨id N,tp f⟩
         = (tp f o s))
-Proof
-rw[] >>
+Proof 
+rw[] >> 
 qabbrev_tac ‘l = ⟨⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩,ev A B ∘
            ⟨p1 A (N×(exp A B)),p2 N (exp A B) ∘ p2 A (N×(exp A B))⟩⟩’ >>
-‘(h ∘ ⟨id (A×N),f⟩)∶ A×N → B’ by cheat >>
-‘tp (h ∘ l) ∘ ⟨id N,tp f⟩ ∶ N → exp A B’ by cheat >>
-‘tp (h ∘ ⟨id (A×N),f⟩) =
- tp (h ∘
-           ⟨⟨p1 A (N×(exp A B)),p1 N (exp A B) ∘ p2 A (N×(exp A B))⟩,(ev A B) ∘
-           ⟨p1 A (N×(exp A B)),p2 N (exp A B) ∘ p2 A (N×(exp A B))⟩⟩) ∘ ⟨id N,tp f⟩
- ’ by
-    (‘’
-    )
-    
-‘tp (h ∘ l) ∘ ⟨id N,tp f⟩ = tp (h ∘ ⟨id (A×N),f⟩)’
- suffices_by metis_tac[] >>
+‘id (A× N)∶ (A× N)→ (A×N)’ by metis_tac[id1] >>
+‘⟨id (A×N),f⟩∶ A× N → ((A×N)× B)’ by metis_tac[pa_hom] >>
+‘p1 A (N × exp A B)∶ (A × ((N × exp A B))) → A’ by metis_tac[p1_hom]>>
+‘p2 A (N × exp A B)∶ (A × ((N × exp A B))) → (N × exp A B)’
+  by metis_tac[p2_hom] >>
+‘p1 N (exp A B)∶ (N × exp A B) → N’ by metis_tac[p1_hom] >>
+‘p2 N (exp A B)∶ (N × exp A B) → exp A B’ by metis_tac[p2_hom] >>
+‘p2 N (exp A B) ∘ p2 A (N × exp A B)∶ (A × ((N × exp A B))) → exp A B’ by metis_tac[compose_hom]>>
+‘p1 N (exp A B) ∘ p2 A (N × exp A B)∶ (A × ((N × exp A B))) → N’ by metis_tac[compose_hom] >>
+‘⟨p1 A (N × exp A B),p1 N (exp A B) ∘ p2 A (N × exp A B)⟩∶ (A × ((N × exp A B))) → (A×N)’
+  by metis_tac[pa_hom] >>
+‘⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩∶ (A × ((N × exp A B))) → (A× (exp A B))’
+  by metis_tac[pa_hom] >>
+‘ev A B ∘ ⟨p1 A (N × exp A B),p2 N (exp A B) ∘ p2 A (N × exp A B)⟩∶ (A × ((N × exp A B))) → B’
+  by metis_tac[ev_hom,compose_hom] >> 
+‘(h ∘ ⟨id (A×N),f⟩)∶ A×N → B’ by metis_tac[compose_hom] >>
+‘l∶ (A × ((N × exp A B))) → ((A×N)× B)’
+  by (simp[Abbr‘l’] >> metis_tac[pa_hom]) >>
+‘h o l∶ (A × ((N × exp A B))) → B’ by metis_tac[compose_hom] >>
+‘tp f∶ N → exp A B’ by metis_tac[tp_hom] >>
+‘⟨id N,tp f⟩∶ N → (N× (exp A B))’ by metis_tac[pa_hom,id1] >>
+‘tp (h ∘ l) ∘ ⟨id N,tp f⟩ ∶ N → exp A B’ by metis_tac[tp_hom,compose_hom] >>
+‘p1 A N∶ A× N → A’ by metis_tac[p1_hom] >>
+‘p2 A N∶ A× N → N’ by metis_tac[p2_hom] >>
+‘s o (p2 A N)∶ A× N → N’ by metis_tac[compose_hom,ax3] >>
+‘⟨p1 A N,s ∘ p2 A N⟩∶A× N→ (A × N)’ by metis_tac[pa_hom] >> 
+‘f ∘ ⟨p1 A N,s ∘ p2 A N⟩∶ A × N → B’ by metis_tac[compose_hom] >>    
+‘tp (h ∘ l) ∘ ⟨id N,tp f⟩ = tp (h ∘ ⟨id (A×N),f⟩) ∧
+ tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) = tp f o s’
+ suffices_by metis_tac[tp_eq] >> strip_tac (* 2 *)
+(* tp (h ∘ l) ∘ ⟨id N,tp f⟩ = tp (h ∘ ⟨id (A × N),f⟩)*)
 irule is_tp >> qexistsl_tac [‘A’,‘B’,‘N’] >> rw[] >>
+
+
+
+      (*before lunch*)
 ‘⟨p1 A N,(tp (h ∘ l) ∘ ⟨id N,tp f⟩) ∘ p2 A N⟩ =
  ⟨p1 A (N× (exp A B)), (tp (h ∘ l)) o p2 A (N× (exp A B))⟩ o
  ⟨p1 A N, ⟨id N,tp f⟩ o p2 A N⟩’ by cheat (*lemma for this pattern*) >>
@@ -270,6 +293,13 @@ qexistsl_tac [‘A’,‘N’,‘B’,‘A×N’] >> rw[] (* 3 *)
 
 cheat >>
 
+
+
+
+(*tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) = tp f ∘ s*)  
+
+
+      
 ‘(tp f o s)∶ N → exp A B’ by cheat >>
 ‘tp (f ∘ ⟨p1 A N,s ∘ p2 A N⟩) ∶ N → exp A B’ by cheat >>
 ‘f ∘ ⟨p1 A N,s ∘ p2 A N⟩∶A×N → B’ by cheat
