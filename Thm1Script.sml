@@ -50,7 +50,38 @@ Theorem Thm1_case_1_comm_condition_right:
 ∀B f h. f∶ N → B ∧ h∶ N×B → B ⇒
         (h o ⟨id N,f⟩ = f o s ⇔ ⟨s o p1 N B, h⟩ o ⟨id N, f⟩ = ⟨id N, f⟩ o s)
 Proof
-cheat
+rw[] >>
+‘⟨id N,f⟩∶ N → (N×B)’ by metis_tac[id1,pa_hom] >>
+‘h o ⟨id N,f⟩∶ N → B’ by metis_tac[compose_hom] >>
+‘s∶ N → N’ by metis_tac[ax3] >>
+‘f o s∶ N → B’ by metis_tac[compose_hom] >>
+‘⟨id N, f⟩ o s∶ N → (N×B)’ by metis_tac[compose_hom] >>
+‘s o p1 N B∶ (N × B) → N’ by metis_tac[compose_hom,p1_hom] >>
+‘⟨s o p1 N B, h⟩∶ (N×B) → (N× B)’ by metis_tac[pa_hom] >>
+‘⟨s o p1 N B, h⟩ o ⟨id N, f⟩∶ N → (N × B)’ by metis_tac[compose_hom] >>
+rw[EQ_IMP_THM] (* 2 *)
+>- (irule to_p_eq_applied >> qexistsl_tac [‘N’,‘B’,‘N’] >> rw[] (* 2 *)
+   >- (‘p1 N B ∘ ⟨s ∘ p1 N B,h⟩ = s ∘ p1 N B’ by metis_tac[p1_of_pa] >>
+      ‘p1 N B ∘ ⟨s ∘ p1 N B,h⟩ ∘ ⟨id N,f⟩ = (p1 N B ∘ ⟨s ∘ p1 N B,h⟩) ∘ ⟨id N,f⟩’
+        by metis_tac[compose_assoc,p1_hom] >> rw[] >>
+      ‘(s ∘ p1 N B) ∘ ⟨id N,f⟩ =  s ∘ p1 N B ∘ ⟨id N,f⟩’ by metis_tac[compose_assoc,p1_hom] >>
+      ‘p1 N B ∘ ⟨id N,f⟩ = id N’ by metis_tac[p1_of_pa,id1] >> rw[] >>
+      ‘p1 N B ∘ ⟨id N,f⟩ ∘ s = (p1 N B ∘ ⟨id N,f⟩) ∘ s’ by metis_tac[compose_assoc,p1_hom] >>
+      rw[] >> metis_tac[id1,idL,idR])
+   >- (‘p2 N B ∘ ⟨s ∘ p1 N B,h⟩ ∘ ⟨id N,f⟩ = (p2 N B ∘ ⟨s ∘ p1 N B,h⟩) ∘ ⟨id N,f⟩’
+        by metis_tac[compose_assoc,p2_hom] >>
+      ‘(p2 N B ∘ ⟨s ∘ p1 N B,h⟩) = h’ by metis_tac[p2_of_pa] >>
+      rw[] >>
+      ‘p2 N B ∘ ⟨id N,f⟩ ∘ s = (p2 N B ∘ ⟨id N,f⟩) ∘ s’ by metis_tac[compose_assoc,p2_hom] >>
+      ‘(p2 N B ∘ ⟨id N,f⟩) = f’ by metis_tac[id1,p2_of_pa] >>
+      metis_tac[]))
+>- (‘p2 N B o ⟨s ∘ p1 N B,h⟩ ∘ ⟨id N,f⟩ = p2 N B o ⟨id N,f⟩ ∘ s’ by metis_tac[] >>
+   ‘p2 N B o ⟨s ∘ p1 N B,h⟩ ∘ ⟨id N,f⟩ = (p2 N B o ⟨s ∘ p1 N B,h⟩) ∘ ⟨id N,f⟩’
+     by metis_tac[compose_assoc,p2_hom] >>
+   ‘(p2 N B ∘ ⟨s ∘ p1 N B,h⟩) = h’ by metis_tac[p2_of_pa] >> rw[] >>
+   ‘p2 N B ∘ ⟨id N,f⟩ ∘ s = (p2 N B ∘ ⟨id N,f⟩) ∘ s’ by metis_tac[compose_assoc,p2_hom] >>
+   ‘(p2 N B ∘ ⟨id N,f⟩) = f’ by metis_tac[id1,p2_of_pa] >>
+   metis_tac[])
 QED         
 
 Theorem Thm1_case_1:
