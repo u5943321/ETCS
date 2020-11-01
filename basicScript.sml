@@ -1,21 +1,31 @@
 Theorem po_with_one:
 ∀A. po A one ≅ A
 Proof
-cheat
+rw[are_iso_def] >> qexistsl_tac [‘p1 A one’,‘⟨id A,to_terminal A⟩’]>>
+rw[] >> cheat
+QED
+
+Theorem ev_of_tp:
+∀A B X f. f∶A × X → B ⇒ ev A B ∘ ⟨p1 A X, tp f ∘ p2 A X⟩ = f
+Proof
+metis_tac[ax2]
+QED
+
+Theorem tp_hom:
+∀A B C f. f∶ A× B → C ⇒ tp f∶ B → exp A C
+Proof
+metis_tac[ax2]        
 QED
 
 Theorem tp_eq:
-∀f g. f∶ A×B → C ∧ g∶ A×B → C ⇒ (tp f = tp f' ⇔ f = f')
+∀A B C f g. f∶ A×B → C ∧ g∶ A×B → C ⇒ (tp f = tp g ⇔ f = g)
 Proof
-cheat
+rw[] >> metis_tac[ev_of_tp]
 QED
 
-Theorem tp_to_p:
- ⇒ tp f = fb
-Proof
  
 Theorem is_tp:
-∀A B X f h. f∶ A×X → B ∧ h∶ X → exp A B ∧
+∀A B X f h. f∶ A × X → B ∧ h∶ X → exp A B ∧
             (ev A B) o ⟨p1 A X, h o (p2 A X)⟩ = f ⇒
             h = tp f
 Proof
@@ -24,9 +34,7 @@ QED
 
 (*‘⟨p1 A N,(tp f ∘ s) ∘ p2 A N⟩ =
    ⟨p1 A N, (tp f) o (p2 A N)⟩ o ⟨p1 A N, s o (p2 A N)⟩’*)        
-Theorem pcompose: (*decompose coposition of arrows lemma*)
 
-Proof
 
 Theorem ax2_conj2:
 ∀A B X f. f∶ (po A X) → B ⇒
@@ -37,14 +45,29 @@ Proof
 metis_tac[ax2]
 QED                                  
 
+
+Theorem ax3_conj2:
+∀X x0 t. x0∶ one → X ∧ t∶ X → X ⇒
+                     !x. (x∶ N → X ∧ x o z = x0 ∧ x o s = t o x) ⇔
+                         x = N_ind x0 t
+Proof
+metis_tac[ax3]
+QED
+                                                              
 Theorem pa_hom:
 ∀A B X f g. f∶ X→ A ∧ g∶ X→ B ⇒ ⟨f,g⟩∶ X → (A×B)
 Proof
 metis_tac[ax1_3]
 QED
                                      
-
 Theorem ev_hom:
+∀A B. ev A B∶ (A× (exp A B))→ B
+Proof
+metis_tac[ax2]
+QED
+
+                                     
+Theorem ev_of_pair_hom:
 ∀A B X f. f∶ X → (exp A B) ⇒ (ev A B) o ⟨p1 A X,f o (p2 A X)⟩∶ (A×X) → B
 Proof
 rw[] >>
@@ -61,8 +84,12 @@ Theorem ev_eq_eq:
             f = g
 Proof
 rw[] >>
-‘f = tp ((ev A B) o ⟨p1 A X,f o (p2 A X)⟩)’ by
-metis_tac[ax2]
+‘f = tp ((ev A B) o ⟨p1 A X,f o (p2 A X)⟩)’
+ by metis_tac[is_tp,ev_of_pair_hom] >>
+‘g = tp ((ev A B) o ⟨p1 A X,g o (p2 A X)⟩)’
+ by metis_tac[is_tp,ev_of_pair_hom] >>
+metis_tac[]
+QED
 
 Theorem compose_with_p1:        
 ∀A B X f. f∶ X→ (A×B) ⇒ p1 A B ∘ f ∶ X → A
@@ -182,11 +209,28 @@ Theorem parallel_p_one_side:
              ⟨p1 A B,g o f o p2 A B⟩ =
              ⟨p1 A C, g o p2 A C⟩ o ⟨p1 A B, f o p2 A B⟩
 Proof
-rw[] >> 
-‘id A∶A → A ∧ f  B → D ∧ i∶C → P ∧ j∶D → Q ⇒
-              ⟨i ∘ p1 C D,j ∘ p2 C D⟩ ∘ ⟨f ∘ p1 A B,g ∘ p2 A B⟩ =
-              ⟨i ∘ f ∘ p1 A B,j ∘ g ∘ p2 A B⟩’
-                           
+(* rw[] >> 
+‘id A∶A → A ∧ f∶B → C ∧ id A∶ A → A ∧ g ∶ C → D ⇒
+              ⟨(id A) ∘ p1 A C, g ∘ p2 A C⟩ ∘ ⟨id A ∘ p1 A B, f ∘ p2 A B⟩ =
+              ⟨(id A) ∘ (id A) ∘ p1 A B,g ∘ f ∘ p2 A B⟩’
+               by metis_tac[parallel_p_compose] >>
+fs[] >>
+‘p1 A B∶ A × B → A’ by metis_tac[p1_hom] >>
+‘id A ∘ id A ∘ p1 A B = p1 A B’ by metis_tac[idL,compose_hom,compose_assoc] >>
+fs[] >>
+‘id A ∘ p1 A B = p1 A B ∧ id A o p1 A C = p1 A C’ by metis_tac[idL,p1_hom] >>
+fs[] why line by line okay...*) cheat
+QED
+
+Theorem parallel_p_one_side':
+∀A B C D f g.f∶ B → C ∧ g∶ C→ D ⇒
+             ⟨p1 A B,(g o f) o p2 A B⟩ =
+             ⟨p1 A C, g o p2 A C⟩ o ⟨p1 A B, f o p2 A B⟩
+Proof
+rw[] >>
+‘(g o f) o p2 A B = g o f o p2 A B’ suffices_by metis_tac[parallel_p_one_side]>>
+metis_tac[p2_hom,compose_assoc]
+QED                                  
                       
 Theorem iterated_p_eq:
 ∀X A B C f g. f∶X → ((A×B)×C) ∧ g∶X → ((A×B)×C) ⇒
@@ -195,14 +239,145 @@ Theorem iterated_p_eq:
               (p2 A B) o (p1 (A×B) C) o f =  (p2 A B) o (p1 (A×B) C) o g ∧
               (p2 (A×B) C) o f = (p2 (A×B) C) o g)
 Proof
-cheat
+rw[EQ_IMP_THM] >> irule to_p_eq_applied >>
+qexists_tac ‘A × B’ >> qexists_tac ‘C’ >> qexists_tac ‘X’ (*???*) >>
+rw[] >>
+‘p1 (A × B) C ∘ f ∶ X → (A × B) ∧  p1 (A × B) C ∘ g∶ X → (A × B)’
+  by metis_tac[p1_hom,compose_hom] >>
+irule to_p_eq_applied >>
+qexistsl_tac [‘A’,‘B’,‘X’] >> rw[]
 QED
 
 Theorem iterated_p_eq_applied:
-∀X A B C f g. f∶X → ((A×B)×C) ∧ g∶X → ((A×B)×C) ⇒
-              ((p1 A B) o (p1 (A×B) C) o f =  (p1 A B) o (p1 (A×B) C) o g ∧
+∀X A B C f g. (f∶X → ((A×B)×C) ∧ g∶X → ((A×B)×C) ∧ 
+               (p1 A B) o (p1 (A×B) C) o f =  (p1 A B) o (p1 (A×B) C) o g ∧
                (p2 A B) o (p1 (A×B) C) o f =  (p2 A B) o (p1 (A×B) C) o g ∧
-               (p2 (A×B) C) o f = (p2 (A×B) C) o g ⇒ f = g)
+               (p2 (A×B) C) o f = (p2 (A×B) C) o g) ⇒ f = g
+Proof
+metis_tac[iterated_p_eq]
+QED
+
+(*        
+Theorem iterated_projection:
+*)
+
+Theorem comm_with_s_id:
+∀f. f∶ N → N ∧ f o z = z ∧ f o s = s o f ⇒ f = id N
 Proof
 cheat
+QED
+
+(*above theorem WRONG need correction*)        
+
+Theorem to_p_eq_one_side:
+∀A B f g. f∶ A → B ∧ g∶ A → B ∧ ⟨id A,f⟩ = ⟨id A,g⟩ ⇒ f = g
+Proof
+rw[] >> ‘p2 A B o ⟨id A,f⟩ = p2 A B o ⟨id A,g⟩’ by metis_tac[] >>
+metis_tac[id1,p2_of_pa]
+QED
+
+
+(*for thm2*)
+
+Definition is_subset_def:
+is_subset a A ⇔ is_mono a ∧ cod a = A
+End
+
+Definition is_mem_def:
+is_member x a A ⇔ is_subset a A ∧ x∶ one → A ∧ ∃x0. x0∶ one → dom a ∧ a o x0 = x
+End
+
+Definition is_inc_def:
+is_inc a b A ⇔ is_subset a A ∧ is_subset b A ∧ ∃h. h∶(dom a) → (dom b) ∧ b o h = a
+End
+
+Theorem is_mono_thm:
+∀A B m. m∶ A → B ⇒
+        (is_mono m ⇔
+        (∀X f g. f∶ X → A ∧ g∶ X → A ∧ m o f = m o g ⇒ f = g))
+Proof
+rw[hom_def,is_mono_def] >> metis_tac[]
+QED      
+
+
+Theorem is_mono_applied:
+∀A B m. m∶ A → B ∧
+        (∀X f g. f∶ X → A ∧ g∶ X → A ∧ m o f = m o g ⇒ f = g) ⇒
+        is_mono m
+Proof
+metis_tac[is_mono_thm]        
+QED              
+
+Theorem post_inv_mono:
+∀A B m i. m∶ A → B ∧ i∶ B → A ∧ (i o m) = id A ⇒ is_mono m
+Proof
+rw[] >> irule is_mono_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
+‘i o m o f = i o m o g’ by metis_tac[] >>
+‘(i o m) o f = (i o m) o g’ by metis_tac[compose_assoc,compose_hom] >>
+metis_tac[idL]
+QED
+
+Definition is_epi_def:
+is_epi f ⇔ ∀g1 g2. dom g1 = dom g2 ∧ cod g1 = cod g2 ∧ dom g1 = cod f ∧ g1 o f = g2 o f ⇒ g1 = g2
+End
+
+Theorem is_epi_thm:
+∀e A B. e∶ A → B ⇒
+       (is_epi e ⇔ (∀X f g. f∶ B → X ∧ g∶ B → X ∧ f o e = g o e ⇒ f = g))
+Proof
+metis_tac[hom_def,is_epi_def]
+QED
+
+
+Theorem is_epi_applied:
+∀e A B. e∶ A → B ∧ (∀X f g. f∶ B → X ∧ g∶ B → X ∧ f o e = g o e ⇒ f = g) ⇒
+       is_epi e
+Proof
+metis_tac[is_epi_thm]
+QED        
+       
+Theorem pre_inv_epi:
+∀A B e i. e∶ A → B ∧ i∶ B → A ∧ e o i = id B ⇒ is_epi e
+Proof
+rw[] >> irule is_epi_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
+‘(f o e) o i = (g o e) o i’ by metis_tac[] >>
+‘f o e o i = g o e o i’ by metis_tac[compose_assoc,compose_hom] >>
+metis_tac[idR]
+QED
+
+Theorem cop eq iff component eq        
+
+Proof
+
+Theorem is_iso_thm:
+∀f A B. f∶ A → B ⇒
+        (is_iso f ⇔
+         ∃f'. f'∶ B → A ∧ f' o f = id A ∧ f o f' = id B)
+Proof
+metis_tac[is_iso_def,hom_def]
+QED
+        
+Theorem are_iso_is_iso:
+∀A B. A ≅ B ⇔ ∃f. f∶ A → B ∧ is_iso f
+Proof
+rw[are_iso_def] >> metis_tac[is_iso_thm]
+QED
+        
+Theorem mono_epi_is_iso:
+∀a. is_mono a ∧ is_epi a ⇒ is_iso a
+Proof
+cheat
+QED
+
+        
+Theorem distinct_endo_exists:
+∃X e1 e2. e1∶ X → X ∧ e2∶ X → X ∧ e1 ≠ e2
+Proof
+cheat
+QED
+
+Theorem fun_ext:
+∀A B f g. f∶ A → B ∧ g∶ A → B ∧ (∀a. a∶ one → A ⇒ f o a = g o a) ⇒ f = g
+Proof
+metis_tac[ax4]
 QED
