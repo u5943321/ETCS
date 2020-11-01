@@ -72,6 +72,22 @@ qexists_tac ‘a’ >> rw[] >> irule mono_epi_is_iso >>
 rw[] >> irule pre_inv_epi >> qexistsl_tac [‘A’,‘N’,‘N_ind z' s'’] >>
 rw[] >> metis_tac[]
 QED
+
+Theorem ind_factorization:
+∀A a. a∶ A → N ∧ is_mono a ∧ (∀n. is_mem n a N ⇒ is_mem (s ∘ n) a N) ⇒
+        ∃t. t∶ A → A ∧ a o t = s o a
+Proof
+cheat
+QED                
         
 Theorem Thm2_3:        
-∀a. is_subset a
+∀A a. is_subset a N ∧ (∀n. is_mem n a N ⇒ is_mem (s o n) a N) ∧
+    is_mem z a A ⇒ dom a ≅ N
+Proof
+rw[] >> irule Thm2_3_alt >> fs[is_subset_def] >>
+‘a∶ dom a → N’ by metis_tac[hom_def] >>
+qabbrev_tac ‘A = dom a’ >>
+drule ind_factorization >> fs[is_mem_def] >> metis_tac[]
+QED
+
+     
