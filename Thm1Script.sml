@@ -95,7 +95,8 @@ drule_all ax3_conj2 >> strip_tac >>
 qabbrev_tac ‘f' =  N_ind ⟨z,g⟩ ⟨s ∘ p1 N B,h⟩’ >>
 ‘f'∶ N → (N × B)’ by metis_tac[] >>
 ‘p1 N B o f' = id N’
-  by (‘p1 N B ∘ f'∶ N → N’ by metis_tac[p1_hom,compose_hom] >> irule comm_with_s_id >> rw[] >>
+  by (‘p1 N B ∘ f'∶ N → N’ by metis_tac[p1_hom,compose_hom] >>
+      irule comm_with_s_id >> rw[] >>
       ‘f' ∘ s = ⟨s ∘ p1 N B,h⟩ ∘ f'’ by metis_tac[] >>
       ‘p1 N B o f' ∘ s = p1 N B o ⟨s ∘ p1 N B,h⟩ ∘ f'’ by metis_tac[] >>
       ‘p1 N B o f' ∘ s = (p1 N B ∘ f') ∘ s ∧ p1 N B o ⟨s ∘ p1 N B,h⟩ ∘ f' = s ∘ p1 N B ∘ f'’
@@ -113,23 +114,23 @@ qabbrev_tac ‘f = p2 N B o f'’ >>
 qexists_tac ‘f’ >>
 ‘f' = ⟨id N, f⟩’
   by
-   ()
-
-
-
-
-cheat (* lemma later*) >>
+   (irule to_p_eq_applied >> qexistsl_tac [‘N’,‘B’,‘N’] >>
+    ‘⟨id N,f⟩∶N → (N × B)’ by metis_tac[id1,pa_hom] >> rw[] (* 2 *)
+    >- metis_tac[p1_of_pa,id1]
+    >- metis_tac[p2_of_pa,id1]
+   ) >>
+ (* lemma later maybe no need for a lemma*)
 ‘∀f0. f0∶N → B ⇒ (f0 ∘ z = g ∧ f0 ∘ s = h ∘ ⟨id N,f0⟩ ⇔
                  ⟨id N,f0⟩ o z = ⟨z,g⟩ ∧  ⟨s o p1 N B, h⟩ o ⟨id N, f0⟩ = ⟨id N, f0⟩ o s)’
   by metis_tac[Thm1_case_1_comm_condition_left,Thm1_case_1_comm_condition_right] >>
 ‘f∶N → B ∧ f ∘ z = g ∧ f ∘ s = h ∘ ⟨id N,f⟩ ∧
-∀f0. f0∶N → B ∧ f0 ∘ z = g ∧ f0 ∘ s = h ∘ ⟨id N,f0⟩ ⇒ f0 = f’ suffices_by metis_tac[] >>
+ ∀f0. f0∶N → B ∧ f0 ∘ z = g ∧ f0 ∘ s = h ∘ ⟨id N,f0⟩ ⇒ f0 = f’ suffices_by metis_tac[] >>
 ‘∀f0. f0∶N → B ∧ ⟨id N,f0⟩ ∘ z = ⟨z,g⟩ ∧ ⟨id N,f0⟩ ∘ s = ⟨s ∘ p1 N B,h⟩ ∘ ⟨id N,f0⟩ ⇔
       f0 = f’
   by (rw[EQ_IMP_THM] (* 3 *)
      >- (‘⟨id N,f0⟩∶ N → (N×B)’ by metis_tac[pa_hom,id1] >>
         ‘⟨id N,f0⟩ = ⟨id N,f⟩’ by metis_tac[] >>
-        (*lemma here*) cheat)
+        metis_tac[to_p_eq_one_side])
      >- metis_tac[]
      >- metis_tac[]) >>
 metis_tac[]     
