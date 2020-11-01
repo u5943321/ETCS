@@ -141,7 +141,55 @@ Theorem Thm1_comm_eq_left:
           (tp f o z = tp (g o (p1 A one)) ⇔
            f o ⟨p1 A one, z o (p2 A one)⟩ = g o (p1 A one))
 Proof
-cheat
+rw[] >>
+‘tp f∶ N → exp A B’ by metis_tac[tp_hom] >>
+‘z∶ one → N’ by metis_tac[ax3] >>
+‘tp f o z ∶ one → exp A B’ by metis_tac[compose_hom] >>
+‘ (p1 A one)∶ (A× one) → A ∧  (p2 A one)∶ (A × one) → one’ by metis_tac[p1_hom,p2_hom] >>
+‘g o (p1 A one)∶ (A × one) → B’ by metis_tac[compose_hom] >>
+‘tp (g o (p1 A one))∶ one → exp A B’ by metis_tac[tp_hom] >>
+‘z o (p2 A one)∶ (A× one) → N’ by metis_tac[compose_hom] >>
+‘⟨p1 A one, z o (p2 A one)⟩∶ (A× one) → (A× N)’ by metis_tac[pa_hom] >>
+‘f o ⟨p1 A one, z o (p2 A one)⟩∶ (A×one)→ B’ by metis_tac[compose_hom] >>
+‘g o (p1 A one)∶ (A×one)→ B’ by metis_tac[compose_hom] >>
+rw[EQ_IMP_THM] (* 2 *)
+>- (‘ev A B o ⟨p1 A one, (tp f ∘ z) o p2 A one⟩ = ev A B o ⟨p1 A one, (tp (g ∘ p1 A one)) o p2 A one⟩’
+     by metis_tac[] >>
+   ‘ev A B ∘ ⟨p1 A one,(tp f ∘ z) ∘ p2 A one⟩ = f ∘ ⟨p1 A one,z ∘ p2 A one⟩  ∧
+    ev A B ∘ ⟨p1 A one,tp (g ∘ p1 A one) ∘ p2 A one⟩ =  g ∘ p1 A one’ suffices_by metis_tac[] >>
+   strip_tac
+   >- (‘(tp f ∘ z) ∘ p2 A one = tp f ∘ z ∘ p2 A one’ by metis_tac[compose_assoc] >>
+      ‘⟨p1 A one,(tp f ∘ z) ∘ p2 A one⟩ =  ⟨p1 A one, tp f ∘ z ∘ p2 A one⟩’ by metis_tac[] >>
+      ‘⟨p1 A one, tp f ∘ z ∘ p2 A one⟩ = ⟨p1 A N, tp f ∘ p2 A N⟩ o ⟨p1 A one, z ∘ p2 A one⟩’
+        by 
+         (irule parallel_p_one_side >> metis_tac[]) >>
+      ‘ev A B ∘ ⟨p1 A one,(tp f ∘ z) ∘ p2 A one⟩ =
+      ev A B o ⟨p1 A N,tp f ∘ p2 A N⟩ ∘ ⟨p1 A one,z ∘ p2 A one⟩’ by metis_tac[] >>
+      ‘⟨p1 A N,tp f ∘ p2 A N⟩∶ (A×N) → (A × (exp A B))’
+        by metis_tac[pa_hom,p1_hom,p2_hom,compose_hom] >>
+      ‘⟨p1 A one,z ∘ p2 A one⟩∶ (A×one)→ (A×N)’ by metis_tac[pa_hom,p1_hom,p2_hom,compose_hom] >>
+      ‘ev A B∶ (A× (exp A B))→ B’ by metis_tac[ev_hom] >>
+      ‘ev A B o ⟨p1 A N,tp f ∘ p2 A N⟩ ∘ ⟨p1 A one,z ∘ p2 A one⟩ =
+      (ev A B o ⟨p1 A N,tp f ∘ p2 A N⟩) ∘ ⟨p1 A one,z ∘ p2 A one⟩’ by metis_tac[compose_assoc] >>
+      ‘(ev A B ∘ ⟨p1 A N,tp f ∘ p2 A N⟩) = f’ by metis_tac[ev_of_tp] >>
+      metis_tac[])
+   >- metis_tac[ev_of_tp])
+>- (irule ev_eq_eq >> qexistsl_tac [‘A’,‘B’,‘one’] >> rw[] >>
+   ‘(tp f ∘ z) ∘ p2 A one = tp f ∘ z ∘ p2 A one’ by metis_tac[compose_assoc] >>
+   ‘⟨p1 A one,(tp f ∘ z) ∘ p2 A one⟩ =  ⟨p1 A one, tp f ∘ z ∘ p2 A one⟩’ by metis_tac[] >>
+   ‘⟨p1 A one, tp f ∘ z ∘ p2 A one⟩ = ⟨p1 A N, tp f ∘ p2 A N⟩ o ⟨p1 A one, z ∘ p2 A one⟩’
+        by 
+         (irule parallel_p_one_side >> metis_tac[]) >>
+   ‘ev A B ∘ ⟨p1 A one,(tp f ∘ z) ∘ p2 A one⟩ =
+    ev A B o ⟨p1 A N,tp f ∘ p2 A N⟩ ∘ ⟨p1 A one,z ∘ p2 A one⟩’ by metis_tac[] >>
+   ‘⟨p1 A N,tp f ∘ p2 A N⟩∶ (A×N) → (A × (exp A B))’
+      by metis_tac[pa_hom,p1_hom,p2_hom,compose_hom] >>
+   ‘⟨p1 A one,z ∘ p2 A one⟩∶ (A×one)→ (A×N)’ by metis_tac[pa_hom,p1_hom,p2_hom,compose_hom] >>
+   ‘ev A B∶ (A× (exp A B))→ B’ by metis_tac[ev_hom] >>
+   ‘ev A B o ⟨p1 A N,tp f ∘ p2 A N⟩ ∘ ⟨p1 A one,z ∘ p2 A one⟩ =
+    (ev A B o ⟨p1 A N,tp f ∘ p2 A N⟩) ∘ ⟨p1 A one,z ∘ p2 A one⟩’ by metis_tac[compose_assoc] >>
+   ‘(ev A B ∘ ⟨p1 A N,tp f ∘ p2 A N⟩) = f’ by metis_tac[ev_of_tp] >>
+   rw[] >> metis_tac[ev_of_tp])
 QED
 
 Theorem Thm1_comm_eq_right:
