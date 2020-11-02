@@ -70,7 +70,7 @@ val _ = new_constant("one",“:object”)
 
 val _ = new_constant("to_terminal",“:object -> arrow”)   
 
-val ax1_1 = new_axiom("ax1_1",“∀X. tx∶ X → one ⇔ tx = to_terminal X”)
+val ax1_1 = new_axiom("ax1_1",“∀X tx. tx∶ X → one ⇔ tx = to_terminal X”)
 
 (*UTF8.chr 0x1D443 𝑃 *)
 
@@ -78,7 +78,7 @@ val _ = new_constant("zero",“:object”)
 
 val _ = new_constant("from_initial",“:object -> arrow”)       
 
-val ax1_2 = new_axiom("ax1_2",“∀X. ix∶ zero → X ⇔ ix = from_initial X”)
+val ax1_2 = new_axiom("ax1_2",“∀X ix. ix∶ zero → X ⇔ ix = from_initial X”)
 
 
 val _ = new_constant("po",“:object -> object -> object”)
