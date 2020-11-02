@@ -110,6 +110,13 @@ rw[EQ_IMP_THM] >>
 metis_tac[compose_with_p1,compose_with_p2,ax1_3]
 QED
 
+Theorem from_cop_eq:
+∀f g X A B. f∶ (A+ B) → X ∧ g∶ (A + B) → X ⇒
+            (f o (i1 A B) = g o (i1 A B) ∧ f o (i2 A B) = g o (i2 A B) ⇔ f = g)
+Proof
+cheat
+QED               
+
 Theorem to1_unique:
 ∀A f g. f∶ A → one ∧ g∶ A → one ⇒ f = g
 Proof
@@ -601,11 +608,29 @@ rw[] >> qabbrev_tac ‘A = dom a’ >> qabbrev_tac ‘B = cod a’ >>
 qexists_tac ‘g’ >> rw[] >> metis_tac[epi_pinv_pre_inv,mono_pinv_post_inv]
 QED
 
+Theorem i1_ne_i2:
+i1 one one ≠ i2 one one
+Proof
+cheat
+QED
+
+Theorem distinct_endo_2:
+copa (i1 one one) (i2 one one) ∶ (one + one) → (one + one) ∧
+copa (i2 one one) (i1 one one) ∶ (one + one) → (one + one) ∧
+copa (i1 one one) (i2 one one) ≠ copa (i2 one one) (i1 one one)
+Proof
+‘copa (i1 one one) (i2 one one) ∶ (one + one) → (one + one) ∧
+copa (i2 one one) (i1 one one) ∶ (one + one) → (one + one)’ by metis_tac[ax1_4] >>
+rw[] >> SPOSE_NOT_THEN ASSUME_TAC >>
+‘copa (i1 one one) (i2 one one) o (i1 one one)= (i1 one one) ∧
+ copa (i2 one one) (i1 one one) o (i1 one one) = (i2 one one)’ by metis_tac[ax1_4] >>
+metis_tac[from_cop_eq,i1_ne_i2]
+QED
         
 Theorem distinct_endo_exists:
 ∃X e1 e2. e1∶ X → X ∧ e2∶ X → X ∧ e1 ≠ e2
 Proof
-cheat
+metis_tac[distinct_endo_2]        
 QED
 
 
