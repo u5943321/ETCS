@@ -284,7 +284,7 @@ is_subset a A ⇔ is_mono a ∧ cod a = A
 End
 
 Definition is_mem_def:
-is_member x a A ⇔ is_subset a A ∧ x∶ one → A ∧ ∃x0. x0∶ one → dom a ∧ a o x0 = x
+is_mem x a A ⇔ is_subset a A ∧ x∶ one → A ∧ ∃x0. x0∶ one → dom a ∧ a o x0 = x
 End
 
 Definition is_inc_def:
@@ -345,10 +345,32 @@ rw[] >> irule is_epi_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
 metis_tac[idR]
 QED
 
+Theorem pb_exists:
+∀X Y Z f g. f∶ X → Z ∧ g∶ Y → Z ⇒ ∃P b q. p∶ P → X ∧ q∶ P → Y ∧ f o f = q o g ∧
+            (∀A u v. u∶ A → P ∧ v∶ A → Q ∧ f o u = g o v ⇒
+             ∃!a. a∶ A → P ∧ p o a = u ∧ q o a = v)
+Proof
+cheat
+QED             
+                
+Theorem pb_mono_mono:
+
+Proof                
+
 Theorem cop eq iff component eq        
 
 Proof
 
+Theorem surj_is_epi:
+∀A B f. f∶ A → B ∧ (∀b. one → B ⇒ ∃x0. x0∶ one → A ∧ f o x0 = x) ⇒ is_epi f
+Proof
+cheat
+QED
+
+                
+
+
+        
 Theorem is_iso_thm:
 ∀f A B. f∶ A → B ⇒
         (is_iso f ⇔

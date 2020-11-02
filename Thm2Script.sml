@@ -77,7 +77,35 @@ Theorem ind_factorization:
 ∀A a. a∶ A → N ∧ is_mono a ∧ (∀n. is_mem n a N ⇒ is_mem (s ∘ n) a N) ⇒
         ∃t. t∶ A → A ∧ a o t = s o a
 Proof
-cheat
+rw[] >> ‘s o a∶ A → N’ by metis_tac[ax3,compose_hom] >>
+drule pb_fac_exists >> rw[] >>
+first_x_assum (qspecl_then [‘A’,‘a’] assume_tac) >> rfs[] >>
+‘is_iso p’
+  suffices_by
+   (strip_tac >> drule is_iso_thm >> strip_tac >>
+    ‘∃p'. p'∶A → P ∧ p' ∘ p = id P ∧ p ∘ p' = id A’ by metis_tac[] >>
+    qexists_tac ‘q o p'’ >>
+    ‘q o p'∶ A → A’ by metis_tac[compose_hom] >>
+    ‘((s ∘ a) ∘ p) o p' = (a ∘ q) o p'’
+      by metis_tac[ax3,compose_hom,compose_assoc] >>
+    ‘((s ∘ a) ∘ p) ∘ p' = (s ∘ a) ∘ p ∘ p'’
+      by (irule compose_assoc >> metis_tac[]) >>
+    ‘(s ∘ a) ∘ p ∘ p' = (s o a)’ by metis_tac[idR] >>
+    ‘(a ∘ q) o p' = a ∘ q o p'’ by metis_tac[compose_assoc] >>
+    metis_tac[]) >>
+irule mono_epi_is_iso >> rw[] (* 2 *)
+>- (irule surj_is_epi >> qexistsl_tac [‘P’,‘A’] >> rw[] >>
+   first_x_assum (qspecl_then [‘one’,‘b’] assume_tac) >>
+   ‘is_mem (s o a o b) a N’
+      by
+       (‘is_mem (a o b) a N’ suffices_by metis_tac[] >>
+        simp[is_mem_def] >>
+        ‘dom a = A’ by metis_tac[hom_def] >> simp[] >>
+        metis_tac[is_mem_def,compose_hom,is_subset_def,hom_def]) >>
+   fs[is_mem_def] >>
+   ‘dom a = A’ by metis_tac[hom_def] >> fs[] >>
+   metis_tac[ax3,compose_assoc])
+>- cheat   (*pb of mono is mono*)
 QED                
         
 Theorem Thm2_3:        
