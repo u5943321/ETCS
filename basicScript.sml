@@ -346,23 +346,72 @@ metis_tac[idR]
 QED
 
 Theorem pb_exists:
-∀X Y Z f g. f∶ X → Z ∧ g∶ Y → Z ⇒ ∃P b q. p∶ P → X ∧ q∶ P → Y ∧ f o f = q o g ∧
-            (∀A u v. u∶ A → P ∧ v∶ A → Q ∧ f o u = g o v ⇒
+∀X Y Z f g. f∶ X → Z ∧ g∶ Y → Z ⇒ ∃P p q. p∶ P → X ∧ q∶ P → Y ∧ f o p = g o q ∧
+            (∀A u v. u∶ A → X ∧ v∶ A → Y ∧ f o u = g o v ⇒
              ∃!a. a∶ A → P ∧ p o a = u ∧ q o a = v)
 Proof
 cheat
-QED             
+QED
+
+
+
+Theorem pb_fac_exists:
+∀X Y Z f g. f∶ X → Z ∧ g∶ Y → Z ⇒ ∃P p q. p∶ P → X ∧ q∶ P → Y ∧ f o p = g o q ∧
+            (∀A u v. u∶ A → X ∧ v∶ A → Y ∧ f o u = g o v ⇒
+             ∃a. a∶ A → P ∧ p o a = u ∧ q o a = v)
+Proof
+cheat
+QED                
                 
 Theorem pb_mono_mono:
 
-Proof                
+Proof
 
+Theorem eqa_is_mono:
+
+Proof
+
+Theorem non_zero_pinv:
+∀A B f. f∶ A → B ∧ ¬(A ≅ zero) ⇒ ∃g. g∶B → A ∧ f ∘ g ∘ f = f
+Proof
+metis_tac[ax5,ax6]
+QED
+
+Theorem epi_pinv_pre_inv:
+∀A B f. f g∶ A → B ∧ g∶B → A ∧ is_epi f ∧ f ∘ g ∘ f = f ⇒ f o g = id B
+Proof
+cheat
+QED
+
+Theorem epi_non_zero_pre_inv:
+∀A B f. f∶ A → B ∧ is_epi f ⇒ ∃g. g∶ B → A ∧ f o g = id B
+Proof
+cheat
+QED        
+
+                            
+
+
+Theorem o_mono_mono:
+(*compose a mono is mono*)
+Proof
+
+        
+
+                                
+Theorem epi_pre_inv:
+∀A B e i. e∶ A → B ∧ is_epi e ⇒ i∶ B → A ∧ e o i = id B            
+Proof
+cheat
+QED
+
+        
 Theorem cop eq iff component eq        
 
 Proof
 
 Theorem surj_is_epi:
-∀A B f. f∶ A → B ∧ (∀b. one → B ⇒ ∃x0. x0∶ one → A ∧ f o x0 = x) ⇒ is_epi f
+∀A B f. f∶ A → B ∧ (∀b. b∶ one → B ⇒ ∃b0. b0∶ one → A ∧ f o b0 = b) ⇒ is_epi f
 Proof
 cheat
 QED
@@ -403,3 +452,35 @@ Theorem fun_ext:
 Proof
 metis_tac[ax4]
 QED
+
+        
+(*for thm 3*)
+Theorem ax1_5_applied:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
+             eq_induce f g h ∶X → eqo f g ∧
+             eqa f g ∘ (eq_induce f g h) = h
+Proof
+metis_tac[ax1_5]             
+QED
+
+
+Theorem eq_induce_hom:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
+             eq_induce f g h ∶X → eqo f g
+Proof
+metis_tac[ax1_5]             
+QED
+
+ 
+
+Theorem eq_fac:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
+             eqa f g ∘ (eq_induce f g h) = h
+Proof
+metis_tac[ax1_5]             
+QED
+
+
+Theorem compose_middle_eq:
+
+Proof

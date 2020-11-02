@@ -132,24 +132,25 @@ val _ = new_constant("eq_induce",“:arrow -> arrow -> arrow -> arrow”)
 
 val ax1_5 = new_axiom("ax1_5",
                       “∀A B f g. f∶ A → B ∧ g∶ A → B ⇒
-                                 (eqa f g)∶ (eqo f g) → A ∧
-                                 f o (eqa f g) = g o eqa f g ∧
-                                 ∀X h. h∶ X → A ∧
-                                       f o h = g o h ⇒
-                                       !x0. (x0∶ X → (eqo f g) ∧
+                                 (((eqa f g)∶ (eqo f g) → A) ∧
+                                  (f o (eqa f g) = g o eqa f g) ∧
+                                  (∀X h. h∶ X → A ∧
+                                         f o h = g o h ⇒
+                                         (!x0. (x0∶ X → (eqo f g) ∧
                                              (eqa f g) o x0 = h) ⇔
-                                            x0 = eq_induce f g h”)
+                                            x0 = eq_induce f g h)))”)
 
-                                                                         val _ = new_constant("coeqo",“:arrow -> arrow -> object”)
+
+val _ = new_constant("coeqo",“:arrow -> arrow -> object”)
 
 val _ = new_constant("coeqa",“:arrow -> arrow -> arrow”)
 
 val _ = new_constant("coeq_induce",“:arrow -> arrow -> arrow -> arrow”)
     
 
-val ax1_5 = new_axiom("ax1_6",
+val ax1_6 = new_axiom("ax1_6",
                       “∀A B f g. f∶ A → B ∧ g∶ A → B ⇒
-                                 (eqa f g)∶ B → (coeqo f g) ∧
+                                 (coeqa f g)∶ B → (coeqo f g) ∧
                                  (coeqa f g) o f = (coeqa f g) o g ∧
                                  ∀X h. h∶ B → X ∧
                                        h o f = h o g ⇒
@@ -258,3 +259,4 @@ val ax8 = new_axiom("ax8",
                                         
 
 (*shortcut key for inserting Unicode*)
+(*add quantifier in ax1_1,2*)
