@@ -107,54 +107,60 @@ irule mono_epi_is_iso >> strip_tac (* 2 *)
    (k' ∘ i2 B B) ∘ eqa (k' ∘ i1 B B) (k' ∘ i2 B B)’
     suffices_by metis_tac[compose_assoc]
   metis_tac[eq_equlity])
-  (*symmetry so called, fix later*)
->- ‘is_mono (q' o h)’ suffices_by cheat (*o_mono_mono*) >>
-   Cases_on ‘A ≅ zero’ (* 2 *)
-   >- (*lemma*) cheat
-   >- ‘∃t. t∶ I' → A ∧ q o t = id I'’ by cheat (*epi_non_zero_pre_inv*)>>
-      ‘f o t = q o h’ by cheat >>
-      irule is_mono_applied >>
-      ‘q' o h∶ I' → B’ by metis_tac[compose_hom] >>
-      qexistsl_tac [‘I'’,‘B’] >> simp[] >> rpt strip_tac >>
-      rename [‘(q' ∘ h) ∘ u = (q' ∘ h) ∘ u'’] >>
-      ‘∃w. w∶ X → R ∧ k o w = ⟨t o u, t o u'⟩’
+>- (‘is_mono (q' o h)’ suffices_by metis_tac[o_mono_imp_mono](*o_mono_mono*) >>
+   ‘∃t. t∶ I' → A ∧ q o t = id I'’ by metis_tac[epi_non_zero_pre_inv] >> 
+   ‘f o t = q' o h’
+     by
+      (‘(q' ∘ h ∘ q) o t = f o t’ by metis_tac[] >>
+       ‘h o q∶ A → I0’ by metis_tac[compose_hom] >>
+       ‘(q' ∘ h ∘ q) o t = q' ∘ h ∘ q o t ’ by metis_tac[compose_assoc] >>
+       metis_tac[compose_hom,idR,id1]) >>
+   irule is_mono_applied >>
+   ‘q' o h∶ I' → B’ by metis_tac[compose_hom] >>
+   qexistsl_tac [‘I'’,‘B’] >> simp[] >> rpt strip_tac >>
+   rename [‘(q' ∘ h) ∘ u = (q' ∘ h) ∘ u'’] >>
+   ‘t o u∶ X → A ∧ t o u'∶ X→ A’ by metis_tac[compose_hom]
+   ‘f o (p1 A A) o ⟨t o u, t o u'⟩ =
+    f o (p2 A A) o ⟨t o u, t o u'⟩’
+      by
+       (‘f o (p1 A A) o ⟨t o u, t o u'⟩ =
+         f o t o u’ by metis_tac[p1_of_pa] >>
+        ‘f o t o u = q' o h o u’ by metis_tac[compose_hom,compose_assoc] >>
+        ‘q' o h o u = q' o h o u'’ by metis_tac[compose_hom,compose_assoc] >>
+        ‘q' o h o u' = f o t o u'’ by metis_tac[compose_hom,compose_assoc] >>
+        ‘f o t o u' = f o (p2 A A) o ⟨t o u, t o u'⟩’ by metis_tac[p2_of_pa] >> 
+        metis_tac[]) >>
+   ‘⟨t o u,t o u'⟩∶ X → (A×A)’ by metis_tac[pa_hom] >> 
+   ‘∃w. w∶ X → R ∧ k o w = ⟨t o u, t o u'⟩’
         by
-         (‘f o (p1 A A) o ⟨t o u, t o u'⟩ =
-           f o (p2 A A) o ⟨t o u, t o u'⟩’
-           by
-            (‘f o (p1 A A) o ⟨t o u, t o u'⟩ =
-              f o t o u’ by cheat >>
-             ‘f o t o u = q o h o u’ by cheat >>
-             ‘q o h o u = q o h o u'’ by cheat >>
-             ‘q o h o u' = f o t o u'’ by cheat >>
-             ‘f o t o u' = f o (p2 A A) o ⟨t o u, t o u'⟩’
-               by cheat >>
-             metis_tac[]) >>
-          qexists_tac
+         (qexists_tac
           ‘eq_induce (f ∘ p1 A A) (f ∘ p2 A A) ⟨t ∘ u,t ∘ u'⟩’ >>
           ‘(f ∘ p1 A A) ∘ ⟨t ∘ u,t ∘ u'⟩ = (f ∘ p2 A A) ∘ ⟨t ∘ u,t ∘ u'⟩’
-            by cheat >>
+            by metis_tac[o_bracket_left] >>
           ‘(f ∘ p1 A A)∶ (A× A) → B’ by metis_tac[compose_hom,p1_hom] >>
           ‘(f ∘ p2 A A)∶ (A× A) → B’ by metis_tac[compose_hom,p2_hom] >>
-          ‘⟨t ∘ u,t ∘ u'⟩∶ X → (A×A)’ by cheat >>
           strip_tac (*2 *)
           >- (simp[Abbr‘R’] >> metis_tac[ax1_5_applied])
           >- (simp[Abbr‘k’] >> metis_tac[eq_fac])
          ) >>
-       ‘u = q o t o u’ by cheat >>
-       ‘t o u = (p1 A A) o ⟨t o u, t o u'⟩’ by cheat >> 
+   ‘u = q o t o u’ by metis_tac[id1,idL,compose_assoc] >>
+   ‘t o u = (p1 A A) o ⟨t o u, t o u'⟩’ by metis_tac[p1_of_pa] >> 
        (*need add hom to assumption later*)
-       ‘q o t o u = q o (p1 A A) o ⟨t o u, t o u'⟩’ by metis_tac[] >>
-       ‘q o (p1 A A) o ⟨t o u, t o u'⟩ = q o p1 A A o k o w’
-         by cheat >>
-       ‘q o (p1 A A) o k = q o (p2 A A) o k’ by cheat >>
+   ‘q o t o u = q o (p1 A A) o ⟨t o u, t o u'⟩’ by metis_tac[] >>
+   ‘q o (p1 A A) o ⟨t o u, t o u'⟩ = q o p1 A A o k o w’
+         by metis_tac[compose_assoc,compose_hom] >>
+   ‘q o (p1 A A) o k = q o (p2 A A) o k’
+     by
+      (simp[Abbr‘q’] >> metis_tac[coeq_equlity]) >>
        (*lemma for coeq*)
-       ‘q o p1 A A o k o w =  q o (p2 A A) o k o w’ by cheat >>
-       ‘q o (p2 A A) o k o w = q o (p2 A A) o ⟨t o u, t o u'⟩’
-         by metis_tac[] >>
-       ‘ q o (p2 A A) o ⟨t o u, t o u'⟩ = q o t o u'’ by cheat >>
-       ‘q o t o u' = u'’ by cheat >>
-       metis_tac[]
+   ‘q o p1 A A o k o w =  q o (p2 A A) o k o w’
+     by metis_tac[compose_hom,compose_assoc] >> 
+   ‘q o (p2 A A) o k o w = q o (p2 A A) o ⟨t o u, t o u'⟩’ by metis_tac[] >>
+   ‘q o (p2 A A) o ⟨t o u, t o u'⟩ = q o t o u'’
+     by metis_tac[compose_hom,compose_assoc,p2_of_pa] >>
+   ‘q o t o u' = u'’ by metis_tac[id1,idL,compose_assoc]>>
+   metis_tac[])
+QED
    
 
 Theorem Thm3_without_assume_exists:

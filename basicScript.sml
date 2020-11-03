@@ -1,3 +1,7 @@
+(*Theorem compose_assoc_4:
+
+*)
+
 
 Theorem o_bracket_left:
 ∀X Y Z A a b c d f g.
@@ -7,6 +11,7 @@ Proof
 metis_tac[compose_assoc]
 QED
 
+        
 
 Theorem o_bracket_right:
 ∀X Y Z A a b c d f g.
