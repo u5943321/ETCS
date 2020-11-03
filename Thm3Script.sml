@@ -105,7 +105,7 @@ irule mono_epi_is_iso >> strip_tac (* 2 *)
   simp[Abbr‘q'’] >>
   ‘(k' ∘ i1 B B) ∘ eqa (k' ∘ i1 B B) (k' ∘ i2 B B) =
    (k' ∘ i2 B B) ∘ eqa (k' ∘ i1 B B) (k' ∘ i2 B B)’
-    suffices_by metis_tac[compose_assoc]
+    suffices_by metis_tac[compose_assoc] >>
   metis_tac[eq_equlity])
 >- (‘is_mono (q' o h)’ suffices_by metis_tac[o_mono_imp_mono](*o_mono_mono*) >>
    ‘∃t. t∶ I' → A ∧ q o t = id I'’ by metis_tac[epi_non_zero_pre_inv] >> 
@@ -119,7 +119,7 @@ irule mono_epi_is_iso >> strip_tac (* 2 *)
    ‘q' o h∶ I' → B’ by metis_tac[compose_hom] >>
    qexistsl_tac [‘I'’,‘B’] >> simp[] >> rpt strip_tac >>
    rename [‘(q' ∘ h) ∘ u = (q' ∘ h) ∘ u'’] >>
-   ‘t o u∶ X → A ∧ t o u'∶ X→ A’ by metis_tac[compose_hom]
+   ‘t o u∶ X → A ∧ t o u'∶ X→ A’ by metis_tac[compose_hom] >>
    ‘f o (p1 A A) o ⟨t o u, t o u'⟩ =
     f o (p2 A A) o ⟨t o u, t o u'⟩’
       by
@@ -152,7 +152,6 @@ irule mono_epi_is_iso >> strip_tac (* 2 *)
    ‘q o (p1 A A) o k = q o (p2 A A) o k’
      by
       (simp[Abbr‘q’] >> metis_tac[coeq_equlity]) >>
-       (*lemma for coeq*)
    ‘q o p1 A A o k o w =  q o (p2 A A) o k o w’
      by metis_tac[compose_hom,compose_assoc] >> 
    ‘q o (p2 A A) o k o w = q o (p2 A A) o ⟨t o u, t o u'⟩’ by metis_tac[] >>
@@ -161,7 +160,49 @@ irule mono_epi_is_iso >> strip_tac (* 2 *)
    ‘q o t o u' = u'’ by metis_tac[id1,idL,compose_assoc]>>
    metis_tac[])
 QED
-   
+
+
+
+Theorem unique_h_lemma:
+∀A B C D f g q k h. f∶ A → B ∧ g∶D → B ∧ q∶ A → C ∧  
+              (∀k'. (k'∶ A→ D ∧ g o k' = f) ⇔ k' = k) ∧
+              (∀h'. (h'∶ C → D ∧ h' o q = k) ⇔ h' = h) ⇒
+              ∃!h. h∶ C → D ∧ g o h o q = f
+Proof
+rw[EXISTS_UNIQUE_ALT] >> qexists_tac ‘h’ >> rw[EQ_IMP_THM] (* 3 *)
+>>metis_tac[compose_assoc,compose_hom]
+QED
+
+Theorem Thm3_f_fac_eq:
+∀A B f hb. hb∶ A → eqo ((eqa (i1 B B o f) (i2 B B o f)) o i1 B B)
+                       ((eqa (i1 B B o f) (i2 B B o f)) o i2 B B) ∧
+            eqa ((coeqa (i1 B B ∘ f) (i2 B B ∘ f)) ∘ i1 B B)
+                 (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B) o hb = f ⇔
+            hb = eq_induce (coeqa (i1 B B ∘ f) (i2 B B ∘ f) o i1 B B)
+                           (coeqa (i1 B B ∘ f) (i2 B B ∘ f) o i2 B B)
+                           f
+Proof
+cheat
+QED
+
+
+Theorem Thm3_hb_fac_coeq:
+        
+
+Theorem Thm3_h_exists:
+∀A B f.
+         f∶A → B ⇒
+       ∃h.  h∶coeqo (p1 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A))
+           (p2 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A)) →
+         eqo (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i1 B B)
+           (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B) ∧
+         eqa (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i1 B B)
+           (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B) ∘ h ∘
+         coeqa (p1 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A))
+           (p2 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A)) =
+         f
+Proof
+         
 
 Theorem Thm3_without_assume_exists:
 
