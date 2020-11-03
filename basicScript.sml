@@ -758,7 +758,16 @@ first_x_assum drule >> rw[] >> metis_tac[compose_assoc]
 QED
 
                 
-
+      
+Theorem is_epi_surj:
+∀A B f. is_epi f /\ f∶ A → B ==> (∀b. b∶ one → B ⇒ ∃b0. b0∶ one → A ∧ f o b0 = b)
+Proof
+(*
+rw[] >> irule is_epi_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
+rename [‘t1 o f = t2 o f’] >>
+irule fun_ext >> qexistsl_tac [‘B’,‘X’] >> rw[] >>
+first_x_assum drule >> rw[] >> metis_tac[compose_assoc]*) cheat
+QED
 
         
 Theorem is_iso_thm:

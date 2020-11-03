@@ -276,3 +276,12 @@ qexists_tac ‘h’ >> Cases_on ‘A≅ zero’(*2 *)
 >- metis_tac[Thm3_case_zero]
 >- metis_tac[Thm3_case_non_zero]
 QED
+
+
+
+Theorem mono_epi_fac:
+∀f A B. f∶ A → B ⇒ ∃X m e. e∶ A → X ∧ m∶ X → B ∧ is_epi m ∧ is_mono e ∧ f = e o m
+Proof
+rw[] >> drule Thm3_without_assume_exists >> simp[EXISTS_UNIQUE_ALT] >> strip_tac >>
+cheat
+QED
