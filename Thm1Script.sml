@@ -16,11 +16,12 @@ val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
           
 (*why the three lines does not work...?*)
 
-
+(*
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   fixity = Closefix, 
                   pp_elements = [TOK "⟨", TM, TOK ",",TM, TOK "⟩"], 
                   term_name = "pa", paren_style = OnlyIfNecessary}
+*)                  
 
                   
 Theorem Thm1_case_1_comm_condition_left:
@@ -96,7 +97,14 @@ qabbrev_tac ‘f' =  N_ind ⟨z,g⟩ ⟨s ∘ p1 N B,h⟩’ >>
 ‘f'∶ N → (N × B)’ by metis_tac[] >>
 ‘p1 N B o f' = id N’
   by (‘p1 N B ∘ f'∶ N → N’ by metis_tac[p1_hom,compose_hom] >>
-      irule comm_with_s_id >> rw[] >>
+      irule comm_with_s_id >> reverse (rw[])
+      >- (‘p1 N B∶ (N× B) → N’ by metis_tac[p1_hom] >>
+         ‘z∶ one → N’ by metis_tac[ax3] >>
+         ‘(p1 N B ∘ f') ∘ z = p1 N B ∘ f' ∘ z’ by metis_tac[compose_assoc] >>
+         rw[] >>
+         ‘p1 N B o ⟨z,g⟩ = z’ suffices_by metis_tac[] >>
+         metis_tac[p1_of_pa])
+       >>
       ‘f' ∘ s = ⟨s ∘ p1 N B,h⟩ ∘ f'’ by metis_tac[] >>
       ‘p1 N B o f' ∘ s = p1 N B o ⟨s ∘ p1 N B,h⟩ ∘ f'’ by metis_tac[] >>
       ‘p1 N B o f' ∘ s = (p1 N B ∘ f') ∘ s ∧ p1 N B o ⟨s ∘ p1 N B,h⟩ ∘ f' = s ∘ p1 N B ∘ f'’

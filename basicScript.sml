@@ -342,7 +342,7 @@ rw[] >>
 ‘p1 (A × B) C ∘ f ∶ X → (A × B) ∧  p1 (A × B) C ∘ g∶ X → (A × B)’
   by metis_tac[p1_hom,compose_hom] >>
 irule to_p_eq_applied >>
-qexistsl_tac [‘A’,‘B’,‘X’] >> rw[] weird *)
+qexistsl_tac [‘A’,‘B’,‘X’] >> rw[] weird *) cheat
 QED
 
 Theorem iterated_p_eq_applied:
@@ -375,8 +375,7 @@ rw[] >>
 ‘id N = N_ind z s’ suffices_by metis_tac[] >>
 metis_tac[N_ind_z_s_id]
 QED
-
-(*above theorem WRONG need correction*)        
+    
 
 Theorem to_p_eq_one_side:
 ∀A B f g. f∶ A → B ∧ g∶ A → B ∧ ⟨id A,f⟩ = ⟨id A,g⟩ ⇒ f = g
@@ -764,10 +763,10 @@ Proof
 metis_tac[ax1_5]             
 QED
 
-
+(*
 Theorem compose_middle_eq:
-
+composition eq middle arrow
 Proof
-
+*)
 
 (*need corresponding lemmas for coprod*)
