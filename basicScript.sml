@@ -1,3 +1,68 @@
+
+Theorem o_bracket_left:
+∀X Y Z A a b c d f g.
+ f o b o a = g o d o c ∧ a∶ X → Y ∧ c∶ X → Y ∧ b∶ Y → Z ∧ d∶ Y → Z ∧
+ f∶ Z → A ∧ g∶ Z → A ⇒ (f o b) o a = (g o d) o c
+Proof
+metis_tac[compose_assoc]
+QED
+
+
+Theorem o_bracket_right:
+∀X Y Z A a b c d f g.
+ (f o b) o a = (g o d) o c ∧ a∶ X → Y ∧ c∶ X → Y ∧ b∶ Y → Z ∧ d∶ Y → Z ∧
+ f∶ Z → A ∧ g∶ Z → A ⇒ f o b o a = g o d o c
+Proof
+metis_tac[compose_assoc]
+QED        
+
+
+
+
+Theorem ax1_5_applied:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
+             eq_induce f g h ∶X → eqo f g ∧
+             eqa f g ∘ (eq_induce f g h) = h
+Proof
+metis_tac[ax1_5]             
+QED
+
+
+Theorem eq_induce_hom:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
+             eq_induce f g h ∶X → eqo f g
+Proof
+metis_tac[ax1_5]             
+QED
+
+
+
+
+Theorem coeq_induce_hom:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶B → X ∧ h o f = h o g ⇒
+             coeq_induce f g h ∶ coeqo f g → X
+Proof
+metis_tac[ax1_6]             
+QED
+
+         
+
+Theorem eq_fac:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
+             eqa f g ∘ (eq_induce f g h) = h
+Proof
+metis_tac[ax1_5]             
+QED
+
+
+
+Theorem coeq_fac:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶B → X ∧ h o f = h o g ⇒
+              (coeq_induce f g h)  o coeqa f g = h
+Proof
+metis_tac[ax1_6]             
+QED           
+
 Theorem to1_hom:
 ∀A. to1 A∶ A → one
 Proof
@@ -208,11 +273,23 @@ Proof
 metis_tac[ax1_3]
 QED
 
+Theorem i1_of_copa:
+∀A B X f g. f∶ A → X ∧ g∶ B → X ⇒ copa f g o i1 A B = f
+Proof
+metis_tac[ax1_4]
+QED        
+
 Theorem p2_of_pa:
 ∀A B X f g. f∶ X → A ∧ g∶ X → B ⇒ (p2 A B) o ⟨f,g⟩ = g
 Proof
 metis_tac[ax1_3]
-QED        
+QED
+
+Theorem i2_of_copa:
+∀A B X f g. f∶ A → X ∧ g∶ B → X ⇒ copa f g o i2 A B = g
+Proof
+metis_tac[ax1_4]
+QED                  
 
 
 Theorem po_with_one:
@@ -497,12 +574,26 @@ Proof
 metis_tac[ax1_5]
 QED
 
+
+Theorem coeqa_hom:
+∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ coeqa f g ∶B → (coeqo f g)
+Proof
+metis_tac[ax1_6]
+QED
+        
 Theorem eq_equlity:
 ∀A B f g.
          f∶A → B ∧ g∶A → B ⇒ f ∘ eqa f g = g ∘ eqa f g
 Proof
 metis_tac[ax1_5]
-QED             
+QED
+
+Theorem coeq_equlity:
+∀A B f g.
+         f∶A → B ∧ g∶A → B ⇒ coeqa f g  o f = coeqa f g o g
+Proof
+metis_tac[ax1_6]
+QED                     
 
 Theorem eqa_is_mono:
 ∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ is_mono (eqa f g)
@@ -520,6 +611,20 @@ rw[] >>
       x0 = eq_induce f g (eqa f g o f')’ by metis_tac[ax1_5] >>
 metis_tac[]
 QED
+
+Theorem coeqa_is_epi:
+∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ is_epi (coeqa f g)
+Proof
+rw[] >> irule is_epi_applied >> qexistsl_tac [‘B’,‘coeqo f g’] >>
+‘coeqa f g∶B → coeqo f g’ by metis_tac[coeqa_hom] >> rw[] >>
+‘coeqa f g ∘ f = coeqa f g ∘ g’ by metis_tac[coeq_equlity] >>
+‘f' o coeqa f g ∘ f = f' o coeqa f g ∘ g’ by metis_tac[] >>
+‘(f' o coeqa f g) ∘ f = (f' o coeqa f g) ∘ g’ by metis_tac[o_bracket_left] >>
+‘(f' ∘ coeqa f g)∶ B → X’ by metis_tac[compose_hom] >>
+‘∀x0. x0∶coeqo f g → X ∧ x0 ∘ coeqa f g = (f' ∘ coeqa f g) ⇔
+      x0 = coeq_induce f g (f' ∘ coeqa f g)’ by metis_tac[ax1_6] >>
+metis_tac[]      
+QED         
         
 Theorem non_zero_pinv:
 ∀A B f. f∶ A → B ∧ ¬(A ≅ zero) ⇒ ∃g. g∶B → A ∧ f ∘ g ∘ f = f
@@ -648,6 +753,7 @@ Proof
 rw[]  >> metis_tac[id1,to1_unique]
 QED
 
+        (*
 Theorem o_bracket_left:
 ∀X Y Z A a b c d f g.
  f o b o a = g o d o c ∧ a∶ X → Y ∧ c∶ X → Y ∧ b∶ Y → Z ∧ d∶ Y → Z ∧
@@ -665,7 +771,7 @@ Proof
 metis_tac[compose_assoc]
 QED        
      
-
+*)
         
            
 Theorem no_epi_from_zero:
@@ -737,7 +843,7 @@ QED
 
 
         
-(*for thm 3*)
+(*for thm 
 Theorem ax1_5_applied:
 ∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
              eq_induce f g h ∶X → eqo f g ∧
@@ -754,7 +860,17 @@ Proof
 metis_tac[ax1_5]             
 QED
 
- 
+
+
+
+Theorem coeq_induce_hom:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶B → X ∧ h o f = h o g ⇒
+             coeq_induce f g h ∶ coeqo f g → X
+Proof
+metis_tac[ax1_6]             
+QED
+
+         
 
 Theorem eq_fac:
 ∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶X → A ∧ f ∘ h = g ∘ h ⇒
@@ -763,6 +879,15 @@ Proof
 metis_tac[ax1_5]             
 QED
 
+
+
+Theorem coeq_fac:
+∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶B → X ∧ h o f = h o g ⇒
+              (coeq_induce f g h)  o coeqa f g = h
+Proof
+metis_tac[ax1_6]             
+QED
+*)        
 (*
 Theorem compose_middle_eq:
 composition eq middle arrow
