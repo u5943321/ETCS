@@ -1,11 +1,29 @@
 
+Theorem fac_through_zero:
+∀A B X f g h. f∶ A → B ∧ g∶ A → X ∧ h∶ X→ B ∧ f = h o g ∧ X ≅ zero ⇒ A ≅ zero
+Proof
+cheat
+QED
+        
+
+Theorem Thm3_case_zero:
+∀A B f h. f∶ A → B ∧ A≅ zero
+          h∶ (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
+                    ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A)))) →
+             (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B))) ∧
+          (eqa ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+               ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B))) o h o
+          (coeqa (p1 A A o (eqa (f o p1 A A) (f o p2 A A)))
+                 (p2 A A o (eqa (f o p1 A A) (f o p2 A A))))  = f ⇒
+          is_iso h
+Proof
+cheat
+QED          
 
 
-
-
-
-Theorem Thm3:
-∀A B f h. f∶ A → B ∧
+Theorem Thm3_case_non_zero:
+∀A B f h. f∶ A → B ∧ ¬(A≅ zero) ∧
           h∶ (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
                     ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A)))) →
              (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
@@ -20,18 +38,76 @@ rw[] >>
 qabbrev_tac ‘I' = (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
                   ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A))))’ >>
 qabbrev_tac ‘I0 = (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
-                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B)))’ >>      qabbrev_tac ‘k = eqa (f o p1 A A) (f o p2 A A)’ >>
+                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B)))’ >>
+qabbrev_tac ‘k = eqa (f o p1 A A) (f o p2 A A)’ >>
 qabbrev_tac ‘k' = coeqa (i1 B B o f) (i2 B B o f)’ >>
 qabbrev_tac ‘q = coeqa (p1 A A o k) (p2 A A o k)’ >>
 qabbrev_tac ‘q' = eqa (k' o i1 B B) (k' o i2 B B)’ >>
 qabbrev_tac ‘R = eqo (f o (p1 A A)) (f o (p2 A A))’ >>
 qabbrev_tac ‘R' = coeqo ((i1 B B) o f) ((i2 B B) o f)’ >>
-‘k∶ R → (A× A)’ by cheat >>
-‘q∶ A → I'’ by cheat >>
-‘q'∶ I0 → B’ by cheat >>
-‘k'∶ (B + B) → R'’ by cheat >>
+‘p1 A A∶ A×A → A ∧ p2 A A∶ A×A → A’ by metis_tac[p1_hom,p2_hom] >>
+‘i1 B B∶ B → B + B ∧ i2 B B∶ B → B + B’ by metis_tac[i1_hom,i2_hom] >>
+‘f o p1 A A∶ A× A → B ∧ f o p2 A A∶ A × A → B ∧
+ i1 B B o f∶ A → B + B ∧ i2 B B o f∶ A → B + B’ by metis_tac[compose_hom] >>
+‘k∶ R → (A× A)’ by (simp[Abbr‘k’,Abbr‘R’] >> metis_tac[eqa_hom]) >>
+‘p1 A A o k∶ R → A ∧ (p2 A A ∘ k)∶ R → A’ by metis_tac[compose_hom] >>
+‘q∶ A → I'’ by (simp[Abbr‘I'’,Abbr‘q’] >> metis_tac[coeqa_hom]) >>
+‘k'∶ (B + B) → R'’ by (simp[Abbr‘k'’,Abbr‘R'’] >> metis_tac[coeqa_hom]) >>
+‘k' o i1 B B∶ B → R' ∧ k' o i2 B B∶ B → R'’ by metis_tac[compose_hom] >> 
+‘q'∶ I0 → B’ by (simp[Abbr‘q'’,Abbr‘I0’] >> metis_tac[eqa_hom]) >>
+‘is_mono k’ by (simp[Abbr‘k’] >> metis_tac[eqa_is_mono]) >>
+‘is_mono q'’ by (simp[Abbr‘q'’] >> metis_tac[eqa_is_mono]) >>
+‘is_epi q ∧ is_epi k'’ by (simp[Abbr‘q’,Abbr‘k’] >> metis_tac[coeqa_is_epi]) >>
 irule mono_epi_is_iso >> strip_tac (* 2 *)
->- cheat (*symmetry so called, fix later*)
+>- (‘is_epi (h o q)’ suffices_by metis_tac[o_epi_imp_epi] >>
+   irule is_epi_applied >>
+   ‘h o q∶ A → I0’ by metis_tac[compose_hom] >>
+   qexistsl_tac [‘A’,‘I0’] >> rw[] >>
+   rename [‘u ∘ h ∘ q = u' ∘ h ∘ q’] >>
+   ‘¬(I0 ≅ zero)’
+    by
+     (SPOSE_NOT_THEN ASSUME_TAC >> ‘A≅ zero’ suffices_by metis_tac[] >>
+      irule fac_through_zero >>
+      qexistsl_tac [‘B’,‘I0’,‘q' o h o q’,‘h o q’,‘q'’] >> metis_tac[]) >>
+  qabbrev_tac ‘f = q' o h o q’ >>
+  ‘∃qi.qi∶ B → I0 ∧ qi o q' = id I0’ by metis_tac[mono_non_zero_post_inv] >>
+  ‘u o qi∶ B → X ∧ u' o qi∶ B → X’ by metis_tac[compose_hom] >>
+  ‘copa (u o qi) (u' o qi)∶ (B + B) → X’ by metis_tac[copa_hom] >> 
+  ‘copa (u o qi) (u' o qi) o (i1 B B) o f =
+   copa (u o qi) (u' o qi) o (i2 B B) o f’
+    by
+     (irule o_bracket_right >> reverse (strip_tac) (* 2 *)
+      >- (qexistsl_tac [‘X’,‘A’,‘B’,‘B + B’] >> rw[])
+      >- (‘(copa (u ∘ qi) (u' ∘ qi) ∘ i1 B B) = u o qi’
+           by metis_tac[i1_of_copa] >>
+         ‘(copa (u ∘ qi) (u' ∘ qi) ∘ i2 B B) = u' o qi’
+           by metis_tac[i2_of_copa] >>
+         rw[] >> simp[Abbr‘f’] >>
+         ‘(u ∘ qi) ∘ q' ∘ h ∘ q = u ∘ (qi ∘ q') ∘ h ∘ q ∧
+          (u' ∘ qi) ∘ q' ∘ h ∘ q = u' ∘ (qi ∘ q') ∘ h ∘ q ’
+           by metis_tac[compose_assoc] >>
+         metis_tac[idL,idR,compose_assoc])) >>
+  ‘coeq_induce (i1 B B o f) (i2 B B o f) (copa (u ∘ qi) (u' ∘ qi))∶ R' → X’
+    by (simp[Abbr‘R'’] >> metis_tac[coeq_induce_hom]) >>
+  qabbrev_tac
+   ‘w = coeq_induce (i1 B B ∘ f) (i2 B B ∘ f) (copa (u ∘ qi) (u' ∘ qi))’ >>
+  ‘w o k' = (copa (u ∘ qi) (u' ∘ qi))’
+    by (simp[Abbr‘w’,Abbr‘k'’] >> metis_tac[coeq_fac]) >>
+  ‘(u o qi) o q' = (u' o qi) o q'’ suffices_by metis_tac[idR,compose_assoc] >>
+  ‘u o qi = (copa (u ∘ qi) (u' ∘ qi)) o i1 B B ∧
+   u' o qi = (copa (u ∘ qi) (u' ∘ qi)) o i2 B B’
+   by metis_tac[i1_of_copa,i2_of_copa] >>
+  ‘copa (u ∘ qi) (u' ∘ qi) ∘ i1 B B o q' =
+   copa (u ∘ qi) (u' ∘ qi) ∘ i2 B B o q'’suffices_by metis_tac[compose_assoc]>>
+  ‘w o k' ∘ i1 B B ∘ q' =
+   w o k' ∘ i2 B B ∘ q'’ suffices_by metis_tac[compose_assoc] >>
+  ‘k' ∘ i1 B B ∘ q' = k' ∘ i2 B B ∘ q'’ suffices_by metis_tac[] >>
+  simp[Abbr‘q'’] >>
+  ‘(k' ∘ i1 B B) ∘ eqa (k' ∘ i1 B B) (k' ∘ i2 B B) =
+   (k' ∘ i2 B B) ∘ eqa (k' ∘ i1 B B) (k' ∘ i2 B B)’
+    suffices_by metis_tac[compose_assoc]
+  metis_tac[eq_equlity])
+  (*symmetry so called, fix later*)
 >- ‘is_mono (q' o h)’ suffices_by cheat (*o_mono_mono*) >>
    Cases_on ‘A ≅ zero’ (* 2 *)
    >- (*lemma*) cheat

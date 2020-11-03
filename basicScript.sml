@@ -54,7 +54,7 @@ Proof
 metis_tac[ax1_5]             
 QED
 
-
+(*above and below slow metis*)
 
 Theorem coeq_fac:
 ∀A B f g X h. f∶A → B ∧ g∶A → B ∧ h∶B → X ∧ h o f = h o g ⇒
@@ -123,6 +123,13 @@ Theorem pa_hom:
 Proof
 metis_tac[ax1_3]
 QED
+
+Theorem copa_hom:
+∀A B X f g. f∶ A→ X ∧ g∶ B→ X ⇒ copa f g ∶ (A + B)→ X
+Proof
+metis_tac[ax1_4]
+QED
+
                                      
 Theorem ev_hom:
 ∀A B. ev A B∶ (A× (exp A B))→ B
@@ -655,7 +662,13 @@ Theorem epi_non_zero_pre_inv:
 ∀A B f. f∶ A → B ∧ is_epi f ∧ ¬(A ≅ zero) ⇒ ∃g. g∶ B → A ∧ f o g = id B
 Proof
 metis_tac[non_zero_pinv,epi_pinv_pre_inv]
-QED        
+QED
+
+Theorem mono_non_zero_post_inv:
+∀A B f. f∶ A → B ∧ is_mono f ∧ ¬(A ≅ zero) ⇒ ∃g. g∶ B → A ∧ g o f = id A
+Proof
+cheat
+QED       
 
 Theorem o_mono_mono:
 ∀A B C f g. is_mono f ∧ is_mono g ∧ f∶ A → B ∧ g∶ B → C ⇒ is_mono (g o f)
@@ -681,6 +694,19 @@ drule is_mono_property >>
 ‘m o f∶ A → C’ by metis_tac[compose_hom] >>
 metis_tac[compose_assoc]
 QED
+
+
+Theorem o_epi_imp_epi:
+∀A B C f e. f∶ A → B ∧ e∶ C → A ∧ is_epi (f o e) ⇒ is_epi f
+Proof
+(*
+rw[] >> irule is_mono_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
+‘m o f o f' = m o f o g’ by metis_tac[] >>
+drule is_mono_property >>
+‘m o f∶ A → C’ by metis_tac[compose_hom] >>
+metis_tac[compose_assoc]*) cheat
+QED
+        
 (*
 
         seris of lemmas on coprod
@@ -803,17 +829,32 @@ first_x_assum irule >>
 rw[] (*2  *)
 >- metis_tac[]
 >- (qexistsl_tac [‘A’,‘B’,‘one + one’] >> simp[] >> metis_tac[compose_hom])
-QED         
+QED
+
+Theorem zero_no_mem:
+∀f. ¬(f∶ one → zero)
+Proof
+cheat
+QED        
+         
+
+Theorem to_zero_zero:
+∀X f. f∶ X → zero ⇒ X ≅ zero
+Proof
+cheat
+QED
         
 Theorem mono_epi_is_iso:
 ∀a. is_mono a ∧ is_epi a ⇒ is_iso a
 Proof
 rw[] >> qabbrev_tac ‘A = dom a’ >> qabbrev_tac ‘B = cod a’ >>
 ‘a∶ A → B’ by metis_tac[hom_def,Abbr‘A’,Abbr‘B’] >>
-‘¬(A≅ zero)’ by metis_tac[no_epi_from_zero] >>
+Cases_on ‘B≅ zero’ (* 2 *)
+>- cheat
+>- (‘¬(A≅ zero)’ by metis_tac[no_epi_from_zero,Abbr‘A’] >>
 ‘∃a'. a'∶ B → A ∧ a' o a = id A ∧ a o a' = id B’ suffices_by metis_tac[is_iso_thm] >>
 ‘∃g. g∶B → A ∧ a ∘ g ∘ a = a’ by metis_tac[ax5,ax6] >>
-qexists_tac ‘g’ >> rw[] >> metis_tac[epi_pinv_pre_inv,mono_pinv_post_inv]
+qexists_tac ‘g’ >> rw[] >> metis_tac[epi_pinv_pre_inv,mono_pinv_post_inv])
 QED
 
 Theorem distinct_endo_2:
