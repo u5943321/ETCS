@@ -68,17 +68,17 @@ val _ = new_constant("one",“:object”)
 
 (* X --t_x--> 1*)
 
-val _ = new_constant("to_terminal",“:object -> arrow”)   
+val _ = new_constant("to1",“:object -> arrow”)   
 
-val ax1_1 = new_axiom("ax1_1",“∀X tx. tx∶ X → one ⇔ tx = to_terminal X”)
+val ax1_1 = new_axiom("ax1_1",“∀X tx. tx∶ X → one ⇔ tx = to1 X”)
 
 (*UTF8.chr 0x1D443 𝑃 *)
 
 val _ = new_constant("zero",“:object”)
 
-val _ = new_constant("from_initial",“:object -> arrow”)       
+val _ = new_constant("from0",“:object -> arrow”)       
 
-val ax1_2 = new_axiom("ax1_2",“∀X ix. ix∶ zero → X ⇔ ix = from_initial X”)
+val ax1_2 = new_axiom("ax1_2",“∀X ix. ix∶ zero → X ⇔ ix = from0 X”)
 
 
 val _ = new_constant("po",“:object -> object -> object”)
@@ -250,7 +250,7 @@ End
 
 val ax7 = new_axiom("ax7",
                    “∀x A B. x∶ one → copo A B ⇒
-                            (is_mem x (i1 A B) ∨ is_mem x (i2 A B))”)
+                            (is_mem x (i1 A B) (A + B) ∨ is_mem x (i2 A B) (A + B))”)
 
 (*ax8 there exists an object with more than one element*)                             
                    
