@@ -169,8 +169,8 @@ Theorem unique_h_lemma:
               (∀h'. (h'∶ C → D ∧ h' o q = k) ⇔ h' = h) ⇒
               ∃!h. h∶ C → D ∧ g o h o q = f
 Proof
-rw[EXISTS_UNIQUE_ALT] >> qexists_tac ‘h’ >> rw[EQ_IMP_THM] (* 3 *)
->>metis_tac[compose_assoc,compose_hom]
+rw[EXISTS_UNIQUE_ALT] >> qexists_tac ‘h’ >> rw[EQ_IMP_THM] >>
+metis_tac[compose_assoc,compose_hom]
 QED
 
 Theorem Thm3_f_fac_eq:
@@ -186,13 +186,12 @@ cheat
 QED
 
 
-Theorem Thm3_hb_fac_coeq:
         
 
 Theorem Thm3_h_exists:
 ∀A B f.
          f∶A → B ⇒
-       ∃h.  h∶coeqo (p1 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A))
+       ∃!h.  h∶coeqo (p1 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A))
            (p2 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A)) →
          eqo (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i1 B B)
            (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B) ∧
@@ -202,7 +201,64 @@ Theorem Thm3_h_exists:
            (p2 A A ∘ eqa (f ∘ p1 A A) (f ∘ p2 A A)) =
          f
 Proof
-         
+rw[] >>
+qabbrev_tac ‘I' = (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
+                  ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A))))’ >>
+qabbrev_tac ‘I0 = (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B)))’ >>
+qabbrev_tac ‘k = eqa (f o p1 A A) (f o p2 A A)’ >>
+qabbrev_tac ‘k' = coeqa (i1 B B o f) (i2 B B o f)’ >>
+qabbrev_tac ‘q = coeqa (p1 A A o k) (p2 A A o k)’ >>
+qabbrev_tac ‘q' = eqa (k' o i1 B B) (k' o i2 B B)’ >>
+qabbrev_tac ‘R = eqo (f o (p1 A A)) (f o (p2 A A))’ >>
+qabbrev_tac ‘R' = coeqo ((i1 B B) o f) ((i2 B B) o f)’ >>
+‘p1 A A∶ A×A → A ∧ p2 A A∶ A×A → A’ by metis_tac[p1_hom,p2_hom] >>
+‘i1 B B∶ B → B + B ∧ i2 B B∶ B → B + B’ by metis_tac[i1_hom,i2_hom] >>
+‘f o p1 A A∶ A× A → B ∧ f o p2 A A∶ A × A → B ∧
+ i1 B B o f∶ A → B + B ∧ i2 B B o f∶ A → B + B’ by metis_tac[compose_hom] >>
+‘k∶ R → (A× A)’ by (simp[Abbr‘k’,Abbr‘R’] >> metis_tac[eqa_hom]) >>
+‘p1 A A o k∶ R → A ∧ (p2 A A ∘ k)∶ R → A’ by metis_tac[compose_hom] >>
+‘q∶ A → I'’ by (simp[Abbr‘I'’,Abbr‘q’] >> metis_tac[coeqa_hom]) >>
+‘k'∶ (B + B) → R'’ by (simp[Abbr‘k'’,Abbr‘R'’] >> metis_tac[coeqa_hom]) >>
+‘k' o i1 B B∶ B → R' ∧ k' o i2 B B∶ B → R'’ by metis_tac[compose_hom] >> 
+‘q'∶ I0 → B’ by (simp[Abbr‘q'’,Abbr‘I0’] >> metis_tac[eqa_hom]) >>
+irule unique_h_lemma >>
+qabbrev_tac ‘c = eq_induce (k' ∘ i1 B B) (k' ∘ i2 B B) f’ >> 
+qexistsl_tac [‘A’,‘B’,
+              ‘coeq_induce (p1 A A ∘ k) (p2 A A ∘ k) c’,
+              ‘c’] >>
+              (*
+‘(∀k'. k'∶A → I0 ∧ q' ∘ k' = f ⇔ k' = c)’*)
+‘(k' o (i1 B B)) o  f = (k' o (i2 B B)) o f’
+  by (simp[Abbr‘k'’] >>
+     ‘coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i1 B B ∘ f =
+      coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B ∘ f’
+      suffices_by metis_tac[compose_assoc] >>
+     metis_tac[coeq_equlity]) >>
+drule eq_fac_unique >> strip_tac >>
+first_x_assum (qspecl_then [‘B’,‘R'’,‘A’] assume_tac) >>
+‘∀h0. (h0∶A → eqo (k' ∘ i1 B B) (k' ∘ i2 B B) ∧
+       eqa (k' ∘ i1 B B) (k' ∘ i2 B B) ∘ h0 = f ⇔
+       h0 = eq_induce (k' ∘ i1 B B) (k' ∘ i2 B B) f)’ by metis_tac[] >>
+strip_tac (* 2 *)      
+>- (simp[Abbr‘I0’] >> simp[Abbr‘q'’] >> simp[]) >>
+
+‘is_mono q'’ by (simp[Abbr‘q'’] >> metis_tac[eqa_is_mono]) >>
+(*‘c o p1 A A o k = c o p2 A A o k’*)
+‘(c o p1 A A o k)∶ R → I0 ∧ (c o p2 A A o k)∶ R → I0’ by metis_tac[compose_hom] >>
+‘c o p1 A A o k = c o p2 A A o k’ 
+  by (‘q' o (c o p1 A A o k) = q' o (c o p2 A A o k)’
+      suffices_by metis_tac[is_mono_thm] >>
+   ‘(q' ∘ c) ∘ p1 A A ∘ k = (q' ∘ c) ∘ p2 A A ∘ k’
+    suffices_by metis_tac[compose_hom,compose_assoc] >>
+   ‘f ∘ p1 A A ∘ k = f ∘ p2 A A ∘ k’ suffices_by metis_tac[] >>
+   simp[Abbr‘k’] >> metis_tac[eq_equlity,compose_assoc])
+   >>
+drule coeq_fac_unique >> strip_tac >>
+metis_tac[]
+QED
+  
+        
 
 Theorem Thm3_without_assume_exists:
 

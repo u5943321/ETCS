@@ -59,6 +59,17 @@ Proof
 metis_tac[ax1_5]             
 QED
 
+
+
+Theorem eq_fac_unique:
+∀A B f g X h. f ∘ h = g ∘ h /\
+              f∶A → B ∧ g∶A → B ∧ h∶X → A ⇒
+              (!h0. (h0∶ X → eqo f g /\ eqa f g ∘ h0 = h) <=>
+                   h0 = (eq_induce f g h))
+Proof
+metis_tac[ax1_5]             
+QED        
+
 (*above and below slow metis*)
 
 Theorem coeq_fac:
@@ -66,7 +77,18 @@ Theorem coeq_fac:
               (coeq_induce f g h)  o coeqa f g = h
 Proof
 metis_tac[ax1_6]             
-QED           
+QED
+
+
+
+Theorem coeq_fac_unique:
+∀A B f g X h. h o f = h o g /\
+              f∶A → B ∧ g∶A → B ∧ h∶B → X ⇒
+              (!h0. (h0∶  coeqo f g → X /\ h0 o coeqa f g = h) <=>
+                   h0 = (coeq_induce f g h))
+Proof
+metis_tac[ax1_6]             
+QED                 
 
 Theorem to1_hom:
 ∀A. to1 A∶ A → one
