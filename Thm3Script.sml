@@ -7,7 +7,7 @@ QED
         
 
 Theorem Thm3_case_zero:
-∀A B f h. f∶ A → B ∧ A≅ zero
+∀A B f h. f∶ A → B ∧ A≅ zero ∧
           h∶ (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
                     ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A)))) →
              (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
@@ -258,8 +258,21 @@ drule coeq_fac_unique >> strip_tac >>
 metis_tac[]
 QED
   
-        
 
 Theorem Thm3_without_assume_exists:
-
+∀A B f. f∶ A → B ⇒
+          ∃!h. h∶ (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
+                    ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A)))) →
+             (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B))) ∧
+          (eqa ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+               ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B))) o h o
+          (coeqa (p1 A A o (eqa (f o p1 A A) (f o p2 A A)))
+                 (p2 A A o (eqa (f o p1 A A) (f o p2 A A))))  = f ∧
+          is_iso h
 Proof
+rw[] >> drule Thm3_h_exists >> simp[EXISTS_UNIQUE_ALT] >> strip_tac >>
+qexists_tac ‘h’ >> Cases_on ‘A≅ zero’(*2 *)
+>- metis_tac[Thm3_case_zero]
+>- metis_tac[Thm3_case_non_zero]
+QED
