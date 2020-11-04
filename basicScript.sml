@@ -325,7 +325,13 @@ Proof
 metis_tac[ax1_4]
 QED                  
 
+Theorem i1_i2_disjoint:
+!X t. t∶ one → X ==> i1 X X o t <> i2 X X o t
+Proof
+cheat
+QED
 
+        
 Theorem po_with_one:
 ∀A. po A one ≅ A
 Proof
@@ -573,6 +579,9 @@ rw[] >> irule is_epi_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
 metis_tac[idR]
 QED
 
+
+        
+
 Theorem pb_exists:
 ∀X Y Z f g. f∶ X → Z ∧ g∶ Y → Z ⇒ ∃P p q. p∶ P → X ∧ q∶ P → Y ∧ f o p = g o q ∧
             (∀A u v. u∶ A → X ∧ v∶ A → Y ∧ f o u = g o v ⇒
@@ -627,7 +636,11 @@ Theorem coeq_equlity:
          f∶A → B ∧ g∶A → B ⇒ coeqa f g  o f = coeqa f g o g
 Proof
 metis_tac[ax1_6]
-QED                     
+QED
+
+
+Theorem coeq_of_equal:
+!f A B. f∶ A → B ==>         
 
 Theorem eqa_is_mono:
 ∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ is_mono (eqa f g)
@@ -802,6 +815,16 @@ Proof
 cheat
 QED
 
+
+Theorem to_iso_zero_iso:
+!X A f. X ≅ zero /\  f∶ A → X ==> is_iso f
+Proof
+cheat
+QED
+
+   
+
+   
 Theorem eq_pre_o_eq:
 ∀X Y Z a b c d f A. b o a = d o c ∧ a∶ X → Y ∧ b∶ Y → Z ∧ c∶ X → Y ∧ d∶ Y → Z ∧
                   f∶ A → X ⇒ b o a o f = d o c o f
@@ -875,7 +898,7 @@ QED
          
 
 Theorem to_zero_zero:
-∀X f. f∶ X → zero ⇒ X ≅ zero
+∀f A B. f∶ A → B /\ B ≅ zero ==> A ≅ zero
 Proof
 cheat
 QED

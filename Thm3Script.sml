@@ -1,10 +1,36 @@
-
-Theorem fac_through_zero:
-∀A B X f g h. f∶ A → B ∧ g∶ A → X ∧ h∶ X→ B ∧ f = h o g ∧ X ≅ zero ⇒ A ≅ zero
+Theorem Thm3_A_zero_I_zero:
+∀A B f h. f∶ A → B ∧ A≅ zero ⇒ 
+          (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B))) ≅ zero
 Proof
-cheat
-QED
-        
+rw[] >>
+‘¬(∃t. t∶ one → eqo (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i1 B B)
+  (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B))’ suffices_by metis_tac[ax6] >>
+SPOSE_NOT_THEN ASSUME_TAC >> fs[] >>
+‘i1 B B∶ B → B + B ∧ i2 B B∶ B → B + B’ by metis_tac[i1_hom,i2_hom] >>
+‘i1 B B o f∶ A → B + B ∧ i2 B B o f∶ A → B + B’ by metis_tac[compose_hom] >>
+qabbrev_tac ‘k' = coeqa (i1 B B ∘ f) (i2 B B ∘ f)’ >>
+qabbrev_tac ‘I0 = eqo (k' ∘ i1 B B) (k' ∘ i2 B B)’ >>
+qabbrev_tac ‘R' = coeqo ((i1 B B) o f) ((i2 B B) o f)’ >>
+qabbrev_tac ‘q' = eqa (k' o i1 B B) (k' o i2 B B)’ >>
+‘k'∶ (B + B) → R'’ by (simp[Abbr‘k'’,Abbr‘R'’] >> metis_tac[coeqa_hom]) >>
+‘k' o i1 B B∶ B → R' ∧ k' o i2 B B∶ B → R'’ by metis_tac[compose_hom] >> 
+‘q'∶ I0 → B’ by (simp[Abbr‘q'’,Abbr‘I0’] >> metis_tac[eqa_hom]) >>
+‘k' o i1 B B o q' = k' o i2 B B o q'’ by cheat (*eq property*) >>
+‘(k' o i1 B B o q') o t = (k' o i2 B B o q') o t’ by metis_tac[] >>
+‘∃ki. ki∶ R'→ (B + B) ∧ ki o k' = id (B + B)’
+ by
+  (‘(i1 B B ∘ f) = (i2 B B ∘ f)’ by metis_tac[compose_hom,from_iso_zero_eq] >>
+   rw[] >>
+   simp[Abbr‘R'’,Abbr‘k'’] >> metis_tac[coeq_of_equal]) >>
+‘ki o (k' ∘ i1 B B ∘ q') ∘ t = ki o (k' ∘ i2 B B ∘ q') ∘ t’ by metis_tac[] >>
+‘i1 B B ∘ q' ∘ t = i2 B B ∘ q' ∘ t’ by cheat (*assoc lemma later*) >>
+‘q' o t∶ one → B’ by metis_tac[compose_hom] >>
+metis_tac[i1_i2_disjoint]
+QED                  
+
+
+
 
 Theorem Thm3_case_zero:
 ∀A B f h. f∶ A → B ∧ A≅ zero ∧
@@ -18,7 +44,10 @@ Theorem Thm3_case_zero:
                  (p2 A A o (eqa (f o p1 A A) (f o p2 A A))))  = f ⇒
           is_iso h
 Proof
-cheat
+rw[] >> irule to_iso_zero_iso >>
+‘eqo (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i1 B B)
+     (coeqa (i1 B B ∘ f) (i2 B B ∘ f) ∘ i2 B B) ≅ zero’ suffices_by metis_tac[] >>
+metis_tac[Thm3_A_zero_I_zero]
 QED          
 
 
@@ -67,8 +96,7 @@ irule mono_epi_is_iso >> strip_tac (* 2 *)
    ‘¬(I0 ≅ zero)’
     by
      (SPOSE_NOT_THEN ASSUME_TAC >> ‘A≅ zero’ suffices_by metis_tac[] >>
-      irule fac_through_zero >>
-      qexistsl_tac [‘B’,‘I0’,‘q' o h o q’,‘h o q’,‘q'’] >> metis_tac[]) >>
+     metis_tac[to_zero_zero]) >>
   qabbrev_tac ‘f = q' o h o q’ >>
   ‘∃qi.qi∶ B → I0 ∧ qi o q' = id I0’ by metis_tac[mono_non_zero_post_inv] >>
   ‘u o qi∶ B → X ∧ u' o qi∶ B → X’ by metis_tac[compose_hom] >>
@@ -173,6 +201,8 @@ rw[EXISTS_UNIQUE_ALT] >> qexists_tac ‘h’ >> rw[EQ_IMP_THM] >>
 metis_tac[compose_assoc,compose_hom]
 QED
 
+(*        
+
 Theorem Thm3_f_fac_eq:
 ∀A B f hb. hb∶ A → eqo ((eqa (i1 B B o f) (i2 B B o f)) o i1 B B)
                        ((eqa (i1 B B o f) (i2 B B o f)) o i2 B B) ∧
@@ -184,7 +214,7 @@ Theorem Thm3_f_fac_eq:
 Proof
 cheat
 QED
-
+*)
 
         
 
@@ -280,7 +310,7 @@ QED
 
 
 Theorem mono_epi_fac:
-∀f A B. f∶ A → B ⇒ ∃X m e. e∶ A → X ∧ m∶ X → B ∧ is_epi m ∧ is_mono e ∧ f = e o m
+∀f A B. f∶ A → B ⇒ ∃X m e. e∶ A → X ∧ m∶ X → B ∧ is_epi e ∧ is_mono m ∧ f = m o e
 Proof
 rw[] >> drule Thm3_without_assume_exists >> simp[EXISTS_UNIQUE_ALT] >> strip_tac >>
 cheat
