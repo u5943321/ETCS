@@ -707,7 +707,26 @@ QED
 Theorem pb_mono_mono:
 !P p q f g. is_pb P p q f g /\ is_mono g ==> is_mono p
 Proof
-cheat
+rw[] >> irule is_mono_applied >> fs[is_pb_def] >>
+qabbrev_tac ‘X = dom f’ >>
+qabbrev_tac ‘Y = dom g’ >>
+qexistsl_tac [‘P’,‘X’] >> simp[] >> rw[] >>
+rename [‘p ∘ k1 = p ∘ k2’] >>
+‘f o p o k1 = f o p o k2’ by metis_tac[] >>
+qabbrev_tac ‘Z = cod f’ >>
+‘f∶ X → Z ∧ g∶ Y → Z’ by metis_tac[hom_def,Abbr‘X’,Abbr‘Y’] >>
+‘f o p o k1 = (f o p) o k1’ by metis_tac[compose_assoc] >>
+‘f ∘ p ∘ k2 = (f ∘ p) ∘ k2’ by metis_tac[compose_assoc] >>
+‘(g ∘ q) o k1 = (g ∘ q) o k2’ by metis_tac[] >>
+‘g ∘ q o k1 = g ∘ q o k2’ by metis_tac[compose_assoc] >>
+‘q o k1∶ X' → Y ∧ q o k2∶ X' → Y’ by metis_tac[compose_hom] >> 
+‘q o k1 = q o k2’ by metis_tac[is_mono_property] >>
+first_x_assum (qspecl_then [‘X'’,‘p o k1’,‘q o k1’] assume_tac) >>
+‘p ∘ k1∶X' → X ∧ q ∘ k1∶X' → Y’ by metis_tac[compose_hom] >>
+‘f ∘ p ∘ k1 = g ∘ q ∘ k1’ by metis_tac[compose_assoc] >>
+‘∃a. ∀a'. a'∶X' → P ∧ p ∘ a' = p ∘ k1 ∧ q ∘ a' = q ∘ k1 ⇔ a = a'’
+ by metis_tac[] >>
+metis_tac[]
 QED                
 
 (*behaviour of metis weird in above thm*)
