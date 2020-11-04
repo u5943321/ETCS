@@ -600,7 +600,12 @@ Proof
 rw[] >> drule pb_exists >> strip_tac >>
 first_x_assum (qspecl_then [‘Y’,‘g’] assume_tac) >>
 fs[EXISTS_UNIQUE_ALT] >> metis_tac[]
-QED                
+QED
+
+Theorem pb_mono_mono:
+
+Proof
+                
 
 (*behaviour of metis weird in above thm*)
 
@@ -728,7 +733,11 @@ drule is_mono_property >>
 strip_tac >> first_x_assum irule >> metis_tac[]
 QED
 
-Theorem         
+Theorem mono_o_iso_mono:
+!A B X f i. is_iso i /\ is_mono f /\ f∶ A → B /\ i∶ X → A ==> (is_mono (f o i))
+Proof
+cheat
+QED 
  
 Theorem o_mono_imp_mono:
 ∀A B C f m. f∶ A → B ∧ m∶ B → C ∧ is_mono (m o f) ⇒ is_mono f

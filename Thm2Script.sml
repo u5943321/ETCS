@@ -78,8 +78,11 @@ Theorem ind_factorization:
         ∃t. t∶ A → A ∧ a o t = s o a
 Proof
 rw[] >> ‘s o a∶ A → N’ by metis_tac[ax3,compose_hom] >>
-drule pb_fac_exists >> rw[] >>
+drule pb_exists >> rw[] >>
 first_x_assum (qspecl_then [‘A’,‘a’] assume_tac) >> rfs[] >>
+‘∀A' u v.
+            u∶A' → A ∧ v∶A' → A ∧ (s ∘ a) ∘ u = a ∘ v ⇒
+            ∃a. a∶A' → P ∧ p ∘ a = u ∧ q ∘ a = v’ by metis_tac[EXISTS_UNIQUE_ALT] >>
 ‘is_iso p’
   suffices_by
    (strip_tac >> drule is_iso_thm >> strip_tac >>
@@ -105,7 +108,9 @@ irule mono_epi_is_iso >> rw[] (* 2 *)
    fs[is_mem_def] >>
    ‘dom a = A’ by metis_tac[hom_def] >> fs[] >>
    metis_tac[ax3,compose_assoc])
->- cheat   (*pb of mono is mono*)
+>- (irule pb_mono_mono >> qexistsl_tac [‘P’,‘(s ∘ a)’,‘a’,‘q’] >> simp[] >>
+   rw[is_pb_def] (* 4 *) >>
+   metis_tac[hom_def])
 QED                
         
 Theorem Thm2_3:        
