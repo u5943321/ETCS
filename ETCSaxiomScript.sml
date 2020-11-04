@@ -242,11 +242,14 @@ Definition is_mono_def:
           f o g1 = f o g2 ⇒ g1 = g2
 End            
 
+Definition is_subset_def:
+is_subset a A ⇔ is_mono a ∧ cod a = A
+End               
 
-Definition is_mem:
-is_mem x a ⇔ x∶ one → cod a ∧ is_mono a ∧
-             ∃x0. x0∶ one → dom a ∧ a o x0 = x
-End             
+
+Definition is_mem_def:
+is_mem x a A ⇔ is_subset a A ∧ x∶ one → A ∧ ∃x0. x0∶ one → dom a ∧ a o x0 = x
+End
 
 val ax7 = new_axiom("ax7",
                    “∀x A B. x∶ one → copo A B ⇒
@@ -260,3 +263,9 @@ val ax8 = new_axiom("ax8",
 
 (*shortcut key for inserting Unicode*)
 (*add quantifier in ax1_1,2*)
+
+
+val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
+                  fixity = Closefix, 
+                  pp_elements = [TOK "⟨", TM, TOK ",",TM, TOK "⟩"], 
+                  term_name = "pa", paren_style = OnlyIfNecessary}
