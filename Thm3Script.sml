@@ -16,7 +16,8 @@ qabbrev_tac ‘q' = eqa (k' o i1 B B) (k' o i2 B B)’ >>
 ‘k'∶ (B + B) → R'’ by (simp[Abbr‘k'’,Abbr‘R'’] >> metis_tac[coeqa_hom]) >>
 ‘k' o i1 B B∶ B → R' ∧ k' o i2 B B∶ B → R'’ by metis_tac[compose_hom] >> 
 ‘q'∶ I0 → B’ by (simp[Abbr‘q'’,Abbr‘I0’] >> metis_tac[eqa_hom]) >>
-‘k' o i1 B B o q' = k' o i2 B B o q'’ by cheat (*eq property*) >>
+‘k' o i1 B B o q' = k' o i2 B B o q'’
+  by (simp[Abbr‘q'’] >> metis_tac[eq_equlity,compose_assoc]) >>
 ‘(k' o i1 B B o q') o t = (k' o i2 B B o q') o t’ by metis_tac[] >>
 ‘∃ki. ki∶ R'→ (B + B) ∧ ki o k' = id (B + B)’
  by
@@ -24,7 +25,22 @@ qabbrev_tac ‘q' = eqa (k' o i1 B B) (k' o i2 B B)’ >>
    rw[] >>
    simp[Abbr‘R'’,Abbr‘k'’] >> metis_tac[coeq_of_equal]) >>
 ‘ki o (k' ∘ i1 B B ∘ q') ∘ t = ki o (k' ∘ i2 B B ∘ q') ∘ t’ by metis_tac[] >>
-‘i1 B B ∘ q' ∘ t = i2 B B ∘ q' ∘ t’ by cheat (*assoc lemma later*) >>
+‘i1 B B ∘ q' ∘ t = i2 B B ∘ q' ∘ t’
+  by
+   (‘ki ∘ (k' ∘ i1 B B ∘ q') ∘ t = i1 B B ∘ q' ∘ t ∧
+    ki ∘ (k' ∘ i2 B B ∘ q') ∘ t = i2 B B ∘ q' ∘ t’ suffices_by metis_tac[] >>
+    ‘(k' ∘ i1 B B ∘ q')∶ I0 → R'’ by metis_tac[compose_hom] >>
+    ‘(k' ∘ i2 B B ∘ q')∶ I0 → R'’ by metis_tac[compose_hom] >> 
+    ‘ki ∘ (k' ∘ i1 B B ∘ q') ∘ t  = (ki ∘ (k' ∘ i1 B B ∘ q')) ∘ t  ∧
+     ki ∘ (k' ∘ i2 B B ∘ q') ∘ t  = (ki ∘ (k' ∘ i2 B B ∘ q')) ∘ t’
+     by metis_tac[compose_assoc] >>
+    ‘i1 B B ∘ q'∶ I0 → (B + B)’ by metis_tac[compose_hom] >>
+    ‘(ki ∘ k' ∘ i1 B B ∘ q') = ((ki ∘ k') ∘ i1 B B ∘ q')’
+      by metis_tac[compose_assoc] >>
+    ‘i2 B B ∘ q'∶ I0 → (B + B)’ by metis_tac[compose_hom] >>
+    ‘(ki ∘ k' ∘ i2 B B ∘ q') = ((ki ∘ k') ∘ i2 B B ∘ q')’
+      by metis_tac[compose_assoc] >> rw[] >> metis_tac[id1,idL,compose_assoc]
+    )>>
 ‘q' o t∶ one → B’ by metis_tac[compose_hom] >>
 metis_tac[i1_i2_disjoint]
 QED                  
