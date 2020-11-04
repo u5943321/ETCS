@@ -329,5 +329,31 @@ Theorem mono_epi_fac:
 ∀f A B. f∶ A → B ⇒ ∃X m e. e∶ A → X ∧ m∶ X → B ∧ is_epi e ∧ is_mono m ∧ f = m o e
 Proof
 rw[] >> drule Thm3_without_assume_exists >> simp[EXISTS_UNIQUE_ALT] >> strip_tac >>
-cheat
+rw[] >>
+qabbrev_tac ‘I' = (coeqo ((p1 A A) o (eqa (f o p1 A A) (f o p2 A A)))
+                  ((p2 A A) o (eqa (f o p1 A A) (f o p2 A A))))’ >>
+qabbrev_tac ‘I0 = (eqo ((coeqa (i1 B B o f) (i2 B B o f)) o (i1 B B))
+                  ((coeqa (i1 B B o f) (i2 B B o f)) o (i2 B B)))’ >>
+qabbrev_tac ‘k = eqa (f o p1 A A) (f o p2 A A)’ >>
+qabbrev_tac ‘k' = coeqa (i1 B B o f) (i2 B B o f)’ >>
+qabbrev_tac ‘q = coeqa (p1 A A o k) (p2 A A o k)’ >>
+qabbrev_tac ‘q' = eqa (k' o i1 B B) (k' o i2 B B)’ >>
+qabbrev_tac ‘R = eqo (f o (p1 A A)) (f o (p2 A A))’ >>
+qabbrev_tac ‘R' = coeqo ((i1 B B) o f) ((i2 B B) o f)’ >>
+‘p1 A A∶ A×A → A ∧ p2 A A∶ A×A → A’ by metis_tac[p1_hom,p2_hom] >>
+‘i1 B B∶ B → B + B ∧ i2 B B∶ B → B + B’ by metis_tac[i1_hom,i2_hom] >>
+‘f o p1 A A∶ A× A → B ∧ f o p2 A A∶ A × A → B ∧
+ i1 B B o f∶ A → B + B ∧ i2 B B o f∶ A → B + B’ by metis_tac[compose_hom] >>
+‘k∶ R → (A× A)’ by (simp[Abbr‘k’,Abbr‘R’] >> metis_tac[eqa_hom]) >>
+‘p1 A A o k∶ R → A ∧ (p2 A A ∘ k)∶ R → A’ by metis_tac[compose_hom] >>
+‘q∶ A → I'’ by (simp[Abbr‘I'’,Abbr‘q’] >> metis_tac[coeqa_hom]) >>
+‘k'∶ (B + B) → R'’ by (simp[Abbr‘k'’,Abbr‘R'’] >> metis_tac[coeqa_hom]) >>
+‘k' o i1 B B∶ B → R' ∧ k' o i2 B B∶ B → R'’ by metis_tac[compose_hom] >> 
+‘q'∶ I0 → B’ by (simp[Abbr‘q'’,Abbr‘I0’] >> metis_tac[eqa_hom]) >>
+qexistsl_tac [‘I'’,‘q' o h’,‘q’] >>
+‘is_mono q'’ by (simp[Abbr‘q'’] >> metis_tac[eqa_is_mono]) >>
+‘is_epi q’ by (simp[Abbr‘q’] >> metis_tac[coeqa_is_epi]) >>
+‘f = (q' ∘ h) ∘ q’ by metis_tac[compose_assoc] >>
+‘q' ∘ h∶I' → B’ by metis_tac[compose_hom] >> simp[] >> 
+metis_tac[mono_o_iso_mono] 
 QED

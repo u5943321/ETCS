@@ -640,7 +640,10 @@ QED
 
 
 Theorem coeq_of_equal:
-!f A B. f∶ A → B ==>         
+!f A B. f∶ A → B ==> ?ki. ki∶ coeqo f f → B /\ ki o (coeqa f f) = id B
+Proof
+cheat
+QED 
 
 Theorem eqa_is_mono:
 ∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ is_mono (eqa f g)
@@ -724,6 +727,8 @@ Q.UNDISCH_THEN `is_mono g` (K ALL_TAC) >>
 drule is_mono_property >>
 strip_tac >> first_x_assum irule >> metis_tac[]
 QED
+
+Theorem         
  
 Theorem o_mono_imp_mono:
 ∀A B C f m. f∶ A → B ∧ m∶ B → C ∧ is_mono (m o f) ⇒ is_mono f
