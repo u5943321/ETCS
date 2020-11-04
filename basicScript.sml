@@ -337,11 +337,15 @@ metis_tac[]
 QED
 
 (*okay up to here*)
+
+(*do not need mono condition*)       
        
-Theorem prop_5:
-∀A B x. ¬(is_mem x (i1 A B) (A + B) ∧ is_mem x (i2 A B) (A + B))
+Theorem prop_5_lemma:
+∀A B x. ¬(x∶one → (A + B) ∧ (∃x0 x0'. x0∶one → A ∧ x0'∶one → B ∧
+                             i1 A B ∘ x0 = x ∧
+                             i2 A B ∘ x0' = x))
 Proof
-rpt strip_tac >> fs[is_mem_def] >>
+rpt strip_tac >> (* fs[is_mem_def] >>*)
 ‘i1 one one∶ one → (one + one) ∧ i2 one one ∶ one → (one + one)’
   by metis_tac[i1_hom,i2_hom] >>
 ‘to1 A∶ A → one ∧ to1 B∶ B → one’ by metis_tac[ax1_1] >>
@@ -380,14 +384,25 @@ simp[] >>
  by metis_tac[compose_hom] >>
 metis_tac[to1_unique,id1]
 QED 
- 
+
+
+Theorem prop_5:
+∀A B x. ¬(is_mem x (i1 A B) (A + B) ∧ is_mem x (i2 A B) (A + B))
+Proof
+rpt strip_tac >>  fs[is_mem_def] >> metis_tac[prop_5_lemma,hom_def,i1_hom,i2_hom]
+QED
  
                
 
 Theorem i1_i2_disjoint:
 !X t. t∶ one → X ==> i1 X X o t <> i2 X X o t
 Proof
-cheat
+rw[] >> SPOSE_NOT_THEN ASSUME_TAC >>
+‘(∃x. x∶one → (X + X) ∧ (∃x0 x0'. x0∶one → X ∧ x0'∶one → X ∧
+                             i1 X X ∘ x0 = x ∧
+                             i2 X X ∘ x0' = x))’
+  suffices_by metis_tac[prop_5_lemma] >>
+qexists_tac ‘i1 X X o t’ >> metis_tac[i1_hom,compose_hom]
 QED
 
         
