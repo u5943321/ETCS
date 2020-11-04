@@ -947,17 +947,25 @@ rw[] (*2  *)
 QED
 
 
+Theorem iso_zero_no_mem:
+∀A. A≅ zero ⇒ ¬(∃x. x∶ one → A)
+Proof
+rw[] >> SPOSE_NOT_THEN ASSUME_TAC >>
+‘∃f. f∶ A → zero’ by metis_tac[are_iso_is_iso,is_iso_thm] >>
+‘f o x∶ one→ zero’ by metis_tac[compose_hom] >>
+metis_tac[zero_no_mem]
+QED
+
 Theorem is_epi_surj:
 ∀A B f. is_epi f /\ f∶ A → B ==> (∀b. b∶ one → B ⇒ ∃b0. b0∶ one → A ∧ f o b0 = b)
 Proof
-(*
-no_epi_from_zero
-rw[] >> irule is_epi_applied >> qexistsl_tac [‘A’,‘B’] >> rw[] >>
-rename [‘t1 o f = t2 o f’] >>
-irule fun_ext >> qexistsl_tac [‘B’,‘X’] >> rw[] >>
-first_x_assum drule >> rw[] >> metis_tac[compose_assoc]    *)
+rw[] >> Cases_on ‘B≅ zero’ (* 2 *)
+>- metis_tac[iso_zero_no_mem] >>
+‘¬(A≅ zero)’ by metis_tac[no_epi_from_zero] >>
+‘∃g. g∶B → A ∧ f ∘ g = id B’ by metis_tac[epi_non_zero_pre_inv] >>
+qexists_tac ‘g o b’ >> metis_tac[compose_hom,compose_assoc,idL]
 QED
-
+   
 
 Theorem distinct_endo_2:
 copa (i1 one one) (i2 one one) ∶ (one + one) → (one + one) ∧
