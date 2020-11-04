@@ -1,8 +1,3 @@
-(*Theorem compose_assoc_4:
-
-*)
-
-
 Theorem o_bracket_left:
 ∀X Y Z A a b c d f g.
  f o b o a = g o d o c ∧ a∶ X → Y ∧ c∶ X → Y ∧ b∶ Y → Z ∧ d∶ Y → Z ∧
@@ -123,9 +118,6 @@ Proof
 metis_tac[ax2]
 QED
 
-(*‘⟨p1 A N,(tp f ∘ s) ∘ p2 A N⟩ =
-   ⟨p1 A N, (tp f) o (p2 A N)⟩ o ⟨p1 A N, s o (p2 A N)⟩’*)        
-
 
 Theorem ax2_conj2:
 ∀A B X f. f∶ (po A X) → B ⇒
@@ -241,32 +233,6 @@ Theorem from0_unique:
 Proof
 metis_tac[ax1_2]
 QED          
-(*
-Theorem po_with_one:
-∀A. po A one ≅ A
-Proof
-rw[are_iso_def] >> qexistsl_tac [‘p1 A one’,‘⟨id A,to1 A⟩’]>>
-‘p1 A one∶A × one → A’ by metis_tac[p1_hom] >>
-‘to1 A∶ A → one’ by metis_tac[to1_hom] >> 
-‘⟨id A,to1 A⟩∶A → (A × one)’ by metis_tac[id1,pa_hom] >>
-‘p1 A one ∘ ⟨id A,to1 A⟩ = id A’ by metis_tac[p1_of_pa,id1] >>
-rw[] >> irule to_p_eq_applied >>
-qexistsl_tac [‘A’,‘one’,‘A×one’] >> simp[] >>
-‘⟨id A,to1 A⟩ ∘ p1 A one∶A × one → (A × one)’ by metis_tac[compose_hom]>>
-‘p1 A one ∘ id (A × one) = p1 A one ∧ p2 A one ∘ id (A × one) = p2 A one’
-  by metis_tac[idR,id1,p2_hom] >>
-‘p1 A one ∘ ⟨id A,to1 A⟩ ∘ p1 A one =
- (p1 A one ∘ ⟨id A,to1 A⟩) ∘ p1 A one’ by metis_tac[compose_assoc] >>
-‘p2 A one ∘ ⟨id A,to1 A⟩ ∘ p1 A one =
- (p2 A one ∘ ⟨id A,to1 A⟩) ∘ p1 A one’ by metis_tac[compose_assoc,p2_hom]>>
-‘(p2 A one ∘ ⟨id A,to1 A⟩) = to1 A’ by metis_tac[id1,p2_of_pa] >>
-rw[] (* 2 *)
->- metis_tac[idL]
->- (irule to1_unique >> qexists_tac ‘A×one’ >>
-   ‘p2 A one∶A × one → one’ by metis_tac[p2_hom] >>
-   metis_tac[compose_hom])
-QED                      
-*)
 
 Theorem to_p_eq_applied:
 ∀f g X A B. f∶ X → (A×B) ∧ g∶ X → (A × B) ∧
@@ -545,10 +511,7 @@ Proof
 metis_tac[iterated_p_eq]
 QED
 
-(*        
-Theorem iterated_projection:
-*)
-
+        
 Theorem N_ind_z_s_id:
 id N = N_ind z s
 Proof
@@ -667,7 +630,66 @@ Theorem pb_exists:
             (∀A u v. u∶ A → X ∧ v∶ A → Y ∧ f o u = g o v ⇒
              ∃!a. a∶ A → P ∧ p o a = u ∧ q o a = v)
 Proof
-cheat
+rw[] >>
+qexistsl_tac [‘eqo (f o p1 X Y) (g o p2 X Y)’,
+              ‘p1 X Y o (eqa (f o p1 X Y) (g o p2 X Y))’,
+              ‘p2 X Y o (eqa (f o p1 X Y) (g o p2 X Y))’] >>
+‘p1 X Y∶(X×Y)→ X ∧ p2 X Y∶ (X × Y) → Y’ by metis_tac[p1_hom,p2_hom] >>
+‘(f o p1 X Y)∶ (X×Y) → Z ∧  (g o p2 X Y)∶ (X×Y) → Z’ by metis_tac[compose_hom]>>
+‘(eqa (f o p1 X Y) (g o p2 X Y))∶ eqo (f o p1 X Y) (g o p2 X Y) → (X × Y)’
+  by metis_tac[eqa_hom] >>
+‘p1 X Y o (eqa (f o p1 X Y) (g o p2 X Y))∶ eqo (f o p1 X Y) (g o p2 X Y) → X’
+  by metis_tac[compose_hom] >>
+‘(p2 X Y) o (eqa (f o p1 X Y) (g o p2 X Y))∶ eqo (f o p1 X Y) (g o p2 X Y) → Y’
+  by (irule compose_hom >> qexists_tac ‘X × Y’ >> rw[]) >> 
+qabbrev_tac ‘E = eqo (f o p1 X Y) (g o p2 X Y)’ >>
+qabbrev_tac ‘e =  (eqa (f o p1 X Y) (g o p2 X Y))’ >>
+qabbrev_tac ‘e1 = p1 X Y o e’ >>
+qabbrev_tac ‘e2 = p2 X Y o e’ >>
+‘f ∘ e1 = g ∘ e2’
+ by (simp[Abbr‘e1’,Abbr‘e2’] >>
+    ‘(f ∘ p1 X Y) ∘ e = (g ∘ p2 X Y) ∘ e’
+     suffices_by metis_tac[compose_assoc] >>
+    simp[Abbr‘e’] >> metis_tac[eq_equlity]) >>
+simp[] >> rw[] >>
+‘⟨u,v⟩∶ A → (X × Y)’ by metis_tac[pa_hom] >>
+‘(f o p1 X Y) o ⟨u,v⟩ = (g o p2 X Y) o ⟨u,v⟩’
+  by
+   (‘f o p1 X Y o ⟨u,v⟩ = g o p2 X Y o ⟨u,v⟩’
+     suffices_by metis_tac[compose_assoc] >>
+    ‘p1 X Y o ⟨u,v⟩ = u ∧ p2 X Y o ⟨u,v⟩ = v’
+     by metis_tac[p1_of_pa,p2_of_pa] >>
+    simp[]) >>
+drule eq_fac_unique >> rw[] >>
+first_x_assum (qspecl_then [‘X×Y’,‘Z’,‘A’] assume_tac) >>
+‘∀h0. (h0∶A → E ∧ e ∘ h0 = ⟨u,v⟩ ⇔
+       h0 = eq_induce (f ∘ p1 X Y) (g ∘ p2 X Y) ⟨u,v⟩)’
+  by metis_tac[] >> 
+rw[EXISTS_UNIQUE_THM] (* 2 *) 
+>- (qexists_tac ‘eq_induce (f ∘ p1 X Y) (g ∘ p2 X Y) ⟨u,v⟩’ >>
+   ‘eq_induce (f ∘ p1 X Y) (g ∘ p2 X Y) ⟨u,v⟩∶A → E’
+     by
+      (simp[Abbr‘E’] >> metis_tac[eq_induce_hom]) >>
+   simp[Abbr‘e1’,Abbr‘e2’] >> 
+   ‘p1 X Y ∘ e ∘ eq_induce (f ∘ p1 X Y) (g ∘ p2 X Y) ⟨u,v⟩ = u ∧
+    p2 X Y ∘ e ∘ eq_induce (f ∘ p1 X Y) (g ∘ p2 X Y) ⟨u,v⟩ = v’
+    suffices_by metis_tac[compose_assoc] >>
+   ‘p1 X Y ∘ ⟨u,v⟩ = u ∧
+    p2 X Y ∘ ⟨u,v⟩ = v’ suffices_by metis_tac[] >>
+   metis_tac[p1_of_pa,p2_of_pa])
+>- (‘e o a = e o a'’
+     suffices_by
+      (‘is_mono e’ by (simp[Abbr‘e’] >> metis_tac[eqa_is_mono]) >>
+       metis_tac[is_mono_property]) >>
+   ‘e o a∶ A → (X × Y) ∧ e o a'∶ A → (X× Y)’
+    by metis_tac[compose_hom] >>
+   irule to_p_eq_applied >> qexistsl_tac [‘X’,‘Y’,‘A’] >>
+   simp[] >>
+   ‘e1 ∘ a = e1 ∘ a' ∧ e2 ∘ a = e2 ∘ a' ⇒
+    p1 X Y ∘ e ∘ a = p1 X Y ∘ e ∘ a' ∧ p2 X Y ∘ e ∘ a = p2 X Y ∘ e ∘ a'’
+   suffices_by metis_tac[] >>
+   simp[Abbr‘e1’,Abbr‘e2’] >>
+   metis_tac[compose_assoc])
 QED
 
 
