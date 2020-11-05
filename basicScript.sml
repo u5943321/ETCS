@@ -499,7 +499,7 @@ rw[] >>
 ‘p1 (A × B) C ∘ f ∶ X → (A × B) ∧  p1 (A × B) C ∘ g∶ X → (A × B)’
   by metis_tac[p1_hom,compose_hom] >>
 irule to_p_eq_applied >>
-qexistsl_tac [‘A’,‘B’,‘X’] >> rw[] *) cheat
+qexistsl_tac [‘A’,‘B’,‘X’] >> rw[] *) cheat (*need to ask why it is...*)
 QED
 
 Theorem iterated_p_eq_applied:
@@ -623,6 +623,73 @@ is_pb P p q f g <=> cod f = cod g /\ p∶ P → dom f ∧ q∶ P → dom g /\
                       ∃!a. a∶ A → P ∧ p o a = u ∧ q o a = v)
 End
 
+
+Theorem eqa_hom:
+∀A B f g.
+         f∶A → B ∧ g∶A → B ⇒ eqa f g∶eqo f g → A
+Proof
+metis_tac[ax1_5]
+QED
+
+
+Theorem coeqa_hom:
+∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ coeqa f g ∶B → (coeqo f g)
+Proof
+metis_tac[ax1_6]
+QED
+        
+Theorem eq_equlity:
+∀A B f g.
+         f∶A → B ∧ g∶A → B ⇒ f ∘ eqa f g = g ∘ eqa f g
+Proof
+metis_tac[ax1_5]
+QED
+
+Theorem coeq_equlity:
+∀A B f g.
+         f∶A → B ∧ g∶A → B ⇒ coeqa f g  o f = coeqa f g o g
+Proof
+metis_tac[ax1_6]
+QED
+
+
+Theorem coeq_of_equal:
+!f A B. f∶ A → B ==> ?ki. ki∶ coeqo f f → B /\ ki o (coeqa f f) = id B
+Proof
+rw[] >> qexists_tac ‘coeq_induce f f (id B)’  >> rw[] >>
+metis_tac[coeq_induce_hom,id1,coeq_fac]
+QED 
+
+Theorem eqa_is_mono:
+∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ is_mono (eqa f g)
+Proof
+rw[] >> irule is_mono_applied >> qexistsl_tac [‘eqo f g’,‘A’] >>
+‘eqa f g∶eqo f g → A’ by metis_tac[eqa_hom] >>
+rw[] >>
+‘f o eqa f g ∘ f' = (f o eqa f g) ∘ f'’ by metis_tac[compose_assoc] >>
+‘f ∘ eqa f g = g ∘ eqa f g’ by metis_tac[eq_equlity] >>
+‘(f o eqa f g) ∘ f' = (g o eqa f g) ∘ f'’ by metis_tac[] >>
+‘(g o eqa f g) ∘ f' = g o eqa f g ∘ f'’ by metis_tac[compose_assoc] >>
+‘f o eqa f g ∘ f' = g o eqa f g ∘ f'’ by metis_tac[] >>
+‘eqa f g o f'∶ X → A’ by metis_tac[compose_hom] >>
+‘∀x0. x0∶X → eqo f g ∧ eqa f g ∘ x0 = eqa f g o f' ⇔
+      x0 = eq_induce f g (eqa f g o f')’ by metis_tac[ax1_5] >>
+metis_tac[]
+QED
+
+Theorem coeqa_is_epi:
+∀A B f g. f∶ A → B ∧ g∶ A → B ⇒ is_epi (coeqa f g)
+Proof
+rw[] >> irule is_epi_applied >> qexistsl_tac [‘B’,‘coeqo f g’] >>
+‘coeqa f g∶B → coeqo f g’ by metis_tac[coeqa_hom] >> rw[] >>
+‘coeqa f g ∘ f = coeqa f g ∘ g’ by metis_tac[coeq_equlity] >>
+‘f' o coeqa f g ∘ f = f' o coeqa f g ∘ g’ by metis_tac[] >>
+‘(f' o coeqa f g) ∘ f = (f' o coeqa f g) ∘ g’ by metis_tac[o_bracket_left] >>
+‘(f' ∘ coeqa f g)∶ B → X’ by metis_tac[compose_hom] >>
+‘∀x0. x0∶coeqo f g → X ∧ x0 ∘ coeqa f g = (f' ∘ coeqa f g) ⇔
+      x0 = coeq_induce f g (f' ∘ coeqa f g)’ by metis_tac[ax1_6] >>
+metis_tac[]      
+QED
         
 
 Theorem pb_exists:
@@ -730,7 +797,7 @@ metis_tac[]
 QED                
 
 (*behaviour of metis weird in above thm*)
-
+(*
 Theorem eqa_hom:
 ∀A B f g.
          f∶A → B ∧ g∶A → B ⇒ eqa f g∶eqo f g → A
@@ -796,7 +863,9 @@ rw[] >> irule is_epi_applied >> qexistsl_tac [‘B’,‘coeqo f g’] >>
 ‘∀x0. x0∶coeqo f g → X ∧ x0 ∘ coeqa f g = (f' ∘ coeqa f g) ⇔
       x0 = coeq_induce f g (f' ∘ coeqa f g)’ by metis_tac[ax1_6] >>
 metis_tac[]      
-QED         
+QED
+
+*)        
         
 Theorem non_zero_pinv:
 ∀A B f. f∶ A → B ∧ ¬(A ≅ zero) ⇒ ∃g. g∶B → A ∧ f ∘ g ∘ f = f
@@ -987,6 +1056,27 @@ rw[] (*2  *)
 >- (qexistsl_tac [‘A’,‘B’,‘one + one’] >> simp[] >> metis_tac[compose_hom])
 QED
 
+Theorem zero_no_mem:
+∀f. ¬(f∶ one → zero)
+Proof
+rw[] >> SPOSE_NOT_THEN ASSUME_TAC >>
+‘∀X f g. f∶ one → X ∧ g∶ one → X ⇒ f = g’ suffices_by metis_tac[ax8] >>
+rw[] >>
+‘f o to1 zero = id zero’
+  by (irule from0_unique >> qexists_tac ‘zero’ >>
+     metis_tac[ax1_1,compose_hom,id1]) >>
+‘to1 zero o f = id one’
+  by (irule to1_unique >> qexists_tac ‘one’ >>
+     metis_tac[ax1_1,compose_hom,id1]) >>
+‘is_iso (to1 zero)’ by metis_tac[is_iso_thm,ax1_1] >>
+‘f' o (to1 zero) = g o (to1 zero)’
+ by (irule from0_unique >> qexists_tac‘X’ >>
+    ‘to1 zero∶ zero → one’ by metis_tac[ax1_1] >>
+     metis_tac[compose_hom]) >>
+‘to1 zero∶ zero → one’ by metis_tac[ax1_1] >>     
+metis_tac[o_iso_eq_eq]
+QED                
+
 
 Theorem iso_zero_no_mem:
 ∀A. A≅ zero ⇒ ¬(∃x. x∶ one → A)
@@ -1032,7 +1122,7 @@ QED
 
 
 
-        
+        (*
 Theorem zero_no_mem:
 ∀f. ¬(f∶ one → zero)
 Proof
@@ -1053,7 +1143,7 @@ rw[] >>
 ‘to1 zero∶ zero → one’ by metis_tac[ax1_1] >>     
 metis_tac[o_iso_eq_eq]
 QED        
-
+*)
 
 Theorem not_to_zero:
 ∀f A. f∶ A → zero ⇒ A ≅ zero
