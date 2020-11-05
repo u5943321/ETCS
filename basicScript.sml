@@ -1,3 +1,35 @@
+Theorem compose_assoc_4_3_left:
+∀A B X Y Z f1 f2 f3 f4.
+  f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ⇒
+  (f4 ∘ f3 ∘ f2) ∘ f1 = f4 ∘ f3 ∘ f2 ∘ f1
+Proof
+rw[] >>
+‘f2 o f1∶ X → Z’ by metis_tac[compose_hom] >>
+‘f4 ∘ f3 ∘ (f2 ∘ f1) = (f4 ∘ f3) ∘ f2 ∘ f1’
+ by metis_tac[compose_assoc] >>
+‘f4 o f3∶ Z → B’ by metis_tac[compose_hom] >>
+‘(f4 ∘ f3) ∘ f2 ∘ f1 = ((f4 ∘ f3) ∘ f2) ∘ f1’
+ by metis_tac[compose_assoc] >>
+
+  
+
+
+
+
+Theorem compose_assoc_4_2_left:
+∀A B X Y Z f1 f2 f3 f4.
+  f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ⇒
+  (f4 o f3) o f2 o f1 = f4 o f3 o f2 o f1
+Proof
+rw[] >>
+‘f4 o f3∶ Z → B’ by metis_tac[compose_hom] >> 
+‘(f4 ∘ f3) ∘ f2 ∘ f1 = ((f4 ∘ f3) ∘ f2) ∘ f1’
+ by metis_tac[compose_assoc,compose_hom] >>
+‘((f4 ∘ f3) ∘ f2)  = f4 o f3 o f2’ by metis_tac[compose_assoc] >>
+rw[] >> 
+
+
+
 Theorem o_bracket_left:
 ∀X Y Z A a b c d f g.
  f o b o a = g o d o c ∧ a∶ X → Y ∧ c∶ X → Y ∧ b∶ Y → Z ∧ d∶ Y → Z ∧

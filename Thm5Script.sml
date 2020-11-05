@@ -160,7 +160,7 @@ rename [‘x'∶ one → X'’] >>
        by metis_tac[i1_hom,compose_assoc] >>
       ‘(copa a a' ∘ i1 A A') = a’ by metis_tac[i1_of_copa] >>
       metis_tac[])
-   >- ‘∃phi.
+   >- (‘∃phi.
           phi∶X → one + one ∧ phi ∘ b = i2 one one ∧
           phi ∘ a = i1 one one ∘ to1 A’ by metis_tac[Thm5_lemma_1] >>
       ‘∃b0'. b0'∶ one → A' ∧ a' o b0' = b’
@@ -181,8 +181,26 @@ rename [‘x'∶ one → X'’] >>
         by cheat >>
       qexists_tac ‘q o xp’ >>
       ‘q o xp∶ one → A'’ by metis_tac[compose_hom] >> simp[] >>
-      
-                                                         
+      ‘p1 X (exp X two) o ⟨p1 X L, μ o p2 X L⟩ = p1 X L’
+        by metis_tac[p1_of_pa] >>
+      ‘(p1 X (exp X two)) o ⟨b,phi0⟩ = b’ by metis_tac[p1_of_pa] >>
+      ‘a' ∘ q ∘ xp = (p1 X (exp X two)) o ⟨b,phi0⟩’ suffices_by metis_tac[]>>
+      ‘a' ∘ q ∘ xp  = (a' ∘ q) ∘ xp’ by metis_tac[compose_assoc] >>
+      ‘p1 X L ∘ k o xp =
+       (p1 X (exp X two)) o ⟨b,phi0⟩’ suffices_by metis_tac[compose_assoc] >>
+      ‘(p1 X (exp X two) o ⟨p1 X L, μ o p2 X L⟩) o k o xp
+        = (p1 X (exp X two)) o ⟨b,phi0⟩’
+        suffices_by metis_tac[] >>
+      ‘(p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘ k ∘ xp =
+       p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘ k ∘ xp’
+        by (irule compose_assoc_4_2_left >>
+           qexists_tac ‘X × (exp X two)’ >>
+           qexists_tac ‘X’ >>
+           qexists_tac ‘one’ >>
+           qexists_tac ‘σ’ >>
+           qexists_tac ‘X × L’ >> rw[]) >>
+      rw[])
+QED               
              
 
                     
