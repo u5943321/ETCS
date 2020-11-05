@@ -171,8 +171,18 @@ rename [‘x'∶ one → X'’] >>
            (copa a a' ∘ i2 A A') ∘ b0'’ by metis_tac[compose_assoc] >>
           ‘(copa a a' ∘ i2 A A') = a'’ by metis_tac[i2_of_copa] >>
           metis_tac[]
-          ) >> 
-                                                          
+          ) >>
+      ‘p1 X one∶ (X× one) → X’ by metis_tac[p1_hom] >>
+      ‘phi o (p1 X one)∶ (X × one) → (one + one)’ by metis_tac[compose_hom]
+      qabbrev_tac ‘phi0 = tp (phi o p1 X one)’ >>
+      ‘phi0∶ one → exp X two’
+       by (simp[Abbr‘two’,Abbr‘phi0’] >> metis_tac[tp_hom]) >>
+      ‘∃xp. xp∶ one → σ ∧ ⟨p1 X L,μ o p2 X L⟩ o k o xp = ⟨b, phi0⟩’
+        by cheat >>
+      qexists_tac ‘q o xp’ >>
+      ‘q o xp∶ one → A'’ by metis_tac[compose_hom] >> simp[] >>
+      
+                                                         
              
 
                     
