@@ -10,8 +10,8 @@ rw[] >>
 ‘f4 o f3∶ Z → B’ by metis_tac[compose_hom] >>
 ‘(f4 ∘ f3) ∘ f2 ∘ f1 = ((f4 ∘ f3) ∘ f2) ∘ f1’
  by metis_tac[compose_assoc] >>
-
-  
+metis_tac[compose_assoc]
+QED  
 
 
 
@@ -27,8 +27,8 @@ rw[] >>
  by metis_tac[compose_assoc,compose_hom] >>
 ‘((f4 ∘ f3) ∘ f2)  = f4 o f3 o f2’ by metis_tac[compose_assoc] >>
 rw[] >> 
-
-
+metis_tac[compose_assoc_4_3_left]
+QED
 
 Theorem o_bracket_left:
 ∀X Y Z A a b c d f g.
@@ -1241,3 +1241,7 @@ Theorem one_ne_zero:
 Proof
 cheat
 QED
+
+Theorem tp_element_ev:
+∀X Y f x. f∶ X→ Y ∧ x∶ one→ X ⇒
+          ev X Y o ⟨x, tp (f o p1 X one)⟩ = 

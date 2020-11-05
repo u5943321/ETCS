@@ -235,10 +235,59 @@ rename [‘x'∶ one → X'’] >>
                ‘to1 A o p1 A one = to1 (A × one)’ by cheat >>
                rw[]) >> 
                
-          ‘∃phi0'. phi0'∶ one → L ∧ μ o phi0' = tp (phi o p1 X one)’ by cheat >>
+          ‘∃phi0'. phi0'∶ one → L ∧ μ o phi0' = tp (phi o p1 X one)’
+           by (simp[Abbr‘L’,Abbr‘μ’] >>
+              qexists_tac ‘eq_induce a2 (j0 ∘ to1 (exp X two)) phi0’ >>
+              rw[] (* 2 *)
+              >- metis_tac[eq_induce_hom]
+              >- metis_tac[eq_fac]) >>
           ‘⟨b,phi0'⟩∶ one → (X × L)’ by metis_tac[pa_hom] >> 
           ‘ub o ⟨b,phi0'⟩ = (i2 one one ∘ to1 (X × L)) o ⟨b,phi0'⟩’
-            by cheat  >>
+            by
+             (‘(i2 one one ∘ to1 (X × L)) o ⟨b,phi0'⟩ =
+               i2 one one ∘ to1 (X × L) o ⟨b,phi0'⟩’
+                by metis_tac[compose_assoc] >>
+              ‘to1 (X × L) o ⟨b,phi0'⟩ = id one’
+               by metis_tac[id1,to1_unique,compose_hom] >>
+              ‘ub ∘ ⟨b,phi0'⟩ = i2 one one’ suffices_by metis_tac[idR] >>
+              simp[Abbr‘ub’] >>
+              ‘(ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘ ⟨b,phi0'⟩ =
+               ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘ ⟨b,phi0'⟩’
+                by metis_tac[compose_assoc] >>
+              rw[] >>
+              ‘⟨p1 X L,μ ∘ p2 X L⟩ ∘ ⟨b,phi0'⟩∶ one → (X× (exp X two))’
+                by metis_tac[compose_hom] >>
+              ‘⟨b, μ o phi0'⟩∶  one → (X× (exp X two))’ by metis_tac[pa_hom] >>
+              ‘⟨p1 X L,μ ∘ p2 X L⟩ ∘ ⟨b,phi0'⟩ =
+               ⟨b, μ o phi0'⟩’
+                by (irule to_p_eq_applied >>
+                   qexistsl_tac [‘X’,‘exp X two’,‘one’] >> simp[] >>
+                   ‘p1 X (exp X two) ∘ ⟨b,phi0⟩ = b ∧
+                    p2 X (exp X two) ∘ ⟨b,phi0⟩ = phi0’
+                    by metis_tac[p1_of_pa,p2_of_pa] >>
+                   simp[] >>
+                   ‘p1 X (exp X two)∶ (X× (exp X two)) → X ∧
+                    p2 X (exp X two)∶ (X× (exp X two)) → (exp X two)’
+                    by metis_tac[p1_hom,p2_hom] >>
+                   ‘p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘ ⟨b,phi0'⟩ =
+                    (p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘ ⟨b,phi0'⟩ ∧
+                    p2 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘ ⟨b,phi0'⟩ =
+                    (p2 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘ ⟨b,phi0'⟩’
+                    by metis_tac[compose_assoc] >>
+                   simp[] >>
+                   ‘(p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) = p1 X L ∧
+                    (p2 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) = μ ∘ p2 X L’
+                    by metis_tac[p1_of_pa,p2_of_pa] >>
+                   simp[] >>
+                   ‘(μ ∘ p2 X L) ∘ ⟨b,phi0'⟩ = μ ∘ p2 X L ∘ ⟨b,phi0'⟩’
+                    by metis_tac[compose_assoc] >>
+                   ‘p2 X L ∘ ⟨b,phi0'⟩ = phi0'’ by metis_tac[p2_of_pa] >>
+                   simp[] >> metis_tac[p1_of_pa])
+                >>
+              rw[] >>
+              ‘ev X two ∘ ⟨b,phi0⟩  = phi o b’ suffices_by metis_tac[] >>
+              simp[Abbr‘phi0’] >>
+              metis_tac[tp_element_ev])  >>
           ‘∃bp0. bp0∶ one → σ ∧ k o bp0 = ⟨b,phi0'⟩’
            by (simp[Abbr‘σ’,Abbr‘k’] >>
               qexists_tac ‘eq_induce ub (i2 one one ∘ to1 (X × L)) ⟨b,phi0'⟩’ >>
