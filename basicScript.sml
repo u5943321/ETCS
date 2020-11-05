@@ -1193,3 +1193,11 @@ Cases_on ‘B≅ zero’ (* 2 *)
 ‘∃g. g∶B → A ∧ a ∘ g ∘ a = a’ by metis_tac[ax5,ax6] >>
 qexists_tac ‘g’ >> rw[] >> metis_tac[epi_pinv_pre_inv,mono_pinv_post_inv])
 QED
+
+Theorem to_copa_fac:
+∀x A B.
+         x∶one → A + B ⇒
+         ∃x0. x0∶ one → A ∧ (i1 A B) o x0 = x ∨
+         ∃x0. x0∶ one → B ∧ (i2 A B) o x0 = x
+Proof
+         

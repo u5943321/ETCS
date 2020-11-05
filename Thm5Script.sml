@@ -67,27 +67,28 @@ qabbrev_tac ‘σ = eqo ub ((i2 one one) o to1 (X × L))’ >>
   by cheat (*mono_epi_fac*) >>
 qexistsl_tac [‘A'’,‘a'’] >> simp[] >>
 irule mono_epi_is_iso >>
-reverse (strip_tac) (* 2 *)
-‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → X ∧ a o x0 = x) ⇒
+‘copa a a'∶ (A + A') → X’ by metis_tac[copa_hom] >>
+‘i1 A A'∶ A → (A + A') ∧ i2 A A'∶ A' → (A + A')’
+ by metis_tac[i1_hom,i2_hom] >> 
+reverse (strip_tac) (* 2 *) >-
+‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → A ∧ a o x0 = x) ⇒
     ∀t. t∶ one → exp X two ∧
         (∃t0. t0∶ one → L ∧ μ o t0 = t) ⇒
         ev X two o ⟨x,t⟩ = i2 one one’ by cheat >>
-‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → X ∧ a' o x0 = x) ⇒
+‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → A' ∧ a' o x0 = x) ⇒
      ∃t. t∶ one → exp X two ∧
         (∃t0. t0∶ one → L ∧ μ o t0 = t) ∧
         ev X two o ⟨x,t⟩ = i1 one one’ by cheat >>
 ‘∀x. x∶ one → X ⇒ ¬((∃x0. x0∶ one → A ∧ a o x0 = x) ∧
                     (∃x0. x0∶ one → A' ∧ a' o x0 = x))’
-  by rpt strip_tac >> 
-
-metis_tac[i1_ne_i2] >>
+  by metis_tac[i1_ne_i2] >>
 ‘∀Q. q1∶ Q → A + A' ∧ q2∶ Q → A + A' ∧
            ¬(Q ≅ zero) ∧
            (copa a a' o q1 = copa a a' o q2) ⇒
            ¬(∃q1' q2'. q1'∶ Q → A ∧ q2'∶ Q → A' ∧
              i1 A A' o q1' = q1 ∧
              i2 A A' o q2' = q2)’
- by rpt strip_tac >>
+ by (rpt strip_tac >>
     ‘∃q0. q0∶ one → Q’ by metis_tac[ax6] >>
     ‘a o q1' o q0∶ one → X ∧
     (∃x0. x0∶one → A ∧ a ∘ x0 = a o q1' o q0) ∧
@@ -96,7 +97,21 @@ metis_tac[i1_ne_i2] >>
     ‘a ∘ q1' ∘ q0∶one → X’ by metis_tac[compose_hom]>>
     rpt strip_tac (* 3 *)
     >- simp[]
-    >- qexists_tac ‘q1' ∘ q0’ >> metis_tac[compose_hom]
+    >- (qexists_tac ‘q1' ∘ q0’ >> metis_tac[compose_hom])
+    >- (qexists_tac ‘q2' ∘ q0’ >>
+       ‘q2' ∘ q0∶one → A'’ by metis_tac[compose_hom] >>
+       simp[] >>
+       ‘a' ∘ q2' = a ∘ q1'’
+        suffices_by metis_tac[compose_assoc] >>
+       ‘a = copa a a' o (i1 A A') ∧
+        a' = copa a a' o (i2 A A')’
+        by metis_tac[i1_of_copa,i2_of_copa] >>
+        ‘copa a a' ∘ i1 A A' o q1' =
+         copa a a' ∘ i2 A A' o q2'’
+         suffices_by metis_tac[compose_assoc] >>
+        metis_tac[])) >>
+irule is_mono_applied >> qexistsl_tac [‘A+A'’,‘X’] >>
+simp[] >> rpt strip_tac >> 
     
              
 
