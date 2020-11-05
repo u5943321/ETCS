@@ -1200,4 +1200,12 @@ Theorem to_copa_fac:
          ∃x0. x0∶ one → A ∧ (i1 A B) o x0 = x ∨
          ∃x0. x0∶ one → B ∧ (i2 A B) o x0 = x
 Proof
-         
+rw[] >> drule ax7 >> rw[is_mem_def] >>
+metis_tac[hom_def,i1_hom,i2_hom]
+QED
+
+Theorem one_ne_zero:
+¬(one ≅ zero)
+Proof
+cheat
+QED

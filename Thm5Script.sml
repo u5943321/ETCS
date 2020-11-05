@@ -82,7 +82,7 @@ reverse (strip_tac) (* 2 *) >-
 ‘∀x. x∶ one → X ⇒ ¬((∃x0. x0∶ one → A ∧ a o x0 = x) ∧
                     (∃x0. x0∶ one → A' ∧ a' o x0 = x))’
   by metis_tac[i1_ne_i2] >>
-‘∀Q. q1∶ Q → A + A' ∧ q2∶ Q → A + A' ∧
+‘∀Q q1 q2. q1∶ Q → A + A' ∧ q2∶ Q → A + A' ∧
            ¬(Q ≅ zero) ∧
            (copa a a' o q1 = copa a a' o q2) ⇒
            ¬(∃q1' q2'. q1'∶ Q → A ∧ q2'∶ Q → A' ∧
@@ -111,8 +111,68 @@ reverse (strip_tac) (* 2 *) >-
          suffices_by metis_tac[compose_assoc] >>
         metis_tac[])) >>
 irule is_mono_applied >> qexistsl_tac [‘A+A'’,‘X’] >>
-simp[] >> rpt strip_tac >> 
-    
+simp[] >> rpt strip_tac >>
+irule fun_ext >> qexistsl_tac [‘X'’,‘A + A'’] >> rw[] >>
+rename [‘x'∶ one → X'’] >>
+‘f o x'∶ one → A + A' ∧ g o x'∶ one → A + A'’
+ by metis_tac[compose_hom] >> 
+‘∃f0. f0∶ one → A ∧ (i1 A A') o f0 = f o x' ∨
+ ∃f0. f0∶ one → A' ∧ (i2 A A') o f0 = f o x'’ by metis_tac[to_copa_fac] (* 2 *)
+>- (‘∃g0. g0∶ one → A ∧ (i1 A A') o g0 = g o x' ∨
+    ∃g0. g0∶ one → A' ∧ (i2 A A') o g0 = g o x'’ by metis_tac[to_copa_fac] (* 2 *)
+    >- (‘i1 A A' ∘ f0 = i1 A A' ∘ g0’ suffices_by metis_tac[] >>
+       ‘f0 = g0’ suffices_by metis_tac[] >>
+       ‘a o f0 = a o g0’
+         suffices_by metis_tac[is_mono_property] >>
+       ‘copa a a' o i1 A A' o f0 = copa a a' o i1 A A' o g0’
+         suffices_by metis_tac[copa_hom,i1_of_copa,i2_of_copa,compose_assoc]>>
+       ‘copa a a' ∘ f o x' = copa a a' ∘ g o x'’ by metis_tac[compose_assoc] >>
+       metis_tac[])
+    >- (first_x_assum (qspecl_then [‘one’,‘f o x'’,‘g o x'’] assume_tac) >>
+       ‘¬(one ≅ zero)’ by metis_tac[one_ne_zero] >>
+       ‘copa a a' ∘ f ∘ x' = copa a a' ∘ g ∘ x'’ by metis_tac[compose_assoc]>>
+       ‘∃q1' q2'.
+            q1'∶one → A ∧ q2'∶one → A' ∧ i1 A A' ∘ q1' = f ∘ x' ∧
+            i2 A A' ∘ q2' = g ∘ x'’ suffices_by metis_tac[] >>
+       qexistsl_tac [‘f0’,‘g0’] >> metis_tac[]))
+>- (‘∃g0. g0∶ one → A ∧ (i1 A A') o g0 = g o x' ∨
+    ∃g0. g0∶ one → A' ∧ (i2 A A') o g0 = g o x'’ by metis_tac[to_copa_fac] (* 2 *)     >- (first_x_assum (qspecl_then [‘one’,‘g o x'’,‘f o x'’] assume_tac) >>
+       ‘¬(one ≅ zero)’ by metis_tac[one_ne_zero] >>
+       ‘copa a a' ∘ f ∘ x' = copa a a' ∘ g ∘ x'’ by metis_tac[compose_assoc]>>
+       ‘∃q1' q2'.
+            q1'∶one → A ∧ q2'∶one → A' ∧ i1 A A' ∘ q1' = g ∘ x' ∧
+            i2 A A' ∘ q2' = f ∘ x'’ suffices_by metis_tac[] >>
+       qexistsl_tac [‘f0'’,‘g0’] >> metis_tac[])
+    >- (‘i2 A A' ∘ f0' = i2 A A' ∘ g0'’ suffices_by metis_tac[] >>
+       ‘f0' = g0'’ suffices_by metis_tac[] >>
+       ‘a' o f0' = a' o g0'’
+         suffices_by metis_tac[is_mono_property] >>
+       ‘copa a a' o i2 A A' o f0' = copa a a' o i2 A A' o g0'’
+         suffices_by metis_tac[copa_hom,i1_of_copa,i2_of_copa,compose_assoc]>>
+       metis_tac[compose_assoc] >>
+       ))
+>- irule surj_is_epi >> qexistsl_tac [‘A + A'’,‘X’] >> simp[] >> rw[] >>
+   Cases_on ‘∃b0. b0∶ one → A ∧ a o b0 = b’ (* 2 *)
+   >- (fs[] >> qexists_tac ‘i1 A A' o b0’ >>
+      ‘i1 A A' ∘ b0∶one → A + A'’ by metis_tac[compose_hom,i1_hom] >>
+      simp[] >> 
+      ‘copa a a' ∘ i1 A A' ∘ b0 = (copa a a' ∘ i1 A A') ∘ b0’
+       by metis_tac[i1_hom,compose_assoc] >>
+      ‘(copa a a' ∘ i1 A A') = a’ by metis_tac[i1_of_copa] >>
+      metis_tac[])
+   >- ‘∃phi.
+          phi∶X → one + one ∧ phi ∘ b = i2 one one ∧
+          phi ∘ a = i1 one one ∘ to1 A’ by metis_tac[Thm5_lemma_1] >>
+      ‘∃b0'. b0'∶ one → A' ∧ a' o b0' = b’
+        suffices_by
+         (rw[] >> qexists_tac ‘i2 A A' o b0'’ >>
+          ‘i2 A A' ∘ b0'∶one → A + A'’ by metis_tac[compose_hom] >>
+          ‘copa a a' ∘ i2 A A' ∘ b0' =
+           (copa a a' ∘ i2 A A') ∘ b0'’ by metis_tac[compose_assoc] >>
+          ‘(copa a a' ∘ i2 A A') = a'’ by metis_tac[i2_of_copa] >>
+          metis_tac[]
+          ) >> 
+                                                          
              
 
                     
