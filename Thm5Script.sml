@@ -5,7 +5,38 @@ Theorem Thm5_lemma_1:
                 phi o x = i2 one one ∧
                 phi o a = (i1 one one) o (to1 A)
 Proof
-cheat
+rw[] >>
+‘¬((A + one) ≅ zero)’ by metis_tac[i2_hom,iso_zero_no_mem] >>
+‘∃a1. a1∶ one → A + one’ by metis_tac[ax6] >>
+‘copa a x∶ (A + one) → X’ by metis_tac[copa_hom] >>
+‘∃u. u∶ X → (A + one) ∧ copa a x o u o copa a x = copa a x’ by metis_tac[ax5] >>
+qabbrev_tac ‘ta = copa ((i1 one one) o (to1 A)) (i2 one one)’ >>
+qexists_tac ‘ta o u’ >>
+‘(i2 one one)∶ one → one + one’ by metis_tac[i2_hom] >>
+‘(i1 one one)∶ one → one + one’ by metis_tac[i1_hom] >>
+‘to1 A∶ A → one’ by metis_tac[ax1_1] >>
+‘(i1 one one ∘ to1 A)∶ A → one + one’ by metis_tac[compose_hom] >> 
+‘ta∶ (A + one) → one + one’ by (simp[Abbr‘ta’] >> metis_tac[copa_hom]) >>
+‘ta ∘ u∶X → one + one’ by metis_tac[compose_hom] >> simp[] >>
+‘is_mono (copa a x)’ by cheat (*maybe a lemma later*) >>
+‘u ∘ copa a x = id (A + one)’ by metis_tac[mono_pinv_post_inv] >>
+‘x = copa a x o i2 A one’ by metis_tac[i2_of_copa] >>
+‘a = copa a x o i1 A one’ by metis_tac[i1_of_copa] >> 
+‘(ta ∘ u) ∘ copa a x ∘ i2 A one = i2 one one ∧
+ (ta ∘ u) ∘ copa a x ∘ i1 A one = i1 one one ∘ to1 A’ suffices_by metis_tac[] >>
+‘i1 A one∶ A → (A + one) ∧ i2 A one∶ one → (A + one)’ by metis_tac[i1_hom,i2_hom]>>
+‘(ta ∘ u) ∘ copa a x ∘ i2 A one = ta ∘ u ∘ copa a x ∘ i2 A one’
+  by metis_tac[compose_assoc_4_2_left] >>
+‘u ∘ copa a x ∘ i2 A one = (u ∘ copa a x) ∘ i2 A one’ by metis_tac[compose_assoc]>>
+simp[] >>
+‘(ta ∘ u) ∘ copa a x ∘ i1 A one = ta ∘ u ∘ copa a x ∘ i1 A one’
+  by metis_tac[compose_assoc_4_2_left] >>
+‘u ∘ copa a x ∘ i1 A one = (u ∘ copa a x) ∘ i1 A one’ by metis_tac[compose_assoc]>>
+simp[] >>
+‘ta ∘ id (A + one) ∘ i2 A one = ta ∘ i2 A one ∧
+ ta ∘ id (A + one) ∘ i1 A one = ta ∘ i1 A one’
+  by metis_tac[id1,idL,idR,compose_assoc] >> simp[] >>
+simp[Abbr‘ta’] >> metis_tac[i1_of_copa,i2_of_copa]
 QED                
 
 
