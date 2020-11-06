@@ -1,3 +1,9 @@
+open ETCSaxiomTheory;
+open HolKernel Parse boolLib bossLib;
+
+val _ = new_theory "basic"
+
+
 Theorem compose_assoc_4_3_left:
 ∀A B X Y Z f1 f2 f3 f4.
   f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ⇒
@@ -493,18 +499,17 @@ Theorem parallel_p_one_side:
              ⟨p1 A B,g o f o p2 A B⟩ =
              ⟨p1 A C, g o p2 A C⟩ o ⟨p1 A B, f o p2 A B⟩
 Proof
-(*
-rw[] >> 
+rw[] >>
 ‘(id A)∶A → A ∧ f∶B → C ∧ id A∶ A → A ∧ g∶ C → D ⇒
    ⟨(id A) ∘ p1 A C, g ∘ p2 A C⟩ ∘ ⟨id A ∘ p1 A B, f ∘ p2 A B⟩ =
    ⟨(id A) ∘ (id A) ∘ p1 A B,g ∘ f ∘ p2 A B⟩’
-  by (metis_tac[parallel_p_compose]) >>
+  by metis_tac[parallel_p_compose] >>
 fs[] >>
 ‘p1 A B∶ A × B → A’ by metis_tac[p1_hom] >>
 ‘id A ∘ id A ∘ p1 A B = p1 A B’ by metis_tac[idL,compose_hom,compose_assoc] >>
 fs[] >>
 ‘id A ∘ p1 A B = p1 A B ∧ id A o p1 A C = p1 A C’ by metis_tac[idL,p1_hom] >>
-fs[] why line by line okay...*) cheat
+fs[]
 QED
 
 Theorem parallel_p_one_side':
@@ -513,10 +518,9 @@ Theorem parallel_p_one_side':
              ⟨p1 A C, g o p2 A C⟩ o ⟨p1 A B, f o p2 A B⟩
 Proof
 rw[] >>
-‘(g o f) o p2 A B = g o f o p2 A B’ suffices_by metis_tac[parallel_p_one_side]>>
-metis_tac[p2_hom,compose_assoc]
-QED                                  
-                      
+‘(g o f) o p2 A B = g o f o p2 A B’ suffices_by metis_tac[parallel_p_one_side]>> metis_tac[p2_hom,compose_assoc]
+QED
+
 Theorem iterated_p_eq:
 ∀X A B C f g. f∶X → ((A×B)×C) ∧ g∶X → ((A×B)×C) ⇒
               (f = g ⇔
@@ -524,14 +528,13 @@ Theorem iterated_p_eq:
               (p2 A B) o (p1 (A×B) C) o f =  (p2 A B) o (p1 (A×B) C) o g ∧
               (p2 (A×B) C) o f = (p2 (A×B) C) o g)
 Proof
-(*
 rw[EQ_IMP_THM] >> irule to_p_eq_applied >>
 qexists_tac ‘A × B’ >> qexists_tac ‘C’ >> qexists_tac ‘X’ (*???*) >>
 rw[] >>
 ‘p1 (A × B) C ∘ f ∶ X → (A × B) ∧  p1 (A × B) C ∘ g∶ X → (A × B)’
   by metis_tac[p1_hom,compose_hom] >>
 irule to_p_eq_applied >>
-qexistsl_tac [‘A’,‘B’,‘X’] >> rw[] *) cheat (*need to ask why it is...*)
+qexistsl_tac [‘A’,‘B’,‘X’] >> rw[]
 QED
 
 Theorem iterated_p_eq_applied:
@@ -729,6 +732,7 @@ Theorem pb_exists:
             (∀A u v. u∶ A → X ∧ v∶ A → Y ∧ f o u = g o v ⇒
              ∃!a. a∶ A → P ∧ p o a = u ∧ q o a = v)
 Proof
+(*
 rw[] >>
 qexistsl_tac [‘eqo (f o p1 X Y) (g o p2 X Y)’,
               ‘p1 X Y o (eqa (f o p1 X Y) (g o p2 X Y))’,
@@ -789,9 +793,24 @@ rw[EXISTS_UNIQUE_THM] (* 2 *)
    suffices_by metis_tac[] >>
    simp[Abbr‘e1’,Abbr‘e2’] >>
    metis_tac[compose_assoc])
+   *) cheat
 QED
 
+Theorem pb_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] pb_exists        
 
+
+val pb_def = new_specification ("pb_def",["pbo","pb1","pb2"],pb_exists_thm)
+        (*
+Theorem test:
+!A. ?B. A = B
+Proof
+simp[]
+QED
+
+Theorem test' = SIMP_RULE bool_ss [SKOLEM_THM] test        
+
+val test_def = new_specification ("test_def",["test"],test')       
+*)
 
 Theorem pb_fac_exists:
 ∀X Y Z f g. g∶ Y → Z ∧  f∶ X → Z  ⇒ ∃P p q. p∶ P → X ∧ q∶ P → Y ∧ f o p = g o q ∧
@@ -1305,3 +1324,5 @@ rename [‘x'∶ one → X'’] >>
     >- (‘f0' = g0'’ by metis_tac[to1_unique] >>
         metis_tac[]))
 QED
+
+val _ = export_theory();

@@ -55,8 +55,7 @@ qabbrev_tac ‘j0 = tp ((i1 one one) o to1 (A× one))’ >>
   by (simp[Abbr‘j0’] >> metis_tac[tp_hom]) >>
 ‘to1 (exp X (one + one))∶ (exp X (one + one)) → one’
   by metis_tac[ax1_1] >>
-‘j0 o to1 (exp X (one + one))∶ (exp X (one + one)) → exp A (one + one)’
-  by metis_tac[compose_hom] >>
+‘j0 o to1 (exp X (one + one))∶ (exp X (one + one)) → exp A (one + one)’ by metis_tac[compose_hom] >>
 ‘ev X (one + one)∶ (X × (exp X (one + one))) → (one + one)’
   by metis_tac[ev_hom] >>
 qabbrev_tac ‘two = one + one’ >>
@@ -102,14 +101,66 @@ irule mono_epi_is_iso >>
 ‘i1 A A'∶ A → (A + A') ∧ i2 A A'∶ A' → (A + A')’
  by metis_tac[i1_hom,i2_hom] >> 
 reverse (strip_tac) (* 2 *) >-
+‘(j0 o (to1 (exp X two))) o μ = a2 o μ’
+    by (simp[Abbr‘μ’] >> metis_tac[eq_equlity]) >>
+‘(ev X two) o ⟨a o p1 A (exp X two), p2 A (exp X two)⟩ =
+ (ev A two) o ⟨p1 A (exp X two), a2 o p2 A (exp X two)⟩’
+ by
+  (simp[Abbr‘a2’] >> metis_tac[ev_of_tp])
+‘(ev X two) o ⟨a o p1 A (exp X two), p2 A (exp X two)⟩ o
+ ⟨p1 A L, μ o p2 A L⟩ =
+ (ev A two) o ⟨p1 A (exp X two), a2 o p2 A (exp X two)⟩ o
+ ⟨p1 A L, μ o p2 A L⟩’
+ by cheat (* lemma later *) >>
+‘⟨p1 A (exp X two),a2 ∘ p2 A (exp X two)⟩ ∘ ⟨p1 A L,μ ∘ p2 A L⟩ =
+ ⟨p1 A L, a2 o μ o p2 A L⟩’ by cheat >>
+‘a2 o μ∶ L → exp A two’ by metis_tac[compose_hom] >>
 ‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → A ∧ a o x0 = x) ⇒
     ∀t. t∶ one → exp X two ∧
         (∃t0. t0∶ one → L ∧ μ o t0 = t) ⇒
-        ev X two o ⟨x,t⟩ = i2 one one’ by cheat >>
+        ev X two o ⟨x,t⟩ = i1 one one’
+ by
+  (rw[] >>
+   ‘⟨a ∘ x0,μ ∘ t0⟩ =
+    ⟨a o p1 A (exp X two), p2 A (exp X two)⟩ o
+ ⟨p1 A L, μ o p2 A L⟩ o ⟨x0,t0⟩’ by cheat >>
+   rw[] >>
+   ‘ev X two ∘ ⟨a ∘ p1 A (exp X two),p2 A (exp X two)⟩ ∘
+        ⟨p1 A L,μ ∘ p2 A L⟩ ∘ ⟨x0,t0⟩ =
+    (ev X two ∘ ⟨a ∘ p1 A (exp X two),p2 A (exp X two)⟩ ∘
+        ⟨p1 A L,μ ∘ p2 A L⟩) ∘ ⟨x0,t0⟩’ by cheat >>
+   rw[] >>
+   ‘(ev A two ∘ ⟨p1 A L,a2 ∘ μ ∘ p2 A L⟩) =
+    (ev A two ∘ ⟨p1 A L,(a2 ∘ μ) ∘ p2 A L⟩)’
+     by metis_tac[compose_assoc,p2_hom] >>
+   simp[] >>
+   ‘(ev A two ∘ ⟨p1 A L, ((j0 ∘ to1 (exp X two)) ∘ μ) ∘ p2 A L⟩) o ⟨x0, t0⟩ = i2 one one’ suffices_by metis_tac[] >>
+   ‘⟨p1 A L, ((j0 ∘ to1 (exp X two)) ∘ μ) ∘ p2 A L⟩ =
+    ⟨p1 A one, j0 o p2 A one ⟩ o ⟨p1 A L,(to1 (exp X two)) o μ o p2 A L⟩’ by cheat >>
+   rw[] >>
+   ‘(ev A two ∘ ⟨p1 A one,j0 ∘ p2 A one⟩ ∘
+         ⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩) =
+    (ev A two ∘ ⟨p1 A one,j0 ∘ p2 A one⟩) ∘
+         ⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩’ by cheat >>
+    ‘ev A two o ⟨p1 A one,j0 ∘ p2 A one⟩ =
+     (i1 one one ∘ to1 (A × one))’
+     by (simp[Abbr‘j0’] >> metis_tac[ev_of_tp]) >>
+    rw[] >>
+    ‘((i1 one one ∘ to1 (A × one)) ∘
+         ⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩) ∘ ⟨x0,t0⟩ =
+     i2 one one’
+   
+   
+   
+   )
+
+cheat >>
 ‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → A' ∧ a' o x0 = x) ⇒
      ∃t. t∶ one → exp X two ∧
         (∃t0. t0∶ one → L ∧ μ o t0 = t) ∧
-        ev X two o ⟨x,t⟩ = i1 one one’ by cheat >>
+        ev X two o ⟨x,t⟩ = i2 one one’
+  by
+  cheat >>
 ‘∀x. x∶ one → X ⇒ ¬((∃x0. x0∶ one → A ∧ a o x0 = x) ∧
                     (∃x0. x0∶ one → A' ∧ a' o x0 = x))’
   by metis_tac[i1_ne_i2] >>
