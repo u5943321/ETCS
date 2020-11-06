@@ -18,7 +18,7 @@ qexists_tac ‘ta o u’ >>
 ‘(i1 one one ∘ to1 A)∶ A → one + one’ by metis_tac[compose_hom] >> 
 ‘ta∶ (A + one) → one + one’ by (simp[Abbr‘ta’] >> metis_tac[copa_hom]) >>
 ‘ta ∘ u∶X → one + one’ by metis_tac[compose_hom] >> simp[] >>
-‘is_mono (copa a x)’ by cheat (*maybe a lemma later*) >>
+‘is_mono (copa a x)’ by metis_tac[copa_not_mem_mono_mono] >>
 ‘u ∘ copa a x = id (A + one)’ by metis_tac[mono_pinv_post_inv] >>
 ‘x = copa a x o i2 A one’ by metis_tac[i2_of_copa] >>
 ‘a = copa a x o i1 A one’ by metis_tac[i1_of_copa] >> 

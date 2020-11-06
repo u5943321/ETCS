@@ -1244,4 +1244,64 @@ QED
 
 Theorem tp_element_ev:
 ∀X Y f x. f∶ X→ Y ∧ x∶ one→ X ⇒
-          ev X Y o ⟨x, tp (f o p1 X one)⟩ = 
+          ev X Y o ⟨x, tp (f o p1 X one)⟩ = f o x
+Proof
+cheat
+QED          
+
+Theorem copa_not_mem_mono_mono:
+is_mono a ∧ a∶ A → X ∧ x∶ one → X ∧
+ ¬(∃x0. x0∶ one → A ∧ a o x0 = x) ⇒ is_mono (copa a x)
+Proof
+rw[] >> irule is_mono_applied >>
+‘copa a x∶ (A + one) → X’ by metis_tac[copa_hom] >>
+qexistsl_tac [‘A + one’,‘X’] >> rw[] >>
+irule fun_ext >> qexistsl_tac [‘X'’,‘(A + one)’] >> rw[] >>
+rename [‘x'∶ one → X'’] >>
+‘f ∘ x'∶ one → A + one ∧ g o x'∶ one → A + one’
+ by metis_tac[compose_hom] >>
+‘∃f0. f0∶ one → A ∧ (i1 A one) o f0 = f o x' ∨
+ ∃f0. f0∶ one → one ∧ (i2 A one) o f0 = f o x'’
+ by metis_tac[to_copa_fac] (* 2 *)
+>- (‘∃g0. g0∶ one → A ∧ (i1 A one) o g0 = g o x' ∨
+    ∃g0. g0∶ one → one ∧ (i2 A one) o g0 = g o x'’
+     by metis_tac[to_copa_fac] (* 2 *)
+    >- (‘copa a x ∘ f o x' = copa a x ∘ g o x'’
+        by metis_tac[compose_assoc] >>
+       ‘copa a x ∘ i1 A one ∘ f0 = copa a x ∘ i1 A one ∘ g0’
+        by metis_tac[] >>
+       ‘(copa a x ∘ i1 A one) ∘ f0 = (copa a x ∘ i1 A one) ∘ g0’
+        by metis_tac[compose_assoc,i1_hom] >>
+       ‘a ∘ f0 = a ∘ g0’ by metis_tac[i1_of_copa] >>
+       ‘f0 = g0’ by metis_tac[is_mono_property] >>
+       metis_tac[])
+    >- (‘a o f0 = x’ suffices_by metis_tac[] >>
+       ‘copa a x ∘ f o x' = copa a x ∘ g o x'’
+        by metis_tac[compose_assoc] >>
+       ‘copa a x o i1 A one ∘ f0 = copa a x o i2 A one ∘ g0'’
+        by metis_tac[] >>
+       ‘copa a x o i1 A one ∘ f0 = (copa a x o i1 A one) ∘ f0’
+        by metis_tac[compose_assoc,i1_hom] >>
+       ‘copa a x o i2 A one ∘ g0' = (copa a x o i2 A one) ∘ g0'’
+        by metis_tac[compose_assoc,i2_hom] >>
+       ‘a o f0 = x o g0'’ by metis_tac[i1_of_copa,i2_of_copa] >>
+       ‘g0' = id one’ by metis_tac[id1,to1_unique] >>
+       metis_tac[idR]))
+>- (‘∃g0. g0∶ one → A ∧ (i1 A one) o g0 = g o x' ∨
+    ∃g0. g0∶ one → one ∧ (i2 A one) o g0 = g o x'’
+     by metis_tac[to_copa_fac] (* 2 *)
+    >- (‘a o g0 = x’ suffices_by metis_tac[] >>
+       ‘copa a x ∘ f o x' = copa a x ∘ g o x'’
+        by metis_tac[compose_assoc] >>
+       ‘copa a x o i2 A one ∘ f0' = copa a x o i1 A one ∘ g0’
+        by metis_tac[] >>
+       ‘copa a x o i2 A one ∘ f0' = (copa a x o i2 A one) ∘ f0'’
+        by metis_tac[compose_assoc,i2_hom] >>
+       ‘copa a x o i1 A one ∘ g0 = (copa a x o i1 A one) ∘ g0’
+        by metis_tac[compose_assoc,i1_hom] >>
+       ‘x o f0' = a o g0’ by metis_tac[i1_of_copa,i2_of_copa] >> 
+       ‘f0' = id one’ by metis_tac[id1,to1_unique] >>
+       metis_tac[idR])
+    >- (‘f0' = g0'’ by metis_tac[to1_unique] >>
+        metis_tac[]))
+QED
