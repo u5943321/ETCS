@@ -155,11 +155,40 @@ reverse (strip_tac) (* 2 *) >-
    )
 
 cheat >>
-‘∀x. x∶ one → X ∧ (∃x0. x0∶ one → A' ∧ a' o x0 = x) ⇒
+‘∀x. x∶ one → X ∧ (∃xb. xb∶ one → A' ∧ a' o xb = x) ⇒
      ∃t. t∶ one → exp X two ∧
         (∃t0. t0∶ one → L ∧ μ o t0 = t) ∧
         ev X two o ⟨x,t⟩ = i2 one one’
   by
+   (rw[] >>
+    ‘∃x0. x0∶ one → σ ∧ q o x0 = xb’ by cheat >>
+    qexists_tac ‘μ o p2 X L o k o x0’ >>
+    ‘μ ∘ p2 X L ∘ k ∘ x0∶ one → exp X two’ by metis_tac[compose_hom]>>
+    simp[] >>
+    strip_tac (* 2 *)
+    >- (qexists_tac ‘p2 X L ∘ k ∘ x0’ >>
+       metis_tac[compose_hom])
+    >- ‘⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩ =
+        ⟨p1 X L, μ o p2 X L⟩ o ⟨a' ∘ xb, p2 X L ∘ k ∘ x0⟩’
+         by cheat >> simp[] >>
+       ‘a' o xb = p1 X L o k o x0’ by cheat >> simp[] >> 
+       ‘⟨p1 X L ∘ k ∘ x0,p2 X L ∘ k ∘ x0⟩ = k o x0’
+        by
+         cheat >> simp[] >>
+       ‘ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩ = ub’
+        by simp[Abbr‘ub’] >>
+       ‘ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘ k ∘ x0 =
+        (ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘ k ∘ x0’
+        by cheat >> simp[] >>
+       simp[Abbr‘k’] >>
+       ‘ub ∘ eqa ub (i2 one one ∘ to1 (X × L)) =
+        (i2 one one ∘ to1 (X × L)) ∘
+        eqa ub (i2 one one ∘ to1 (X × L))’ by metis_tac[eq_equlity]>>
+       cheat
+       
+       
+    
+    )
   cheat >>
 ‘∀x. x∶ one → X ⇒ ¬((∃x0. x0∶ one → A ∧ a o x0 = x) ∧
                     (∃x0. x0∶ one → A' ∧ a' o x0 = x))’
