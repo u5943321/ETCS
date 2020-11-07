@@ -377,7 +377,7 @@ reverse (strip_tac) (* 2 *) >-
         one → (X × (exp X two))’ by metis_tac[compose_hom] >> 
        ‘⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩ =
         ⟨p1 X L, μ o p2 X L⟩ o ⟨a' ∘ xb, p2 X L ∘ k ∘ x0⟩’
-         by irule to_p_eq_applied >>
+         by (irule to_p_eq_applied >>
             qexistsl_tac [‘X’,‘exp X two’,‘one’] >> simp[] >>
             ‘p1 X (exp X two)∶ (X× exp X two) → X ∧
              p2 X (exp X two)∶ (X × exp X two) → exp X two’
@@ -404,29 +404,41 @@ reverse (strip_tac) (* 2 *) >-
             ‘(μ ∘ p2 X L) ∘ ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩ =
              μ ∘ p2 X L ∘ ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩’
              by metis_tac[compose_assoc] >>
-            
-            
-            
-         cheat >> simp[] >>
-       ‘a' o xb = p1 X L o k o x0’ by cheat >> simp[] >> 
+            metis_tac[p1_of_pa,p2_of_pa]) >>
+       simp[] >>
+       ‘a' o xb = p1 X L o k o x0’ by metis_tac[compose_assoc] >>
+       simp[] >>
+       ‘k o x0∶ one → (X × L)’ by metis_tac[compose_hom] >>
+       ‘p1 X L ∘ k ∘ x0∶ one →  X ∧ p2 X L ∘ k ∘ x0∶ one → L’
+        by metis_tac[compose_hom] >>
+       ‘⟨p1 X L ∘ k ∘ x0,p2 X L ∘ k ∘ x0⟩∶ one → (X × L)’
+        by metis_tac[pa_hom] >> 
        ‘⟨p1 X L ∘ k ∘ x0,p2 X L ∘ k ∘ x0⟩ = k o x0’
-        by
-         cheat >> simp[] >>
+        by (irule to_p_eq_applied >>
+           qexistsl_tac [‘X’,‘L’,‘one’] >> simp[] >>
+           metis_tac[p1_of_pa,p2_of_pa]) >> simp[] >>
        ‘ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩ = ub’
         by simp[Abbr‘ub’] >>
        ‘ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘ k ∘ x0 =
         (ev X two ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘ k ∘ x0’
-        by cheat >> simp[] >>
+        by metis_tac[compose_assoc_4_2_left] >> simp[] >>
        simp[Abbr‘k’] >>
        ‘ub ∘ eqa ub (i2 one one ∘ to1 (X × L)) =
         (i2 one one ∘ to1 (X × L)) ∘
         eqa ub (i2 one one ∘ to1 (X × L))’ by metis_tac[eq_equlity]>>
-       cheat
-       
-       
-    
-    )
-  cheat >>
+       ‘ub ∘ eqa ub (i2 one one ∘ to1 (X × L)) ∘ x0 =
+        (ub ∘ eqa ub (i2 one one ∘ to1 (X × L))) ∘ x0’
+         by metis_tac[compose_assoc] >>
+       simp[] >>
+       ‘((i2 one one ∘ to1 (X × L)) ∘
+       eqa ub (i2 one one ∘ to1 (X × L))) ∘ x0 =
+        i2 one one ∘ to1 (X × L) ∘
+        eqa ub (i2 one one ∘ to1 (X × L)) ∘ x0’
+        by metis_tac[compose_assoc_4_2_left_left] >>
+       simp[] >>
+       ‘to1 (X × L) ∘ eqa ub (i2 one one ∘ to1 (X × L)) ∘ x0 = id one’
+        suffices_by metis_tac[idR] >>
+       metis_tac[compose_hom,id1,to1_unique]) >>
 ‘∀x. x∶ one → X ⇒ ¬((∃x0. x0∶ one → A ∧ a o x0 = x) ∧
                     (∃x0. x0∶ one → A' ∧ a' o x0 = x))’
   by metis_tac[i1_ne_i2] >>
