@@ -36,6 +36,16 @@ rw[] >>
 metis_tac[compose_assoc_4_3_left]
 QED
 
+
+
+Theorem compose_assoc_4_2_left:
+∀A B X Y Z f1 f2 f3 f4.
+  f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ⇒
+  (f4 o f3) o f2 o f1 = f4 o (f3 o f2) o f1
+Proof
+cheat
+QED        
+
 Theorem o_bracket_left:
 ∀X Y Z A a b c d f g.
  f o b o a = g o d o c ∧ a∶ X → Y ∧ c∶ X → Y ∧ b∶ Y → Z ∧ d∶ Y → Z ∧
@@ -732,7 +742,6 @@ Theorem pb_exists:
             (∀A u v. u∶ A → X ∧ v∶ A → Y ∧ f o u = g o v ⇒
              ∃!a. a∶ A → P ∧ p o a = u ∧ q o a = v)
 Proof
-(*
 rw[] >>
 qexistsl_tac [‘eqo (f o p1 X Y) (g o p2 X Y)’,
               ‘p1 X Y o (eqa (f o p1 X Y) (g o p2 X Y))’,
@@ -793,7 +802,6 @@ rw[EXISTS_UNIQUE_THM] (* 2 *)
    suffices_by metis_tac[] >>
    simp[Abbr‘e1’,Abbr‘e2’] >>
    metis_tac[compose_assoc])
-   *) cheat
 QED
 
 Theorem pb_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] pb_exists        
@@ -1325,4 +1333,6 @@ rename [‘x'∶ one → X'’] >>
         metis_tac[]))
 QED
 
+
+        
 val _ = export_theory();
