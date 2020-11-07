@@ -308,10 +308,20 @@ reverse (strip_tac) (* 2 *) >-
          j0 ∘ to1 (exp X two) ∘ μ’ by metis_tac[compose_assoc] >>
         simp[] >>
         metis_tac[compose_assoc_4_3_left])) >>
+   ‘p1 A one∶ (A × one) → A ∧ p2 A one∶ (A × one) → one’
+    by metis_tac[p1_hom,p2_hom] >> 
+   ‘⟨p1 A one,j0 ∘ p2 A one⟩∶ (A × one) → (A × (exp A two))’
+     by metis_tac[pa_hom,compose_hom] >>
+   ‘ev A two∶ (A × (exp A two)) → two’ by metis_tac[ev_hom] >>
+   ‘to1 (exp X two) ∘ μ ∘ p2 A L∶ (A × L) → one’ by
+     metis_tac[compose_hom] >>
+   ‘⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩∶ (A × L) → (A × one)’
+     by metis_tac[pa_hom] >> 
    ‘(ev A two ∘ ⟨p1 A one,j0 ∘ p2 A one⟩ ∘
          ⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩) =
     (ev A two ∘ ⟨p1 A one,j0 ∘ p2 A one⟩) ∘
-         ⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩’ by cheat >>
+         ⟨p1 A L,to1 (exp X two) ∘ μ ∘ p2 A L⟩’
+     by metis_tac[compose_assoc] >> 
     ‘ev A two o ⟨p1 A one,j0 ∘ p2 A one⟩ =
      (i1 one one ∘ to1 (A × one))’
      by (simp[Abbr‘j0’] >> metis_tac[ev_of_tp]) >>
