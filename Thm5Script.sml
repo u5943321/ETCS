@@ -350,16 +350,64 @@ reverse (strip_tac) (* 2 *) >-
         ev X two o ⟨x,t⟩ = i2 one one’
   by
    (rw[] >>
-    ‘∃x0. x0∶ one → σ ∧ q o x0 = xb’ by cheat >>
+    ‘∃x0. x0∶ one → σ ∧ q o x0 = xb’
+     by (‘¬(A'≅ zero)’ by metis_tac[iso_zero_no_mem] >>
+         qpat_x_assum ‘is_epi q’ mp_tac >> strip_tac >>
+         drule epi_pre_inv  >> strip_tac >>
+         first_x_assum (qspecl_then [‘σ’,‘A'’] assume_tac) >>
+         ‘∃g. g∶A' → σ ∧ q ∘ g = id A'’ by metis_tac[] >>
+         qexists_tac ‘g o xb’ >>
+         metis_tac[compose_hom,compose_assoc,idL,id1]) >>
     qexists_tac ‘μ o p2 X L o k o x0’ >>
     ‘μ ∘ p2 X L ∘ k ∘ x0∶ one → exp X two’ by metis_tac[compose_hom]>>
     simp[] >>
     strip_tac (* 2 *)
     >- (qexists_tac ‘p2 X L ∘ k ∘ x0’ >>
        metis_tac[compose_hom])
-    >- ‘⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩ =
+    >- ‘a' o xb∶ one → X’ by metis_tac[compose_hom] >>
+       ‘μ ∘ p2 X L ∘ k ∘ x0∶ one → exp X two’
+        by metis_tac[compose_hom] >>
+       ‘⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩∶ one → (X × (exp X two))’
+         by metis_tac[pa_hom] >>
+       ‘μ o p2 X L∶ (X × L) → exp X two’ by metis_tac[compose_hom]>>
+       ‘p2 X L ∘ k ∘ x0∶ one → L’ by metis_tac[compose_hom] >>
+       ‘⟨a' ∘ xb, p2 X L ∘ k ∘ x0⟩∶ one → (X × L)’
+        by metis_tac[pa_hom] >>
+       ‘⟨p1 X L, μ o p2 X L⟩ o ⟨a' ∘ xb, p2 X L ∘ k ∘ x0⟩∶
+        one → (X × (exp X two))’ by metis_tac[compose_hom] >> 
+       ‘⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩ =
         ⟨p1 X L, μ o p2 X L⟩ o ⟨a' ∘ xb, p2 X L ∘ k ∘ x0⟩’
-         by cheat >> simp[] >>
+         by irule to_p_eq_applied >>
+            qexistsl_tac [‘X’,‘exp X two’,‘one’] >> simp[] >>
+            ‘p1 X (exp X two)∶ (X× exp X two) → X ∧
+             p2 X (exp X two)∶ (X × exp X two) → exp X two’
+              by metis_tac[p1_hom,p2_hom] >>
+            ‘p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘
+             ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩ =
+             (p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘
+             ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩’
+              by metis_tac[compose_assoc] >>
+            ‘p2 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ ∘
+            ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩ =
+            (p2 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩) ∘
+             ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩’
+              by metis_tac[compose_assoc] >>
+            simp[] >>
+            ‘p1 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ = p1 X L ∧
+             p2 X (exp X two) ∘ ⟨p1 X L,μ ∘ p2 X L⟩ = μ o p2 X L ∧
+             p1 X (exp X two) ∘ ⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩ =
+             a' o xb ∧
+             p2 X (exp X two) ∘ ⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩ =
+             μ o p2 X L o k o x0’
+              by metis_tac[p1_of_pa,p2_of_pa] >>
+            simp[] >>
+            ‘(μ ∘ p2 X L) ∘ ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩ =
+             μ ∘ p2 X L ∘ ⟨a' ∘ xb,p2 X L ∘ k ∘ x0⟩’
+             by metis_tac[compose_assoc] >>
+            
+            
+            
+         cheat >> simp[] >>
        ‘a' o xb = p1 X L o k o x0’ by cheat >> simp[] >> 
        ‘⟨p1 X L ∘ k ∘ x0,p2 X L ∘ k ∘ x0⟩ = k o x0’
         by
