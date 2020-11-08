@@ -100,7 +100,7 @@ irule mono_epi_is_iso >>
 ‘copa a a'∶ (A + A') → X’ by metis_tac[copa_hom] >>
 ‘i1 A A'∶ A → (A + A') ∧ i2 A A'∶ A' → (A + A')’
  by metis_tac[i1_hom,i2_hom] >> 
-reverse (strip_tac) (* 2 *) >-
+reverse (strip_tac) (* 2 *) >- (* mono*)
 ‘(j0 o (to1 (exp X two))) o μ = a2 o μ’
     by (simp[Abbr‘μ’] >> metis_tac[eq_equlity]) >>
 ‘(ev X two) o ⟨a o p1 A (exp X two), p2 A (exp X two)⟩ =
@@ -582,7 +582,7 @@ rename [‘x'∶ one → X'’] >>
                 ⟨p1 A (exp X two), a2 o p2 A (exp X two)⟩ o
                 ⟨p1 A one, phi0 o p2 A one⟩’
                  by (irule to_p_eq_applied >>
-                    qexistsl_tac [‘A’,‘exp A two’,‘A × one’] >> simp[]
+                    qexistsl_tac [‘A’,‘exp A two’,‘A × one’] >> simp[] >>
                     ‘⟨p1 A (exp X two),a2 ∘ p2 A (exp X two)⟩ ∘
                      ⟨p1 A one,phi0 ∘ p2 A one⟩∶A × one →
                      (A × exp A two)’ by metis_tac[compose_hom] >>
@@ -698,10 +698,25 @@ rename [‘x'∶ one → X'’] >>
                    simp[] >>
                    ‘(p1 X (exp X two) ∘ ⟨p1 X one,phi0 ∘ p2 X one⟩) =
                     p1 X one’ by metis_tac[p1_of_pa] >>
-                   ‘’
-
-                    (***************)
-                    cheat >>
+                   ‘(a ∘ p1 A (exp X two)) ∘ ⟨p1 A one,phi0 ∘ p2 A one⟩ =
+                    a ∘ p1 A (exp X two) ∘ ⟨p1 A one,phi0 ∘ p2 A one⟩’
+                    by metis_tac[compose_assoc] >>
+                   ‘p1 A (exp X two) ∘ ⟨p1 A one,phi0 ∘ p2 A one⟩ = p1 A one’
+                    by metis_tac[p1_of_pa] >>
+                   simp[] >>
+                   ‘p1 X one ∘ ⟨a ∘ p1 A one,p2 A one⟩ = a o p1 A one’
+                    by metis_tac[p1_of_pa,compose_hom,p1_hom,p2_hom] >>
+                   simp[] >>
+                   ‘p2 X (exp X two) ∘ ⟨a ∘ p1 A (exp X two),p2 A (exp X two)⟩ =
+                    p2 A (exp X two)’ by metis_tac[p2_of_pa] >>
+                   ‘p2 X (exp X two) ∘ ⟨p1 X one,phi0 ∘ p2 X one⟩ =
+                    phi0 o p2 X one’ by metis_tac[p2_of_pa] >>
+                   simp[] >>
+                   ‘(phi0 ∘ p2 X one) ∘ ⟨a ∘ p1 A one,p2 A one⟩ =
+                    phi0 ∘ p2 X one ∘ ⟨a ∘ p1 A one,p2 A one⟩’
+                    by metis_tac[compose_assoc] >>
+                   metis_tac[p2_of_pa,compose_hom]>>
+                   (***************)
                rw[] >>
                ‘⟨p1 X one,phi0 ∘ p2 X one⟩∶ (X × one) → (X × (exp X two))’
                 by metis_tac[pa_hom,compose_hom,p1_hom,p2_hom] >>

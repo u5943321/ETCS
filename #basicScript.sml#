@@ -1,0 +1,1 @@
+ by metis_tac[compose_assoc,compose_hom] >>
