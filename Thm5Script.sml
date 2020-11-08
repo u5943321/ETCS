@@ -666,7 +666,7 @@ rename [‘x'∶ one → X'’] >>
                ‘⟨a ∘ p1 A (exp X two),p2 A (exp X two)⟩ o
                 ⟨p1 A one, phi0 o p2 A one⟩ =
                 ⟨p1 X one, phi0 o p2 X one⟩ o ⟨a o p1 A one, p2 A one⟩’
-                by irule to_p_eq_applied >>
+                by (irule to_p_eq_applied >>
                    qexistsl_tac [‘X’,‘exp X two’,‘A × one’] >>
                    simp[] >>
                    ‘p1 X (exp X two) ∘
@@ -715,7 +715,7 @@ rename [‘x'∶ one → X'’] >>
                    ‘(phi0 ∘ p2 X one) ∘ ⟨a ∘ p1 A one,p2 A one⟩ =
                     phi0 ∘ p2 X one ∘ ⟨a ∘ p1 A one,p2 A one⟩’
                     by metis_tac[compose_assoc] >>
-                   metis_tac[p2_of_pa,compose_hom]>>
+                   metis_tac[p2_of_pa,compose_hom])>>
                    (***************)
                rw[] >>
                ‘⟨p1 X one,phi0 ∘ p2 X one⟩∶ (X × one) → (X × (exp X two))’
