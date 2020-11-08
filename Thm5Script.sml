@@ -101,7 +101,7 @@ irule mono_epi_is_iso >>
 ‘i1 A A'∶ A → (A + A') ∧ i2 A A'∶ A' → (A + A')’
  by metis_tac[i1_hom,i2_hom] >> 
 reverse (strip_tac) (* 2 *) >- (* mono*)
-‘(j0 o (to1 (exp X two))) o μ = a2 o μ’
+(‘(j0 o (to1 (exp X two))) o μ = a2 o μ’
     by (simp[Abbr‘μ’] >> metis_tac[eq_equlity]) >>
 ‘(ev X two) o ⟨a o p1 A (exp X two), p2 A (exp X two)⟩ =
  (ev A two) o ⟨p1 A (exp X two), a2 o p2 A (exp X two)⟩’
@@ -364,7 +364,7 @@ reverse (strip_tac) (* 2 *) >- (* mono*)
     strip_tac (* 2 *)
     >- (qexists_tac ‘p2 X L ∘ k ∘ x0’ >>
        metis_tac[compose_hom])
-    >- ‘a' o xb∶ one → X’ by metis_tac[compose_hom] >>
+    >- (‘a' o xb∶ one → X’ by metis_tac[compose_hom] >>
        ‘μ ∘ p2 X L ∘ k ∘ x0∶ one → exp X two’
         by metis_tac[compose_hom] >>
        ‘⟨a' ∘ xb,μ ∘ p2 X L ∘ k ∘ x0⟩∶ one → (X × (exp X two))’
@@ -438,7 +438,7 @@ reverse (strip_tac) (* 2 *) >- (* mono*)
        simp[] >>
        ‘to1 (X × L) ∘ eqa ub (i2 one one ∘ to1 (X × L)) ∘ x0 = id one’
         suffices_by metis_tac[idR] >>
-       metis_tac[compose_hom,id1,to1_unique]) >>
+       metis_tac[compose_hom,id1,to1_unique])) >>
 ‘∀x. x∶ one → X ⇒ ¬((∃x0. x0∶ one → A ∧ a o x0 = x) ∧
                     (∃x0. x0∶ one → A' ∧ a' o x0 = x))’
   by metis_tac[i1_ne_i2] >>
@@ -511,8 +511,8 @@ rename [‘x'∶ one → X'’] >>
        ‘copa a a' o i2 A A' o f0' = copa a a' o i2 A A' o g0'’
          suffices_by metis_tac[copa_hom,i1_of_copa,i2_of_copa,compose_assoc]>>
        metis_tac[compose_assoc] 
-       ))
->- irule surj_is_epi >> qexistsl_tac [‘A + A'’,‘X’] >> simp[] >> rw[] >> 
+       )))
+>> irule surj_is_epi >> qexistsl_tac [‘A + A'’,‘X’] >> simp[] >> rw[] >> 
    Cases_on ‘∃b0. b0∶ one → A ∧ a o b0 = b’ (* 2 *)
    >- (fs[] >> qexists_tac ‘i1 A A' o b0’ >>
       ‘i1 A A' ∘ b0∶one → A + A'’ by metis_tac[compose_hom,i1_hom] >>
