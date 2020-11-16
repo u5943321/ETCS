@@ -140,8 +140,8 @@ Theorem Thm6_first_sentence:
 ∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ∧
             is_refl f0 f1 ∧ is_symm f0 f1 ∧ is_trans f0 f1 ∧
             is_mono ⟨f0, f1⟩ ∧
-            (∀a0 a1. a0∶ one → A ∧ a1∶ one → A ⇒
-                     (coeqa f0 f1) o a0 = (coeqa f0 f1) o a1 ⇔
+            (∀a0 a1. a0∶ one → A ∧ a1∶ one → A ∧
+                     (coeqa f0 f1) o a0 = (coeqa f0 f1) o a1 ⇒
                      ∃r. r∶ one → R ∧ f0 o r = a0 ∧
                          f1 o r = a1) ⇒
             R ≅ eqo ((coeqa f0 f1) o p1 A A)
@@ -186,8 +186,40 @@ rw[] (* 2 *)
      suffices_by metis_tac[] >>
    irule eq_fac >>
    metis_tac[compose_hom])
->- 
- 
+>- (first_x_assum (qspecl_then
+   [‘p1 A A o eqa (coeqa f0 f1 ∘ p1 A A)
+                  (coeqa f0 f1 ∘ p2 A A) ∘ y’,
+    ‘p2 A A o eqa (coeqa f0 f1 ∘ p1 A A)
+                  (coeqa f0 f1 ∘ p2 A A) ∘ y’] assume_tac) >>
+   ‘p2 A A ∘ eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A) ∘ y∶one → A ∧
+    p1 A A ∘ eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A) ∘ y∶one → A’ by metis_tac[compose_hom] >>
+   ‘coeqa f0 f1 ∘ p1 A A ∘
+    eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A) ∘ y =
+    (coeqa f0 f1 ∘ p1 A A ∘
+    eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A)) ∘ y ∧
+    coeqa f0 f1 ∘ p2 A A ∘
+    eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A) ∘ y =
+    (coeqa f0 f1 ∘ p2 A A ∘
+    eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A)) ∘ y’
+    by metis_tac[compose_assoc_4_3_left] >>
+   ‘(coeqa f0 f1 ∘ p1 A A ∘
+         eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A)) =
+    (coeqa f0 f1 ∘ p2 A A ∘
+         eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A))’
+    by metis_tac[eq_equlity,compose_assoc] >>
+   ‘∃r.r∶one → R ∧
+        f0 ∘ r =
+        p1 A A ∘ eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A) ∘ y ∧
+        f1 ∘ r =
+        p2 A A ∘ eqa (coeqa f0 f1 ∘ p1 A A) (coeqa f0 f1 ∘ p2 A A) ∘ y’ by metis_tac[] >>
+   qexists_tac ‘r’ >>
+   ‘⟨f0,f1⟩ ∘ r∶ one → (A × A) ∧
+    eqa (coeqa f0 f1 ∘ p1 A A)
+        (coeqa f0 f1 ∘ p2 A A) ∘ y∶ one → (A × A)’
+     by metis_tac[compose_hom] >>
+   rw[] >>
+   irule to_p_eq_applied >> qexistsl_tac [‘A’,‘A’,‘one’] >>
+   simp[] >> metis_tac[compose_assoc,p1_of_pa,p2_of_pa])
 QED
                                 
              
