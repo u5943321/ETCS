@@ -457,7 +457,7 @@ QED
 Theorem Thm6_lemma_2:
 ∀A. ∃sg. sg∶ A → exp A (one + one) ∧
     ∀x y. x∶ one → A ∧ y∶ one → A ⇒
-          (ev A (one + one) o ⟨p1 A one, sg o x⟩ o y =
+          (ev A (one + one) o ⟨p1 A one, sg o x⟩ o ⟨id A, to1 A⟩ o y =
            i2 one one ⇔ y = x)
 Proof
 rw[] >>
