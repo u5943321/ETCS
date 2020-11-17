@@ -286,7 +286,7 @@ rw[EQ_IMP_THM] >> metis_tac[from_iso_zero_eq,ax1_2,compose_hom]
 QED
 
 Theorem epi_has_section:
-∀e A B. is_epi e ∧ e∶ A → B ⇒ ∃s. e o s = id B
+∀e A B. is_epi e ∧ e∶ A → B ⇒ ∃s. s∶ B → A ∧ e o s = id B
 Proof
 rw[] >> Cases_on ‘B ≅ zero’
 >- (drule iso_zero_zero >> rw[] >>
@@ -304,7 +304,17 @@ Theorem fac_char_via_any_map:
               f∶ A → B ∧ e∶ A → M ∧ m∶ M → B ∧
               b∶ one → B ∧ (char m) o b = i2 one one ⇒
               ∃a. a∶ one → A ∧ f o a = b
-Proof              
+Proof
+rw[] >> drule epi_has_section >> rw[] >>
+first_x_assum drule >> rw[] >>
+drule char_thm >> rw[] >> first_x_assum drule >> rw[] >>
+first_x_assum (qspec_then ‘b’ assume_tac) >> rfs[] >>
+qexists_tac ‘s' o x0’ >>
+‘s' o x0 ∶ one → A’ by metis_tac[compose_hom] >> simp[] >>
+‘(m ∘ e) ∘ s' ∘ x0 = m ∘ (e ∘ s') ∘ x0’
+ by metis_tac[compose_assoc_4_2_left_middle] >>
+
+
               
                
         
