@@ -267,7 +267,13 @@ n2a f =
 
 
 
-Theorem             
+Theorem fac_char:
+∀m A X. is_mono m ∧ m∶ A → X ⇒
+        ∀P p f. p∶ P → X ∧ f∶ P → A ∧ m o f = p ⇒
+                char m o p = (i2 one one) ∘ to1 P
+Proof
+cheat
+QED                            
         
 Theorem Thm6_lemma_3:
 ∀h R A. h∶ R → A ⇒
@@ -327,7 +333,32 @@ qexists_tac ‘tp ϕ’ >> simp[] >> rw[] >>
 ‘ev A two∶ (A × (exp A two)) → two’ by metis_tac[ev_hom] >>
 ‘∀r. r∶ one → R ⇒ (psi o r = i₁ ⇔
                    ∃r'. r'∶ one → R' ∧
-                        ψ o r' = ⟨r,tp ϕ ∘ tp (psi ∘ p2 one R)⟩)’ by cheat >> 
+                        ψ o r' = ⟨r, tp (psi ∘ p2 one R)⟩)’ by cheat >>
+simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
+>- ‘ϕ o ⟨x, tp (psi ∘ p2 one R)⟩ = i₁’ by cheat
+   (*need lemma*)
+
+
+        
+>- ‘ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p2 one R)⟩ ∘ ⟨id A,to1 A⟩ ∘ x = ϕ o ⟨x, tp (psi ∘ p2 one R)⟩’ by cheat >>
+   simp[SimpLHS] >>
+   ‘∃r'. r'∶one → R' ∧ ψ ∘ r' = ⟨r, tp (psi ∘ p2 one R)⟩’
+    by metis_tac[] >>
+   Q.UNDISCH_THEN
+   ‘∀r.  r∶one → R ⇒
+            (psi ∘ r = i₁ ⇔
+             ∃r'. r'∶one → R' ∧ ψ ∘ r' = ⟨r,tp (psi ∘ p2 one R)⟩)’ (K ALL_TAC) >>
+   ‘(h2R o ψ) ∘ r' = h2R o ⟨r, tp (psi ∘ p2 one R)⟩’
+    by metis_tac[compose_assoc] >>
+   ‘m o e o r' = h2R ∘ ⟨r, tp (psi ∘ p2 one R)⟩’
+    by metis_tac[compose_assoc] >>
+   ‘ϕ ∘ h2R ∘ ⟨r,tp (psi ∘ p2 one R)⟩ = i₁’ by cheat >>
+   ‘h2R ∘ ⟨r,tp (psi ∘ p2 one R)⟩ = ⟨x,tp (psi ∘ p2 one R)⟩’
+    by cheat >>
+   metis_tac[]
+   (*use fac_char*)
+  
+                  
 
             
                                 
