@@ -296,6 +296,17 @@ rw[] >> Cases_on ‘B ≅ zero’
    metis_tac[id1,compose_hom])
 >- metis_tac[epi_pre_inv]
 QED
+
+        
+
+Theorem fac_char_via_any_map:
+∀f A B M m e. is_epi e ∧ is_mono m ∧ f = m o e ∧
+              f∶ A → B ∧ e∶ A → M ∧ m∶ M → B ∧
+              b∶ one → B ∧ (char m) o b = i2 one one ⇒
+              ∃a. a∶ one → A ∧ f o a = b
+Proof              
+              
+               
         
 Theorem Thm6_lemma_3:
 ∀h R A. h∶ R → A ⇒
