@@ -273,7 +273,29 @@ Theorem fac_char:
                 char m o p = (i2 one one) ∘ to1 P
 Proof
 cheat
-QED                            
+QED
+
+Theorem iso_zero_zero:
+∀A. A≅ zero ⇒
+   ∀X. ∃!f. f∶ A → X
+Proof
+rw[EXISTS_UNIQUE_ALT] >>
+‘∃i. i∶A → zero ∧ is_iso i’ by metis_tac[are_iso_is_iso] >>
+qexists_tac ‘(from0 X) o i’ >>
+rw[EQ_IMP_THM] >> metis_tac[from_iso_zero_eq,ax1_2,compose_hom]
+QED
+
+Theorem epi_has_section:
+∀e A B. is_epi e ∧ e∶ A → B ⇒ ∃s. e o s = id B
+Proof
+rw[] >> Cases_on ‘B ≅ zero’
+>- (drule iso_zero_zero >> rw[] >>
+   fs[EXISTS_UNIQUE_ALT] >>
+   ‘∃f. ∀f'. f'∶B → A ⇔ f = f'’ by metis_tac[] >>
+   qexists_tac ‘f’ >>
+   metis_tac[id1,compose_hom])
+>- metis_tac[epi_pre_inv]
+QED
         
 Theorem Thm6_lemma_3:
 ∀h R A. h∶ R → A ⇒
@@ -335,8 +357,11 @@ qexists_tac ‘tp ϕ’ >> simp[] >> rw[] >>
                    ∃r'. r'∶ one → R' ∧
                         ψ o r' = ⟨r, tp (psi ∘ p2 one R)⟩)’ by cheat >>
 simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
->- ‘ϕ o ⟨x, tp (psi ∘ p2 one R)⟩ = i₁’ by cheat
+>- ‘ϕ o ⟨x, tp (psi ∘ p2 one R)⟩ =
+    ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p2 one R)⟩ ∘ ⟨id A,to1 A⟩ ∘ x’ by cheat >>
    (*need lemma*)
+   (*use fact that epi has section*)
+   ‘∃’
 
 
         
