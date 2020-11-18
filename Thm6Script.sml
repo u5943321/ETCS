@@ -323,7 +323,71 @@ Theorem pa_with_id_right:
 Proof
               
 
- *)             
+ *)
+
+val _ = overload_on("two", “one + one”);
+
+Theorem fac_through_eq:
+∀f g h h0 A B X. f∶ A → B ∧ g∶ A → B ∧ h∶ X → A ∧ h0∶ X → eqo f g ∧
+           eqa f g o h0 = h ⇒
+           f o h = g o h
+Proof
+rw[] >>
+‘eqa f g∶ eqo f g → A’ by metis_tac[eqa_hom] >>
+‘f ∘ eqa f g ∘ h0 = (f ∘ eqa f g) ∘ h0 ∧
+ g ∘ eqa f g ∘ h0 = (g ∘ eqa f g) ∘ h0’
+  by metis_tac[compose_assoc] >>
+‘f ∘ eqa f g = g ∘ eqa f g’
+ suffices_by metis_tac[compose_assoc] >>
+metis_tac[eq_equlity]
+QED
+
+Theorem fac_through_eq_iff:
+∀f g h. f∶ A → B ∧ g∶ A → B ∧ h∶ X → A ⇒
+        ((∃h0. h0∶ X → eqo f g ∧ (eqa f g) o h0 = h) ⇔
+         f o h = g o h)
+Proof
+rw[EQ_IMP_THM] (* 2 *)
+>- metis_tac[fac_through_eq]
+>- (qexists_tac ‘eq_induce f g h’ >> metis_tac[eq_induce_hom,eq_fac])
+QED
+
+           
+Theorem mem_of_name_eqa:
+∀psi R r. psi∶ R → two ∧ r∶ one → R ⇒
+               (psi o r = i2 one one ⇔
+                ∃r'. r'∶ one → eqo (ev R two) (i2 one one o to1 (R × exp R two)) ∧
+                    eqa (ev R two) (i2 one one o to1 (R × exp R two)) o r' = ⟨r, tp (psi ∘ p1 R one)⟩)
+Proof
+rw[] >>
+‘ev R two∶ (R × (exp R two)) → two’ by metis_tac[ev_hom] >>
+‘to1 (R × exp R two)∶ (R × (exp R two)) → one’
+ by metis_tac[to1_hom] >>
+‘i2 one one∶ one → two’ by metis_tac[i2_hom] >>
+‘p1 R one∶ (R × one) → R’ by metis_tac[p1_hom] >>
+‘psi o p1 R one∶ (R × one) → two’ by metis_tac[compose_hom] >>
+‘tp (psi ∘ p1 R one)∶ one → exp R two’ by metis_tac[tp_hom] >>
+‘⟨r,tp (psi ∘ p1 R one)⟩∶one → (R × (exp R two))’
+ by metis_tac[pa_hom] >> 
+‘(i2 one one ∘ to1 (R × exp R two))∶ (R × (exp R two)) → two’
+ by metis_tac[compose_hom] >> 
+‘(∃r'.
+                 r'∶one → eqo (ev R two) (i2 one one ∘ to1 (R × exp R two)) ∧
+                 eqa (ev R two) (i2 one one ∘ to1 (R × exp R two)) ∘ r' =
+                 ⟨r,tp (psi ∘ p1 R one)⟩) ⇔
+   (ev R two) o ⟨r,tp (psi ∘ p1 R one)⟩ = (i2 one one ∘ to1 (R × exp R two)) o ⟨r,tp (psi ∘ p1 R one)⟩’
+  by (irule fac_through_eq_iff >> metis_tac[]) >>
+rw[] >>
+‘(i2 one one ∘ to1 (R × exp R two)) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =
+ i2 one one ∘ to1 (R × exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩’
+ by metis_tac[compose_assoc] >>
+‘to1 (R × exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ = id one’
+ by (irule to1_unique >> metis_tac[id1,compose_hom]) >>
+simp[] >>
+‘i2 one one ∘ id one = i2 one one’ by metis_tac[idR] >>
+simp[] >> metis_tac[tp_element_ev]
+QED       
+
                
         
 Theorem Thm6_lemma_3:
@@ -384,7 +448,7 @@ qexists_tac ‘tp ϕ’ >> simp[] >> rw[] >>
 ‘ev A two∶ (A × (exp A two)) → two’ by metis_tac[ev_hom] >>
 ‘∀r. r∶ one → R ⇒ (psi o r = i₁ ⇔
                    ∃r'. r'∶ one → R' ∧
-                        ψ o r' = ⟨r, tp (psi ∘ p1 R one)⟩)’ by cheat >>
+                        ψ o r' = ⟨r, tp (psi ∘ p1 R one)⟩)’ by cheat >> (* 2 *)
 simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
 >- ‘ϕ o ⟨x, tp (psi ∘ p1 R one)⟩ =
     ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 R one)⟩ ∘ ⟨id A,to1 A⟩ ∘ x’ by cheat >>
