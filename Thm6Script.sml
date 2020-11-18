@@ -506,8 +506,11 @@ simp[] >>
   ϕ ∘ ⟨p1 A one,tp (psi ∘ p1 X one) ∘ p2 A one⟩ ∘ ⟨x,id one⟩’
   by metis_tac[compose_assoc,pa_hom] >>
 simp[] >>
-
-               
+‘⟨x,tp (psi ∘ p1 X one)⟩ =
+ ⟨p1 A one,tp (psi ∘ p1 X one) ∘ p2 A one⟩ ∘ ⟨x,id one⟩’
+ suffices_by metis_tac[] >>
+metis_tac[two_steps_compose_combine]
+QED
         
 Theorem Thm6_lemma_3:
 ∀h R A. h∶ R → A ⇒
