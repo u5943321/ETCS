@@ -572,7 +572,7 @@ qexists_tac ‘tp ϕ’ >> simp[] >> rw[] >>
                         ψ o r' = ⟨r, tp (psi ∘ p1 R one)⟩)’
  by (rw[] >> simp[Abbr‘R'’,Abbr‘ψ’,Abbr‘t’,Abbr‘i₁’] >>
     metis_tac[mem_of_name_eqa]) >> 
-simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
+simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *) 
 >- (‘ϕ o ⟨x, tp (psi ∘ p1 R one)⟩ =
     ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 R one) o p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ x’ by metis_tac[compose_partial_ev] >> 
    (*need lemma*)
@@ -628,8 +628,8 @@ simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
       ‘(p2 A (exp R two) ∘ h2R) ∘ ψ ∘ r' =
        p2 A (exp R two) ∘ (h2R ∘ ψ) ∘ r'’
        suffices_by metis_tac[] >>
-      irule (compose_assoc_4_2_left_middle >>
-            metis_tac[p2_hom]))
+      irule compose_assoc_4_2_left_middle >>
+            metis_tac[p2_hom])
    >- (‘p1 A (exp R two) o  (h2R ∘ ψ) ∘ r' = x’
         by (simp[] >> metis_tac[p1_of_pa]) >>
       ‘p1 A (exp R two) ∘ h2R = h ∘ p1 R (exp R two)’
@@ -642,23 +642,82 @@ simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
       ‘(h ∘ p1 R (exp R two)) ∘ ψ ∘ r' = x’
        by metis_tac[] >>
       metis_tac[compose_assoc_4_2_left,p1_hom]))
->- ‘ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p2 one R)⟩ ∘ ⟨id A,to1 A⟩ ∘ x = ϕ o ⟨x, tp (psi ∘ p2 one R)⟩’ by cheat >>
+>- (‘ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 R one) o p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ x = ϕ o ⟨x, tp (psi ∘ p1 R one)⟩’ by
+    metis_tac[compose_partial_ev] >>
    simp[SimpLHS] >>
-   ‘∃r'. r'∶one → R' ∧ ψ ∘ r' = ⟨r, tp (psi ∘ p2 one R)⟩’
+   ‘∃r'. r'∶one → R' ∧ ψ ∘ r' = ⟨r, tp (psi ∘ p1 R one)⟩’
     by metis_tac[] >>
    Q.UNDISCH_THEN
    ‘∀r.  r∶one → R ⇒
             (psi ∘ r = i₁ ⇔
-             ∃r'. r'∶one → R' ∧ ψ ∘ r' = ⟨r,tp (psi ∘ p2 one R)⟩)’ (K ALL_TAC) >>
-   ‘(h2R o ψ) ∘ r' = h2R o ⟨r, tp (psi ∘ p2 one R)⟩’
+             ∃r'. r'∶one → R' ∧ ψ ∘ r' = ⟨r,tp (psi ∘ p1 R one)⟩)’ (K ALL_TAC) >>
+   ‘(h2R o ψ) ∘ r' = h2R o ⟨r, tp (psi ∘ p1 R one)⟩’
     by metis_tac[compose_assoc] >>
-   ‘m o e o r' = h2R ∘ ⟨r, tp (psi ∘ p2 one R)⟩’
+   ‘m o e o r' = h2R ∘ ⟨r, tp (psi ∘ p1 R one)⟩’
     by metis_tac[compose_assoc] >>
-   ‘ϕ ∘ h2R ∘ ⟨r,tp (psi ∘ p2 one R)⟩ = i₁’ by cheat >>
+   ‘(psi ∘ p1 R one)∶ (R × one) → two’
+    by metis_tac[compose_hom,p1_hom] >>
+   ‘tp (psi ∘ p1 R one)∶ one → exp R two’
+    by metis_tac[tp_hom] >>
+   ‘⟨x,tp (psi ∘ p1 R one)⟩∶one → (A × exp R two)’
+    by metis_tac[pa_hom] >> 
+   ‘h2R ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =⟨x, tp (psi ∘ p1 R one)⟩’
+    by
+     (irule to_p_eq_applied >>
+     qexistsl_tac [‘A’,‘exp R two’,‘one’] >>
+     simp[] >>
+     ‘⟨r,tp (psi ∘ p1 R one)⟩∶ one → (R × exp R two)’
+      by metis_tac[pa_hom] >>
+     ‘h2R ∘ ⟨r,tp (psi ∘ p1 R one)⟩∶one → (A × exp R two)’
+      by metis_tac[compose_hom] >>
+     simp[] >>
+     simp[Abbr‘h2R’] >>
+     ‘p2 A (exp R two) ∘ ⟨x,tp (psi ∘ p1 R one)⟩ =
+      tp (psi ∘ p1 R one)’ by metis_tac[p2_of_pa] >>
+     ‘p1 A (exp R two) ∘ ⟨x,tp (psi ∘ p1 R one)⟩ = x’
+      by metis_tac[p1_of_pa] >>
+     simp[] >>
+     ‘⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩∶
+      (R × (exp R two)) → (A × (exp R two))’
+      by metis_tac[compose_hom,pa_hom] >>
+     ‘p1 A (exp R two) ∘ ⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩ ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =
+      (p1 A (exp R two) ∘ ⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩) ∘ ⟨r,tp (psi ∘ p1 R one)⟩’
+      by metis_tac[p1_hom,compose_assoc] >>
+     ‘p2 A (exp R two) ∘ ⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩ ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =
+      (p2 A (exp R two) ∘ ⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩) ∘ ⟨r,tp (psi ∘ p1 R one)⟩’
+      by metis_tac[p2_hom,compose_assoc] >>
+     simp[] >>
+     ‘p1 A (exp R two) ∘ ⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩ = h ∘ p1 R (exp R two)’ by metis_tac[compose_hom,p1_of_pa] >>
+     ‘p2 A (exp R two) ∘ ⟨h ∘ p1 R (exp R two),p2 R (exp R two)⟩ = p2 R (exp R two)’ by metis_tac[compose_hom,p2_of_pa] >>
+     simp[] >>
+     ‘p2 R (exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =
+      tp (psi ∘ p1 R one)’ by metis_tac[p2_of_pa] >>
+     simp[] >>
+     ‘(h ∘ p1 R (exp R two)) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =
+      h ∘ p1 R (exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩’
+      by metis_tac[compose_assoc] >>
+     simp[] >>
+     ‘p1 R (exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ = r’
+      by metis_tac[p1_of_pa] >>
+     metis_tac[]) >>
+   ‘ϕ ∘ h2R ∘ ⟨r,tp (psi ∘ p1 R one)⟩ = i₁’
+    by (simp[Abbr‘ϕ’,Abbr‘i₁’] >>
+       drule fac_char >> strip_tac >>
+       first_x_assum (qspecl_then [‘M’,‘(A × exp R two)’,‘one’,‘⟨x,tp (psi ∘ p1 R one)⟩’,‘e o r'’] assume_tac) >>
+       ‘to1 one = id one’ by metis_tac[to1_unique,id1,to1_hom]>>
+       ‘i2 one one = i2 one one o id one’
+        by metis_tac[idR] >>
+       ‘char m ∘ ⟨x,tp (psi ∘ p1 R one)⟩ = i2 one one o to1 one’
+        suffices_by metis_tac[] >>
+       first_x_assum irule >> rw[] >>
+       metis_tac[compose_hom,pa_hom]) >>
+       metis_tac[])
+(*
+     cheat >>
    ‘h2R ∘ ⟨r,tp (psi ∘ p2 one R)⟩ = ⟨x,tp (psi ∘ p2 one R)⟩’
     by cheat >>
    metis_tac[]
-   (*use fac_char*)
+   (*use fac_char*)*)
   
 QED                  
 
