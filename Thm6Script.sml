@@ -719,7 +719,24 @@ simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
    metis_tac[]
    (*use fac_char*)*)
   
-QED                  
+QED
+
+
+Theorem bar_exists:
+∀h.  ∃hb. hb∶ exp (dom h) (one + one) → exp (cod h) (one + one) ∧
+             (∀psi. psi∶ (dom h) → one + one ⇒
+                    ∀x. x∶ one → (cod h) ⇒
+                        (ev (cod h) (one + one) o ⟨p1 (cod h) one, hb o tp (psi o p1 (dom h) one) o p2 (cod h) one⟩ o ⟨id (cod h), to1 (cod h)⟩ o x = i2 one one ⇔
+                         ∃r. r∶ one → (dom h) ∧
+                             psi o r = i2 one one ∧
+                             h o r = x))
+Proof
+rw[] >>
+qabbrev_tac ‘R = dom h’ >>
+qabbrev_tac ‘A = cod h’ >>
+‘h∶ R → A’ by metis_tac[hom_def] >>
+drule Thm6_lemma_3 >> rw[]
+QED   
 
 
 Theorem diag_is_mono:
@@ -855,7 +872,38 @@ first_x_assum irule >> rw[] (* 3 *)
 >- metis_tac[compose_hom]
 QED
 
-                     
+
+
+Theorem sg_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] Thm6_lemma_2        
+
+val sg_def = new_specification ("sg_def",["sg"],sg_exists_thm)        
+
+
+Theorem bar_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] bar_exists  
+
+val bar_def = new_specification ("bar_def",["bar"],bar_exists_thm)
+
+
+Theorem bar_thm:
+∀h R A. h∶ R → A ⇒
+         bar h∶exp R two → exp A two ∧
+         ∀psi.
+             psi∶ R → two ⇒
+             ∀x.
+                 x∶one → A ⇒
+                 (ev A two ∘
+                  ⟨p1 A one,bar h ∘ tp (psi ∘ p1 R one) ∘
+                  p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ x =
+                  i2 one one ⇔
+                  ∃r. r∶one → R ∧ psi ∘ r = i2 one one ∧ h ∘ r = x)
+Proof
+strip_tac >> strip_tac >> strip_tac >> strip_tac >>
+‘dom h = R ∧ cod h = A’ by metis_tac[hom_def] >>
+metis_tac[bar_def]
+QED
+        
+Theorem Thm3_g_ev:
+∀a a'.         
                                 
 Theorem Thm6_symm_unique_g:
 ∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ∧
