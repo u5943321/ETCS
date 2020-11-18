@@ -467,7 +467,7 @@ simp[] >> metis_tac[p1_of_pa,p2_of_pa,idR,compose_hom]
 QED
         
         
-Theorem comp_partial_ev:
+Theorem compose_partial_ev:
 ∀A X Y x psi ϕ.
   x∶ one → A ∧ psi∶ X → Y ∧ ϕ∶ (A × exp X Y) → Y ⇒ 
              ϕ ∘ ⟨x,tp (psi ∘ p1 X one)⟩ =
@@ -517,7 +517,7 @@ Theorem Thm6_lemma_3:
         ∃hb. hb∶ exp R (one + one) → exp A (one + one) ∧
              (∀psi. psi∶ R → one + one ⇒
                     ∀x. x∶ one → A ⇒
-                        (ev A (one + one) o ⟨p1 A one, hb o tp (psi o p1 R one)⟩ o ⟨id A, to1 A⟩ o x = i2 one one ⇔
+                        (ev A (one + one) o ⟨p1 A one, hb o tp (psi o p1 R one) o p2 A one⟩ o ⟨id A, to1 A⟩ o x = i2 one one ⇔
                          ∃r. r∶ one → R ∧
                              psi o r = i2 one one ∧
                              h o r = x))
@@ -570,11 +570,11 @@ qexists_tac ‘tp ϕ’ >> simp[] >> rw[] >>
 ‘∀r. r∶ one → R ⇒ (psi o r = i₁ ⇔
                    ∃r'. r'∶ one → R' ∧
                         ψ o r' = ⟨r, tp (psi ∘ p1 R one)⟩)’
- by (rw[] >> simp[Abbr‘R'’,Abbr‘ψ’,Abbr‘t’,Abbr‘i₁’]
+ by (rw[] >> simp[Abbr‘R'’,Abbr‘ψ’,Abbr‘t’,Abbr‘i₁’] >>
     metis_tac[mem_of_name_eqa]) >> 
 simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
 >- ‘ϕ o ⟨x, tp (psi ∘ p1 R one)⟩ =
-    ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 R one)⟩ ∘ ⟨id A,to1 A⟩ ∘ x’ by cheat >>
+    ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 R one) o p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ x’ by metis_tac[compose_partial_ev] >> 
    (*need lemma*)
    (*use fact that epi has section*)
    ‘ϕ o ⟨x, tp (psi ∘ p1 R one)⟩ = i₁’ by metis_tac[] >>
@@ -583,32 +583,53 @@ simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
                                ‘M’,‘m’,
                                ‘⟨x,tp (psi o p1 R one)⟩’]
                   assume_tac) >>
+   ‘(psi ∘ p1 R one)∶ (R × one) → two’
+    by metis_tac[compose_hom,p1_hom] >>
+   ‘tp (psi ∘ p1 R one)∶ one → exp R two’
+    by metis_tac[tp_hom] >>
+   ‘⟨x,tp (psi ∘ p1 R one)⟩∶one → (A × exp R two)’
+    by metis_tac[pa_hom] >> 
    ‘∃r'. r'∶one → R' ∧ (h2R ∘ ψ) ∘ r' = ⟨x,tp (psi ∘ p1 R one)⟩’
-     by cheat >>
-  (* ‘(p1 A (exp R two))∶ (A × (exp R two)) → A ∧
-    (p2 A (exp R two))∶ (A × (exp R two)) → (exp R two)’
-    by metis_tac[p1_hom,p2_hom] >> (*move to the top...*)*)
+     by (first_x_assum irule >>
+        metis_tac[Abbr‘ϕ’,Abbr‘i₁’]) >> 
    ‘(p1 R (exp R two)) o ψ o r'∶ one → R’
     by metis_tac[compose_hom] >>
    qexists_tac ‘(p1 R (exp R two)) o ψ o r'’ >>
-   simp[] >>
+   simp[] >> 
    rw[] (* 2 *)
-   >- qexists_tac ‘r'’ >> simp[] >>
+   >- (qexists_tac ‘r'’ >> simp[] >>
       ‘psi o (p1 R one)∶ (R × one) → two’
        by metis_tac[compose_hom,p1_hom] >>
       ‘tp (psi ∘ p1 R one)∶ one → exp R two’
         by metis_tac[tp_hom] >>
       ‘p2 R (exp R two) o ψ ∘ r' =
-       tp (psi ∘ p1 R one)’ suffices_by cheat >>
+       tp (psi ∘ p1 R one)’
+      suffices_by
+       (rw[] >> irule to_p_eq_applied >>
+       ‘ψ o r'∶ one → (R × exp R two)’
+        by metis_tac[compose_hom] >>
+       ‘⟨p1 R (exp R two) ∘ ψ ∘ r',tp (psi ∘ p1 R one)⟩∶
+        one → (R × exp R two)’
+        by metis_tac[pa_hom] >> 
+       qexistsl_tac [‘R’,‘exp R two’,‘one’] >>
+       simp[] >>
+       ‘tp (psi ∘ p1 R one) =
+        p2 R (exp R two) ∘ ⟨p1 R (exp R two) ∘ ψ ∘ r',tp (psi ∘ p1 R one)⟩’ by metis_tac[p2_of_pa] >>
+       simp[] >>
+       metis_tac[p1_of_pa]) >>
       ‘p2 A (exp R two) o (h2R ∘ ψ) ∘ r' =
        p2 A (exp R two) o ⟨x,tp (psi ∘ p1 R one)⟩’
        by metis_tac[] >>
       ‘p2 A (exp R two) o ⟨x,tp (psi ∘ p1 R one)⟩ =
        tp (psi ∘ p1 R one)’ by metis_tac[p2_of_pa] >>
       ‘p2 R (exp R two) = p2 A (exp R two) o h2R’
-        by cheat >>
+        by (simp[Abbr‘h2R’] >> metis_tac[p2_of_pa]) >>
       simp[] >>
-      cheat
+      ‘(p2 A (exp R two) ∘ h2R) ∘ ψ ∘ r' =
+       p2 A (exp R two) ∘ (h2R ∘ ψ) ∘ r'’
+       suffices_by metis_tac[] >>
+      irule (compose_assoc_4_2_left_middle >>
+            metis_tac[p2_hom]))
    >- (*need lemma on comm square*)   
    
    1
