@@ -451,13 +451,35 @@ Theorem diag_is_mono:
 ∀A. is_mono ⟨id A,id A⟩
 Proof
 cheat
-QED                     
+QED
+
+Theorem fac_diag_eq:
+∀x0 x y A. x∶ one → A ∧ y∶ one → A ∧ x0∶ one → A ∧
+         ⟨id A,id A⟩ ∘ x0 = ⟨y,x⟩ ⇒
+         y = x
+Proof
+rw[] >>
+‘p1 A A∶ (A × A) → A ∧ p2 A A∶ (A × A) → A’
+ by metis_tac[p1_hom,p2_hom] >>
+‘⟨id A,id A⟩∶ A → (A × A)’ by metis_tac[id1,pa_hom] >>
+‘p1 A A o ⟨id A,id A⟩ ∘ x0 = p1 A A o ⟨y,x⟩ ∧
+ p2 A A o ⟨id A,id A⟩ ∘ x0 = p2 A A o ⟨y,x⟩’ by metis_tac[] >>
+‘p1 A A o ⟨y,x⟩ = y ∧ p2 A A o ⟨y,x⟩ = x’
+ by metis_tac[p1_of_pa,p2_of_pa] >>
+simp[] >>
+‘p1 A A ∘ ⟨id A,id A⟩ ∘ x0 =
+ p2 A A ∘ ⟨id A,id A⟩ ∘ x0’ suffices_by metis_tac[] >>
+‘p1 A A ∘ ⟨id A,id A⟩ =
+ p2 A A ∘ ⟨id A,id A⟩’ suffices_by metis_tac[compose_assoc] >>
+metis_tac[id1,p1_of_pa,p2_of_pa]
+QED        
+                 
 
 
 Theorem Thm6_lemma_2:
 ∀A. ∃sg. sg∶ A → exp A (one + one) ∧
     ∀x y. x∶ one → A ∧ y∶ one → A ⇒
-          (ev A (one + one) o ⟨p1 A one, sg o x⟩ o y =
+          (ev A (one + one) o ⟨p1 A one, sg o x o p2 A one⟩ o ⟨id A, to1 A⟩ o y =
            i2 one one ⇔ y = x)
 Proof
 rw[] >>
@@ -468,8 +490,95 @@ drule char_thm >> strip_tac >>
 first_x_assum drule >> strip_tac >>
 ‘tp (char ⟨id A,id A⟩)∶A → exp A (one + one)’
  by metis_tac[tp_hom] >>
-simp[] >> rw[EQ_IMP_THM] >>
-
+simp[] >> rw[] >>
+‘⟨p1 A one,tp (char ⟨id A,id A⟩) ∘ x o p2 A one⟩ =
+ ⟨p1 A A,tp (char ⟨id A,id A⟩) o p2 A A⟩ o ⟨p1 A one, x o p2 A one⟩’
+ by (irule parallel_p_one_side >> metis_tac[]) >>
+rw[] >>
+‘⟨p1 A one,x ∘ p2 A one⟩∶ (A × one) → (A × A)’
+ by metis_tac[compose_hom,p1_hom,p2_hom,pa_hom] >>
+‘⟨id A,to1 A⟩∶ A → (A × one)’ by metis_tac[id1,to1_hom,pa_hom]>>
+‘ev A (one + one) ∶ (A × (exp A (one + one))) → (one+ one)’
+ by metis_tac[ev_hom] >>
+‘⟨p1 A A,tp (char ⟨id A,id A⟩) ∘ p2 A A⟩∶
+ (A × A) → (A × (exp A (one + one)))’
+ by metis_tac[p1_hom,p2_hom,compose_hom,pa_hom]>>
+‘ev A (one + one) ∘
+        (⟨p1 A A,tp (char ⟨id A,id A⟩) ∘ p2 A A⟩ ∘ ⟨p1 A one,x ∘ p2 A one⟩) ∘
+        ⟨id A,to1 A⟩ ∘ y =
+ (ev A (one + one) ∘
+        ⟨p1 A A,tp (char ⟨id A,id A⟩) ∘ p2 A A⟩) ∘ ⟨p1 A one,x ∘ p2 A one⟩ ∘
+        ⟨id A,to1 A⟩ ∘ y’
+ by metis_tac[compose_assoc_5_2_left1_left] >>
+rw[] >>
+‘(ev A (one + one) ∘ ⟨p1 A A,tp (char ⟨id A,id A⟩) ∘ p2 A A⟩) =
+ char ⟨id A,id A⟩’
+ by metis_tac[ev_of_tp] >>
+rw[] >>
+‘⟨y,x⟩∶ one → (A × A)’ by metis_tac[pa_hom] >>
+‘⟨p1 A one,x ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ y∶ one → (A × A)’
+ by metis_tac[compose_hom] >>
+‘⟨p1 A one,x ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ y =
+ ⟨y,x⟩’
+ by  (drule to_p_eq_applied >> rw[] >> first_x_assum irule >>
+     simp[] >>
+     ‘(p1 A A) o ⟨y,x⟩ = y ∧ (p2 A A) o ⟨y,x⟩ = x’
+      by metis_tac[p1_of_pa,p2_of_pa] >>
+     simp[] >>
+     ‘p1 A A ∘ ⟨p1 A one,x ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ y =
+      (p1 A A ∘ ⟨p1 A one,x ∘ p2 A one⟩) ∘ ⟨id A,to1 A⟩ ∘ y ∧
+      p2 A A ∘ ⟨p1 A one,x ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ y =
+      (p2 A A ∘ ⟨p1 A one,x ∘ p2 A one⟩) ∘ ⟨id A,to1 A⟩ ∘ y’
+      by metis_tac[p1_hom,p2_hom,compose_assoc_4_2_left] >>
+     simp[] >>
+     ‘(p1 A A ∘ ⟨p1 A one,x ∘ p2 A one⟩) = p1 A one ∧
+      (p2 A A ∘ ⟨p1 A one,x ∘ p2 A one⟩) = x o p2 A one’
+      by metis_tac[compose_hom,p1_hom,p2_hom,
+                   p1_of_pa,p2_of_pa]>>
+     simp[] >>
+     ‘p1 A one o ⟨id A, to1 A⟩ o y =
+      (p1 A one o ⟨id A, to1 A⟩) o y ∧
+     (x ∘ p2 A one) ∘ ⟨id A,to1 A⟩ ∘ y =
+     ((x ∘ p2 A one) ∘ ⟨id A,to1 A⟩) ∘ y’
+      by metis_tac[compose_hom,compose_assoc,p1_hom,p2_hom] >>
+     simp[] >>
+     ‘p1 A one o ⟨id A, to1 A⟩ = id A’
+      by metis_tac[p1_of_pa,id1,to1_hom] >>
+     ‘(x ∘ p2 A one) ∘ ⟨id A,to1 A⟩ =
+      x ∘ p2 A one ∘ ⟨id A,to1 A⟩’
+      by metis_tac[p2_hom,compose_assoc,id1,to1_hom,pa_hom] >>
+     simp[] >>
+     ‘p2 A one ∘ ⟨id A,to1 A⟩ = to1 A’
+      by metis_tac[p2_hom,id1,to1_hom,p2_of_pa] >>
+     simp[] >> 
+     ‘(x ∘ to1 A) ∘ y = x ∘ to1 A ∘ y’
+      by metis_tac[to1_hom,compose_assoc] >>
+     ‘to1 A o y = id one’
+      by (irule to1_unique >>
+         metis_tac[compose_hom,to1_hom,id1]) >>
+     simp[] >>
+     metis_tac[idL,idR]) >>
+simp[] >> first_x_assum (qspec_then ‘⟨y,x⟩’ assume_tac) >>
+first_x_assum drule >> rw[] >>
+‘(∃x0. x0∶one → A ∧ ⟨id A,id A⟩ ∘ x0 = ⟨y,x⟩) ⇔ y = x’
+ suffices_by metis_tac[] >>
+Q.UNDISCH_THEN
+  ‘(∃x0. x0∶one → A ∧ ⟨id A,id A⟩ ∘ x0 = ⟨y,x⟩) ⇔
+   char ⟨id A,id A⟩ ∘ ⟨y,x⟩ = i2 one one’ (K ALL_TAC) >>
+simp[] >>
+rw[EQ_IMP_THM]
+>- metis_tac[fac_diag_eq] >>
+qexists_tac ‘x’ >> rw[] >>
+drule to_p_eq_applied >> rw[] >>
+‘⟨x,x⟩ = ⟨id A,id A⟩ ∘ x’
+ suffices_by metis_tac[] >>
+first_x_assum irule >> rw[] (* 3 *)
+>- (‘p1 A A ∘ ⟨id A,id A⟩ ∘ x = (p1 A A ∘ ⟨id A,id A⟩) ∘ x’
+     by metis_tac[compose_assoc,p1_hom] >>
+   simp[] >> metis_tac[p1_of_pa,idL,id1])
+>- metis_tac[p2_of_pa,idL,id1,compose_assoc,p2_hom]
+>- metis_tac[compose_hom]
+QED
 
                      
                                 
