@@ -411,7 +411,40 @@ simp[] >> metis_tac[to1_unique,idL,compose_hom]
 QED
 
 
-Theorem compose_with_pair_          
+Theorem ev_compose_split:
+∀A B X Y f g. f∶ B → X ∧ g∶ X → exp A Y ⇒
+          (ev A Y) o ⟨p1 A B, g o f o p2 A B⟩ = 
+          ((ev A Y) o ⟨p1 A X, g o p2 A X⟩) o
+           ⟨p1 A B,f o p2 A B⟩
+Proof
+rw[] >>
+‘ev A Y∶ (A × exp A Y) → Y’ by metis_tac[ev_hom] >>
+‘p1 A X∶ (A × X) → A ∧ p2 A X∶ (A × X) → X ∧
+ p1 A B∶ (A × B) → A ∧ p2 A B∶ (A × B) → B’
+ by metis_tac[p1_hom,p2_hom] >>
+‘g o p2 A X∶ (A × X) → exp A Y ∧ f o p2 A B∶ (A × B) → X’
+ by metis_tac[compose_hom] >>
+‘⟨p1 A B,f ∘ p2 A B⟩∶ (A × B) → (A × X)’ by metis_tac[pa_hom] >>
+‘⟨p1 A X,g ∘ p2 A X⟩∶ (A × X) → (A × exp A Y)’
+ by metis_tac[pa_hom] >>
+‘(ev A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩) ∘ ⟨p1 A B,f ∘ p2 A B⟩ =
+ ev A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩ ∘ ⟨p1 A B,f ∘ p2 A B⟩’
+ by metis_tac[compose_assoc,pa_hom] >>
+‘⟨p1 A B,g ∘ f ∘ p2 A B⟩ =
+ ⟨p1 A X,g ∘ p2 A X⟩ ∘ ⟨p1 A B,f ∘ p2 A B⟩’
+ suffices_by metis_tac[] >>
+irule parallel_p_one_side >> metis_tac[]
+QED
+        
+        
+Theorem comp_partial_ev:
+∀A X Y x psi ϕ.
+  x∶ one → A ∧ psi∶ X → Y ∧ ϕ∶ (A × exp X Y) → Y ⇒ 
+             ϕ ∘ ⟨x,tp (psi ∘ p1 X one)⟩ =
+             ev A Y ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 X one)⟩ ∘
+             ⟨id A,to1 A⟩ ∘ x
+Proof
+                 
                
         
 Theorem Thm6_lemma_3:
