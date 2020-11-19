@@ -1141,7 +1141,7 @@ QED
 
 Theorem Thm6_page29_means_just_that:
 ∀f0 f1 R A a0 a1.
-         f0∶R → A ∧ f1∶R → A ∧ is_symm f0 f1 ∧ is_trans f0 f1 ∧
+         f0∶R → A ∧ f1∶R → A  ∧
          a0∶ one → A ∧ a1∶ one → A ∧
 bar f1 o
   (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
@@ -1217,14 +1217,53 @@ cheat
 (* assoc again... *)
 QED
 
-  
+(*confused when should I use metis and irule...*)
 
+Theorem is_refl_thm:
+∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
+         (is_refl f0 f1 ⇔
+         ∃d. d∶ A → R ∧ f0 ∘ d = id A ∧ f1 ∘ d = id A)
+Proof
+rw[] >>
+metis_tac[is_refl_def,hom_def]
+QED
 
-(*confused when should I use metis and irule...*)        
+val is_refl_thm_l2r =
+      is_refl_thm
+      |> SPEC_ALL |> SPEC_ALL |> SPEC_ALL |> SPEC_ALL
+      |> UNDISCH |> EQ_IMP_RULE |> #1 |> UNDISCH
+      |> DISCH “f0∶R → A ∧ f1∶R → A” |> DISCH_ALL
+      |> Q.GEN ‘R’ |> Q.GEN ‘A’ |> Q.GEN ‘f0’ |> Q.GEN ‘f1’  
+            
+Theorem is_refl_equiv_to_itself:
+∀f0 f1 a A R.
+ is_refl f0 f1 ∧ f0∶ R → A ∧ f1∶ R → A ∧ a∶ one → A ⇒
+ ∃r. r∶ one → R ∧ f0 o r = a ∧ f1 o r = a
+Proof
+rw[] >> drule is_refl_thm_l2r >> rw[] >>
+first_x_assum drule_all >> rw[] >>
+qexists_tac ‘d o a’ >>
+‘d o a∶ one → R’ by metis_tac[compose_hom] >>
+metis_tac[compose_assoc,idL]
+QED
+
+        
+Theorem equiv_to_same_element:
+∀a0 a1 f0 f1 R A.
+ a0∶ one → A ∧ a1∶ one → A ∧ f0∶ R → A ∧ f1∶ R → A ∧
+ is_refl f0 f1 ∧
+  (∀a'.
+             a'∶one → A ⇒
+             ((∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a') ⇔
+              ∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a')) ⇒
+  ∃r. r∶ one → R ∧ f0 o r = a0 ∧ f1 o r = a1
+Proof
+rw[] >> metis_tac[is_refl_equiv_to_itself]
+QED
 
 Theorem compose_with_g_eq_equiv:
 ∀f0 f1 R A a0 a1.
-         f0∶R → A ∧ f1∶R → A ∧ is_symm f0 f1 ∧ is_trans f0 f1 ∧
+         f0∶R → A ∧ f1∶R → A ∧ is_refl f0 f1 ∧
          a0∶ one → A ∧ a1∶ one → A ∧
 bar f1 o
   (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
@@ -1234,8 +1273,18 @@ bar f1 o
   sg A o a1 ⇒
  ∃r. r∶ one → R ∧ f0 o r = a0 ∧ f1 o r = a1
 Proof
-rw[] >> ev_eq_eq
+rw[] >>
+‘∀a'. a'∶one → A ⇒
+       ((∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a') ⇔
+       ∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a')’
+ by (ho_match_mp_tac Thm6_page29_means_just_that >> rw[]) >>
+    (* why metis_tac[Thm6_page29_means_just_that] does not work in this case *)
+irule equiv_to_same_element >>   
+metis_tac[equiv_to_same_element]
+QED
+    
 
+                  
  
 
 
@@ -1284,7 +1333,10 @@ Theorem Thm6:
                     ((coeqa f0 f1) o p2 A A)
 Proof
 rw[] >> irule Thm6_first_sentence >> rw[] >>
-
+irule equiv_to_same_element >> rw[] >> qexists_tac ‘A’ >>
+simp[] >> 
+ho_match_mp_tac Thm6_page29_means_just_that >> rw[] >>
+irule Thm6_page29_picture >> rw[]
 QED                    
 
 val _ = export_theory();
