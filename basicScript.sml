@@ -38,6 +38,16 @@ QED
 
 
 
+Theorem compose_assoc_4_3_2_left:
+∀A B X Y Z f1 f2 f3 f4.
+  f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ⇒
+  (f4 o f3 o f2) o f1 = (f4 o f3) o f2 o f1
+Proof
+metis_tac[compose_assoc_4_3_left,compose_assoc_4_2_left]
+QED
+        
+
+
 Theorem compose_assoc_4_2_left_middle:
 ∀A B X Y Z f1 f2 f3 f4.
   f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ⇒
@@ -79,6 +89,23 @@ Proof
 metis_tac[compose_assoc]
 QED        
 
+Theorem compose_assoc_5_2_left1_left:
+∀A B C X Y Z f1 f2 f3 f4 f5.
+  f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ∧ f5∶ B → C ⇒
+  f5 o (f4 o f3) o f2 o f1 = (f5 o f4) o f3 o f2 o f1
+Proof
+cheat
+QED
+
+
+
+Theorem compose_assoc_5_4_left:
+∀A B C X Y Z f1 f2 f3 f4 f5.
+  f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ∧ f5∶ B → C ⇒
+  f5 o f4 o f3 o f2 o f1 = (f5 o f4 o f3 o f2) o f1
+Proof
+cheat
+QED                 
 
 
 
@@ -1402,6 +1429,7 @@ rename [‘x'∶ one → X'’] >>
         metis_tac[]))
 QED
 
+        
 
         
 val _ = export_theory();

@@ -3,8 +3,12 @@ open HolKernel Parse boolLib bossLib;
 open ETCSaxiomTheory basicTheory;     
 
 open Thm3Theory;
+
+open Thm5Theory;
      
 val _ = new_theory "Thm6";
+
+    
 
 
 Theorem pb_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] pb_exists        
@@ -225,12 +229,83 @@ rw[] (* 2 *)
 QED
 
 
+Theorem Thm5:
+∀A X a. is_mono a ∧ a∶ A → X ⇒
+        ∃A' a'. is_mono a' ∧ a'∶ A' → X ∧ is_iso (copa a a')
+Proof
+cheat
+QED        
+
 Theorem char_exists:
 ∀a. is_mono a ⇒ ∃phi. phi∶ cod a → (one + one) ∧
     ∀x. x∶ one → cod a ⇒ ((∃x0. x0∶ one → dom a ∧ a o x0 = x) ⇔
                          phi o x = i2 one one)
 Proof
-cheat
+rw[] >>
+drule Thm5 >> rw[] >>
+qabbrev_tac ‘A = dom a’ >> qabbrev_tac ‘X = cod a’ >>
+‘a∶ A → X’ by metis_tac[hom_def] >>
+first_x_assum drule >> rw[] >>
+‘copa a a'∶ A + A' → X’ by metis_tac[copa_hom] >>
+drule is_iso_thm >> rw[] >>
+‘i2 one one o to1 A∶ A → one + one’
+ by metis_tac[i2_hom,to1_hom,compose_hom] >>
+‘i1 one one o to1 A'∶ A' → one + one’
+ by metis_tac[i1_hom,to1_hom,compose_hom] >>
+‘copa (i2 one one o to1 A) (i1 one one o to1 A')∶ A + A' → one + one’
+ by metis_tac[copa_hom] >>
+rename [‘ copa a a' ∘ f = id X’] >>
+‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') o f∶ X → one + one’
+ by metis_tac[compose_hom] >>
+qexists_tac ‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') o f’ >>
+simp[] >> rw[] >>
+rw[EQ_IMP_THM] (*2  *)
+>- (‘copa a a' o i1 A A' = a’ by metis_tac[i1_of_copa] >>
+   ‘f o copa a a' o i1 A A' = (f o copa a a') o i1 A A'’
+    by metis_tac[i1_hom,compose_assoc] >>
+   ‘f o a = i1 A A'’ by metis_tac[idL,i1_hom] >>
+   ‘(copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ f) ∘ a ∘ x0 =
+    copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ (f ∘ a) ∘ x0’
+    by metis_tac[compose_assoc_4_2_left_middle] >>
+   simp[] >>
+   ‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i1 A A' ∘ x0 =
+    (copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i1 A A') ∘ x0’
+    by metis_tac[i1_hom,compose_assoc] >>
+   simp[] >>
+   ‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i1 A A' =
+    (i2 one one ∘ to1 A)’ by metis_tac[i1_of_copa] >>
+   simp[] >>
+   ‘(i2 one one ∘ to1 A) ∘ x0 = i2 one one ∘ to1 A ∘ x0’
+    by metis_tac[compose_assoc,to1_hom,i2_hom] >>
+   ‘to1 A o x0 = id one’
+    by metis_tac[compose_hom,to1_hom,id1,to1_unique] >>
+   simp[] >> metis_tac[i2_hom,idR])
+>- (‘f o x∶ one → A + A'’ by metis_tac[compose_hom] >>
+   drule to_copa_fac >> rw[] (* 2 *)
+   >- (‘a = copa a a' o i1 A A'’ by metis_tac[i1_of_copa] >>
+      qexists_tac ‘x0’ >> simp[] >>
+      ‘copa a a' ∘ i1 A A' o x0 = x’
+       suffices_by metis_tac[i1_hom,compose_assoc] >>
+      simp[] >>
+      metis_tac[idL,compose_assoc])
+   >- (‘(copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ f) ∘ x =
+       i1 one one’ suffices_by metis_tac[i1_ne_i2] >>
+      ‘(copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ f) ∘ x =
+       copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ f ∘ x’
+       by metis_tac[compose_assoc] >>
+      ‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i2 A A' ∘ x0' = i1 one one’ suffices_by metis_tac[] >>
+      ‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i2 A A' ∘ x0' = (copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i2 A A') ∘ x0'’
+       by metis_tac[i2_hom,compose_assoc] >>
+      simp[] >>
+      ‘copa (i2 one one ∘ to1 A) (i1 one one ∘ to1 A') ∘ i2 A A' =
+       i1 one one o to1 A'’ by metis_tac[i2_of_copa] >>
+      simp[] >>
+      ‘(i1 one one ∘ to1 A') ∘ x0' = i1 one one ∘ to1 A' ∘ x0'’
+       by metis_tac[i1_hom,compose_assoc,to1_hom] >>
+      simp[] >>
+      ‘to1 A' ∘ x0' = id one’
+       by metis_tac[to1_hom,compose_hom,id1,to1_unique] >>
+      metis_tac[idR,i1_hom]))
 QED
      
 
