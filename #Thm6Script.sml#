@@ -1185,7 +1185,7 @@ qabbrev_tac ‘l = (bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R 
   (rw[] >>
   ‘coeqa f0 f1∶ A → coeqo f0 f1’ by metis_tac[coeqa_hom] >>
   metis_tac[compose_assoc]) >>
-
+qexists_tac ‘coeq_induce f0 f1 l’ >> 
 
 
         
