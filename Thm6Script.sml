@@ -1134,7 +1134,9 @@ first_x_assum drule_all >> rw[] >>
          (f1 ∘ r) ∘ p2 A one⟩ ∘ ⟨a0,id one⟩∶ one → two’
  by cheat  >>
 irule one_to_two_eq >> simp[] >> rw[] >>
-(*lemma*) cheat
+drule symm_trans_rel_lemma >> strip_tac >>
+first_x_assum (qspecl_then [‘a0’,‘R’,‘A’,‘r’] assume_tac) >>
+metis_tac[]
 QED
 
 
