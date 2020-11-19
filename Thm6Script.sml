@@ -901,9 +901,43 @@ strip_tac >> strip_tac >> strip_tac >> strip_tac >>
 ‘dom h = R ∧ cod h = A’ by metis_tac[hom_def] >>
 metis_tac[bar_def]
 QED
+            
         
 Theorem Thm3_g_ev:
-∀a a'.         
+∀a a' f0 f1 R A.
+ a∶ one → A ∧ a'∶ one → A ∧ f0∶ R → A ∧ f1∶ R → A ⇒
+ (ev A two o
+ ⟨p1 A one,
+  bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A o a o p2 A one⟩ o ⟨id A,to1 A⟩ o
+ a' = i2 one one ⇔
+ (∃r. r∶ one → R ∧ f0 o r = a ∧ f1 o r = a'))
+Proof 
+rw[] >> drule bar_thm >> rw[] >>
+‘∃psi. psi∶ R → two ∧
+       tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a = tp (psi ∘ p1 R one) ’ by cheat >>
+simp[] >>
+‘bar f1 ∘
+        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a ∘
+        p2 A one =
+ bar f1 ∘
+        (tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a) ∘
+        p2 A one’ by cheat >> simp[] >>
+‘∀r. r∶ one → R ⇒ (f0 o r = a ⇔ psi o r = i2 one one)’
+ suffices_by metis_tac[] >>
+rw[] >>
+‘psi = ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0’ by cheat (*need a lemma about psi*)>>
+simp[] >>
+‘(ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 o r =
+              i2 one one ⇔ f0 o r = a)’
+ by (irule (sg_def |> SPEC_ALL |> CONJUNCT2) >>
+    metis_tac[compose_hom]) >>
+‘ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 ∘ r =
+ (ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0) ∘ r’ suffices_by metis_tac[] >>
+irule compose_assoc_5_4_left >>
+cheat
+QED
                                 
 Theorem Thm6_symm_unique_g:
 ∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ∧
