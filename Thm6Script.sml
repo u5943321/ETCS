@@ -1139,6 +1139,89 @@ first_x_assum (qspecl_then [‘a0’,‘R’,‘A’,‘r’] assume_tac) >>
 metis_tac[]
 QED
 
+Theorem Thm6_page29_means_just_that:
+∀f0 f1 R A a0 a1.
+         f0∶R → A ∧ f1∶R → A ∧ is_symm f0 f1 ∧ is_trans f0 f1 ∧
+         a0∶ one → A ∧ a1∶ one → A ∧
+bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A o a0 =
+bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A o a1 ⇒
+∀a'. a'∶ one → A ⇒
+    ((∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a') ⇔
+     (∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a'))
+Proof
+rw[] >>
+‘ev A two ∘
+ ⟨p1 A one,bar f1 ∘
+  tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘  a0 ∘ p2 A one⟩ ∘ ⟨a',id one⟩ = i2 one one ⇔
+  ∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a'’
+  by (irule Thm6_g_ev' >> rw[]) >>
+‘ev A two ∘
+ ⟨p1 A one,bar f1 ∘
+  tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘  a1 ∘ p2 A one⟩ ∘ ⟨a',id one⟩ = i2 one one ⇔
+  ∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a'’
+  by (irule Thm6_g_ev' >> rw[]) >>
+‘ev A two ∘
+ ⟨p1 A one,bar f1 ∘
+           tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a0 ∘ p2 A one⟩ ∘ ⟨a',id one⟩ =
+ ev A two ∘
+ ⟨p1 A one,bar f1 ∘
+           tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a1 ∘ p2 A one⟩ ∘ ⟨a',id one⟩’
+  suffices_by metis_tac[] >>
+Q.UNDISCH_THEN
+‘ev A two ∘
+ ⟨p1 A one,bar f1 ∘
+           tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+        a0 ∘ p2 A one⟩ ∘ ⟨a',id one⟩ =
+        i2 one one ⇔ ∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a'’
+ (K ALL_TAC) >>
+Q.UNDISCH_THEN
+‘ev A two ∘
+        ⟨p1 A one,bar f1 ∘
+        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+        a1 ∘ p2 A one⟩ ∘ ⟨a',id one⟩ =
+        i2 one one ⇔ ∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a'’
+ (K ALL_TAC) >>
+qabbrev_tac ‘l1 = bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a0’ >>
+qabbrev_tac ‘l2 = bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a1’ >>
+‘l1∶ one → exp A two ∧ l2∶ one → exp A two’
+ by cheat >> 
+‘ev A two o ⟨p1 A one, l1 o p2 A one⟩ =
+ ev A two o ⟨p1 A one, l2 o p2 A one⟩’
+ by metis_tac[] >>
+‘ev A two ∘
+        ⟨p1 A one,bar f1 ∘
+        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+        a0 ∘ p2 A one⟩ =
+ ev A two ∘
+        ⟨p1 A one,bar f1 ∘
+        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+        a1 ∘ p2 A one⟩’ suffices_by cheat >> 
+qpat_x_assum ‘_ = _’ mp_tac >> fs[Abbr‘l1’,Abbr‘l2’] >>
+‘(bar f1 ∘
+         tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+         a0) ∘ p2 A one =
+ bar f1 ∘
+        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+        a0 ∘ p2 A one ∧
+ (bar f1 ∘
+         tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+         a1) ∘ p2 A one =
+ bar f1 ∘
+        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+        a1 ∘ p2 A one’  suffices_by metis_tac[] >>
+cheat
+(* assoc again... *)
+QED
+
+  
+
+
+(*confused when should I use metis and irule...*)        
+
 Theorem compose_with_g_eq_equiv:
 ∀f0 f1 R A a0 a1.
          f0∶R → A ∧ f1∶R → A ∧ is_symm f0 f1 ∧ is_trans f0 f1 ∧
@@ -1151,7 +1234,7 @@ bar f1 o
   sg A o a1 ⇒
  ∃r. r∶ one → R ∧ f0 o r = a0 ∧ f1 o r = a1
 Proof
-rw[] >> 
+rw[] >> ev_eq_eq
 
  
 
@@ -1185,7 +1268,10 @@ qabbrev_tac ‘l = (bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R 
   (rw[] >>
   ‘coeqa f0 f1∶ A → coeqo f0 f1’ by metis_tac[coeqa_hom] >>
   metis_tac[compose_assoc]) >>
-
+qexists_tac ‘coeq_induce f0 f1 l’ >> rw[] (* 2 *)
+>- metis_tac[coeq_induce_hom]
+>- metis_tac[coeq_fac]
+QED
 
 
         
