@@ -257,6 +257,7 @@ Proof
 cheat
 QED
 
+        (*
 
 Definition n2a_def:
 n2a f = 
@@ -264,7 +265,7 @@ n2a f =
 (*n2a sends a 1 --> 2^A  to transpose, a2n other direction*)
 
   ev A (one + one) o ⟨p1 A one, hb o tp (psi o p2 one R)⟩
-
+*)
 
 
 Theorem fac_char:
@@ -272,8 +273,27 @@ Theorem fac_char:
         ∀P p f. p∶ P → X ∧ f∶ P → A ∧ m o f = p ⇒
                 char m o p = (i2 one one) ∘ to1 P
 Proof
-cheat
+rw[] >> drule char_thm >> rw[] >>
+first_x_assum drule >> rw[] >>
+‘char m ∘ m ∘ f∶ P → two ∧ i2 one one o to1 P∶ P → two’
+ by metis_tac[compose_hom,i2_hom,to1_hom] >>
+irule fun_ext >> qexistsl_tac [‘P’,‘two’] >> simp[] >>
+rw[] >>
+‘(char m ∘ m ∘ f) ∘ a = char m ∘ m ∘ f ∘ a’
+ by (irule compose_assoc_4_3_left >> metis_tac[]) >>
+rw[] >>
+‘m o f o a∶ one → X’ by metis_tac[compose_hom] >>
+first_x_assum drule >> rw[] >>
+‘f o a∶ one → A’ by metis_tac[compose_hom] >>
+‘(i2 one one ∘ to1 P) ∘ a = i2 one one ∘ to1 P ∘ a’
+ by metis_tac[compose_assoc,i2_hom,to1_hom] >>
+simp[] >>
+‘to1 P o a = id one’
+ by metis_tac[to1_hom,compose_hom,id1,to1_unique] >>
+simp[] >> metis_tac[i2_hom,idR]
 QED
+
+(*match one lemma with inverse direction*)        
 
 Theorem iso_zero_zero:
 ∀A. A≅ zero ⇒
@@ -951,20 +971,7 @@ Theorem Thm6_g_ev':
 Proof
 cheat
 QED
-                                
-Theorem Thm6_symm_unique_g:
-∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ∧
-            is_symm f0 f1 ⇒
-Proof
-cheat
-QED
 
-Theorem compose_with_g_equiv:
-∀a a0.         
-
-Theorem trans_alt:
-
-Proof
 
 Theorem is_trans_thm:
 ∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
