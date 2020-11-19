@@ -903,7 +903,7 @@ metis_tac[bar_def]
 QED
             
         
-Theorem Thm3_g_ev:
+Theorem Thm6_g_ev:
 ∀a a' f0 f1 R A.
  a∶ one → A ∧ a'∶ one → A ∧ f0∶ R → A ∧ f1∶ R → A ⇒
  (ev A two o
@@ -937,6 +937,19 @@ simp[] >>
  (ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0) ∘ r’ suffices_by metis_tac[] >>
 irule compose_assoc_5_4_left >>
 cheat
+(*smart way for such matching?*)
+QED
+
+Theorem Thm6_g_ev':
+∀a a' f0 f1 R A.
+         a∶one → A ∧ a'∶one → A ∧ f0∶R → A ∧ f1∶R → A ⇒
+         (ev A two ∘
+          ⟨p1 A one,bar f1 ∘
+          tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+          a ∘ p2 A one⟩ ∘ ⟨a',id one⟩ =
+          i2 one one ⇔ ∃r. r∶one → R ∧ f0 ∘ r = a ∧ f1 ∘ r = a')
+Proof
+cheat
 QED
                                 
 Theorem Thm6_symm_unique_g:
@@ -944,7 +957,203 @@ Theorem Thm6_symm_unique_g:
             is_symm f0 f1 ⇒
 Proof
 cheat
-QED                        
+QED
+
+Theorem compose_with_g_equiv:
+∀a a0.         
+
+Theorem trans_alt:
+
+Proof
+
+Theorem is_trans_thm:
+∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
+         (is_trans f0 f1 ⇔
+         ∀X h0 h1.
+             h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
+             ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)
+Proof
+rw[] >>
+metis_tac[is_trans_def,hom_def]
+QED
+
+
+Theorem is_trans_thm':
+∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
+         (is_trans f0 f1 ⇒
+         ∀X h0 h1.
+             h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
+             ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)
+Proof
+metis_tac[is_trans_thm]
+QED        
+
+Theorem is_trans_thm_l2r:
+∀f0 f1 R A.
+         is_trans f0 f1 ∧
+         f0∶ R → A ∧ f1∶ R → A ⇒
+         (∀X h0 h1.
+             h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
+             ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)
+Proof
+rw[] >> drule is_trans_thm
+metis_tac[is_trans_thm]
+QED            
+
+Theorem symm_trans_rel_lemma:
+∀f0 f1 a R A r.
+ is_symm f0 f1 ∧ is_trans f0 f1 ∧
+ f0∶ R → A ∧ f1∶ R → A ∧ a∶ one → A ∧ r∶ one → R ⇒
+       ((∃r'. r'∶one → R ∧ f0 ∘ r' = f0 ∘ r ∧ f1 ∘ r' = a) ⇔
+        (∃r''. r''∶one → R ∧ f0 ∘ r'' = f1 ∘ r ∧ f1 ∘ r'' = a))
+Proof
+rw[EQ_IMP_THM] (* 2 *)
+>- (‘∃t. t∶ R → R ∧ f0 o t = f1 ∧ f1 o t = f0’
+     by metis_tac[is_symm_def,hom_def] >>
+   ‘f1 o t ∘ r' = f0 ∘ r’
+    by metis_tac[compose_assoc] >>
+   ‘(is_trans f0 f1 ⇔
+          ∀X h0 h1.
+              h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
+              ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)’ by (irule is_trans_thm >> metis_tac[]) >>  rfs[] >>
+   ‘t o r'∶ one → R’ by metis_tac[compose_hom] >>
+  first_x_assum (qspecl_then [‘one’,‘t o r'’,‘r’] assume_tac)>>
+  ‘∃u. u∶one → R ∧ f0 ∘ u = f0 ∘ t ∘ r' ∧ f1 ∘ u = f1 ∘ r’
+   by metis_tac[] >>
+  qexists_tac ‘t o u’ >>
+  ‘t o u∶ one → R’ by metis_tac[compose_hom] >>
+  metis_tac[compose_assoc])
+>- (‘(is_trans f0 f1 ⇔
+          ∀X h0 h1.
+              h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
+              ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)’ by (irule is_trans_thm >> metis_tac[]) >>  rfs[])
+QED              
+  
+              
+
+
+        
+Theorem to_p_with_1:
+∀A a. a∶ one → (A × one) ⇒ ∃a0. a0∶one → A ∧
+      a = ⟨a0, id one⟩
+Proof
+cheat
+QED
+
+Theorem one_to_two_cases:
+∀f. f∶ one → two ⇒ f = i1 one one ∨ f = i2 one one
+Proof
+cheat
+QED
+   
+Theorem one_to_two_eq:
+∀f g. f∶ one → two ∧ g∶ one → two ∧
+      (f = i2 one one ⇔ g = i2 one one) ⇒ f = g
+Proof
+rw[] >> Cases_on ‘f = i2 one one’
+>- metis_tac[]
+>- (‘g ≠ i2 one one’ by metis_tac[] >>
+   metis_tac[one_to_two_cases])
+QED
+        
+        
+Theorem f0g_eq_f1g:
+∀f0 f1 R A.
+ f0∶ R → A ∧ f1∶ R → A ∧ is_symm f0 f1 ∧ is_trans f0 f1 ⇒
+ (bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A) o f0 =
+ (bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A) o f1
+Proof
+rw[] >> 
+irule fun_ext >>
+qexistsl_tac [‘R’,‘exp A two’] >>
+‘(bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘
+         sg A) ∘ f0∶R →
+        exp A two ∧
+        (bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘
+         sg A) ∘ f1∶R →
+        exp A two’ by cheat >>
+simp[] >> rw[] >>
+rename [‘r∶ one → R’] >>
+‘((bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘
+          sg A) ∘ f0) ∘ r∶ one → exp A two ∧
+ ((bar f1 ∘ tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘
+          sg A) ∘ f1) ∘ r∶ one → exp A two’
+ by cheat >>
+irule ev_eq_eq >>
+qexistsl_tac [‘A’,‘two’,‘one’] >> simp[] >>
+‘ev A two ∘
+        ⟨p1 A one,(((bar f1 ∘
+           tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A) ∘
+          f0) ∘ r) ∘ p2 A one⟩∶ (A × one) → two ∧
+ ev A two ∘
+        ⟨p1 A one,(((bar f1 ∘
+           tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A) ∘
+          f1) ∘ r) ∘ p2 A one⟩∶ (A × one) → two’
+ by cheat >> irule fun_ext >>
+qexistsl_tac [‘A × one’,‘two’] >> simp[] >>
+rw[] >>
+‘∃a0. a0∶ one → A ∧ a = ⟨a0, id one⟩’
+ by metis_tac[to_p_with_1]>>
+simp[] >>
+‘(ev A two ∘
+         ⟨p1 A one,(((bar f1 ∘
+            tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A) ∘
+           f0) ∘ r) ∘ p2 A one⟩) ∘ ⟨a0,id one⟩ =
+ev A two ∘
+         ⟨p1 A one,bar f1 ∘
+            tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+           (f0 ∘ r) ∘ p2 A one⟩ ∘ ⟨a0,id one⟩’ by cheat >>
+‘(ev A two ∘
+         ⟨p1 A one,(((bar f1 ∘
+            tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A) ∘
+           f1) ∘ r) ∘ p2 A one⟩) ∘ ⟨a0,id one⟩ =
+ev A two ∘
+         ⟨p1 A one,bar f1 ∘
+            tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+           (f1 ∘ r) ∘ p2 A one⟩ ∘ ⟨a0,id one⟩’ by cheat >>
+simp[] >>
+‘f0 o r∶ one → A’ by metis_tac[compose_hom] >>
+drule Thm6_g_ev' >> strip_tac >>
+first_x_assum (qspecl_then [‘a0’,‘f0’,‘f1’,‘R’] assume_tac) >>
+first_x_assum drule_all >> rw[] >>
+‘f1 o r∶ one → A’ by metis_tac[compose_hom] >>
+drule Thm6_g_ev' >> strip_tac >>
+first_x_assum (qspecl_then [‘a0’,‘f0’,‘f1’,‘R’] assume_tac) >>
+first_x_assum drule_all >> rw[] >>
+‘ev A two ∘
+              ⟨p1 A one,bar f1 ∘
+              tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘
+              sg A ∘ (f0 ∘ r) ∘ p2 A one⟩ ∘ ⟨a0,id one⟩∶ one → two’ by cheat >>
+‘ev A two ∘
+         ⟨p1 A one,bar f1 ∘
+         tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘
+         (f1 ∘ r) ∘ p2 A one⟩ ∘ ⟨a0,id one⟩∶ one → two’
+ by cheat  >>
+irule one_to_two_eq >> simp[] >> rw[] >>
+(*lemma*) cheat
+QED
+
+
+
+Theorem Thm6_page29_picture:
+∀f0 f1 a0 a1.
+ f0∶ R → A ∧ f1∶ R → A ∧ is_symm f0 f1 ∧ is_trans f0 f1 ∧
+ a0∶ one → A ∧ a1∶ one → A ⇒
+ coeqa f0 f1 ∘ a0 = coeqa f0 f1 ∘ a1 ⇒
+ bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A o a0 =
+ bar f1 o
+  (tp (ev A two o ⟨f0 o p1 R (exp A two),p2 R (exp A two)⟩)) o
+  sg A o a1
+Proof  
+ 
+
+        
 
 Theorem Thm6:
 ∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ∧
@@ -953,7 +1162,8 @@ Theorem Thm6:
             R ≅ eqo ((coeqa f0 f1) o p1 A A)
                     ((coeqa f0 f1) o p2 A A)
 Proof
-rw[] >> irule Thm6_first_sentence >> rw[]
+rw[] >> irule Thm6_first_sentence >> rw[] >>
+
 QED                    
 
 val _ = export_theory();
