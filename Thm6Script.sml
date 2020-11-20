@@ -2,13 +2,13 @@ open HolKernel Parse boolLib bossLib;
 
 open ETCSaxiomTheory basicTheory;     
 
-open Thm3Theory;
+open Thm3Theory Thm5Theory;
 
-open Thm5Theory;
      
 val _ = new_theory "Thm6";
 
     
+val _ = overload_on("two", “one + one”);
 
 
 Theorem pb_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] pb_exists        
@@ -19,13 +19,15 @@ val pb_def = new_specification ("pb_def",["pbo","pb1","pb2"],pb_exists_thm)
 Theorem iso_symm:
 ∀X Y. X ≅ Y ⇔ Y ≅ X
 Proof
-cheat
+rw[] >> simp[are_iso_is_iso] >> metis_tac[is_iso_thm]
 QED    
 
 Theorem iso_trans:
 ∀X Y Z. X ≅ Y ∧ Y ≅ Z ⇒ X ≅ Z
 Proof
-cheat
+simp[are_iso_is_iso] >> rw[] >> drule is_iso_thm >> rw[] >>
+Q.UNDISCH_THEN ‘is_iso f'’ (K ALL_TAC) >> drule is_iso_thm >>
+rw[] >> cheat
 QED
 
 Theorem iso_to_same:
@@ -227,14 +229,16 @@ rw[] (* 2 *)
    irule to_p_eq_applied >> qexistsl_tac [‘A’,‘A’,‘one’] >>
    simp[] >> metis_tac[compose_assoc,p1_of_pa,p2_of_pa])
 QED
-
+(*
 
 Theorem Thm5:
 ∀A X a. is_mono a ∧ a∶ A → X ⇒
         ∃A' a'. is_mono a' ∧ a'∶ A' → X ∧ is_iso (copa a a')
 Proof
 cheat
-QED        
+QED*)
+
+(*need to delete it if can open Thm5Theory*)        
 
 Theorem char_exists:
 ∀a. is_mono a ⇒ ∃phi. phi∶ cod a → (one + one) ∧
@@ -329,7 +333,8 @@ Theorem char_thm:
              x∶one → X ⇒
              ((∃x0. x0∶one → A ∧ a ∘ x0 = x) ⇔ char a ∘ x = i2 one one)
 Proof
-cheat
+strip_tac >> strip_tac >> strip_tac >> strip_tac >>
+fs[hom_def] >> metis_tac[char_def,hom_def]
 QED
 
         (*
@@ -410,17 +415,6 @@ qexists_tac ‘s' o x0’ >>
  by metis_tac[compose_assoc_4_2_left_middle] >>
 metis_tac[idL,idR]
 QED
-
-(*
-Theorem pa_with_id_right:
-∀A B C. f∶ A → B ⇒
-          f o p1 A C = p1 B C o ⟨f o p1 A C,p2 A C⟩
-Proof
-              
-
- *)
-
-val _ = overload_on("two", “one + one”);
 
 Theorem fac_through_eq:
 ∀f g h h0 A B X. f∶ A → B ∧ g∶ A → B ∧ h∶ X → A ∧ h0∶ X → eqo f g ∧
@@ -1058,7 +1052,7 @@ Proof
 rw[] >>
 metis_tac[is_trans_def,hom_def]
 QED
-
+(*
 
 Theorem is_trans_thm':
 ∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
@@ -1068,20 +1062,9 @@ Theorem is_trans_thm':
              ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)
 Proof
 metis_tac[is_trans_thm]
-QED        
-
-Theorem is_trans_thm_l2r:
-∀f0 f1 R A.
-         is_trans f0 f1 ∧
-         f0∶ R → A ∧ f1∶ R → A ⇒
-         (∀X h0 h1.
-             h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
-             ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)
-Proof
-rw[] >> drule is_trans_thm
-metis_tac[is_trans_thm]
-QED            
-
+QED
+ 
+*)
 Theorem symm_trans_rel_lemma:
 ∀f0 f1 a R A r.
  is_symm f0 f1 ∧ is_trans f0 f1 ∧
