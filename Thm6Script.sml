@@ -22,12 +22,30 @@ Proof
 rw[] >> simp[are_iso_is_iso] >> metis_tac[is_iso_thm]
 QED    
 
+Theorem iso_compose_iso:
+∀X Y Z f g. is_iso f ∧ is_iso g ∧ f∶ X → Y ∧ g∶ Y → Z ⇒
+            is_iso (g o f)
+Proof
+rw[] >>
+‘∃f'. f'∶ Y → X ∧ f' o f = id X ∧ f o f' = id Y’
+ by metis_tac[is_iso_thm] >>
+‘∃g'. g'∶ Z → Y ∧ g' o g = id Y ∧ g o g' = id Z’
+ by metis_tac[is_iso_thm] >>
+‘g o f∶ X → Z’ by metis_tac[compose_hom] >>
+drule is_iso_thm >> rw[] >>
+qexists_tac ‘f' o g'’ >>
+‘f' o g'∶ Z → X’ by metis_tac[compose_hom] >> simp[] >>
+‘(f' ∘ g') ∘ g ∘ f = f' ∘ (g' ∘ g) ∘ f’
+ by metis_tac[compose_assoc_4_2_left_middle] >>
+‘(g ∘ f) ∘ f' ∘ g' = g ∘ (f ∘ f') ∘ g'’
+ by metis_tac[compose_assoc_4_2_left_middle] >>
+simp[] >> metis_tac[idL,idR]
+QED    
+       
 Theorem iso_trans:
 ∀X Y Z. X ≅ Y ∧ Y ≅ Z ⇒ X ≅ Z
 Proof
-simp[are_iso_is_iso] >> rw[] >> drule is_iso_thm >> rw[] >>
-Q.UNDISCH_THEN ‘is_iso f'’ (K ALL_TAC) >> drule is_iso_thm >>
-rw[] >> cheat
+rw[are_iso_is_iso] >> qexists_tac ‘f' o f’ >> metis_tac[compose_hom,iso_compose_iso]
 QED
 
 Theorem iso_to_same:
@@ -850,7 +868,14 @@ QED
 Theorem diag_is_mono:
 ∀A. is_mono ⟨id A,id A⟩
 Proof
-cheat
+rw[] >> ‘⟨id A,id A⟩∶ A → (A × A)’ by metis_tac[id1,pa_hom] >>
+irule is_mono_applied >> qexistsl_tac [‘A’,‘A × A’] >> rw[] >>
+‘p1 A A o ⟨id A,id A⟩ ∘ f = p1 A A o ⟨id A,id A⟩ ∘ g’
+ by metis_tac[] >>
+‘p1 A A ∘ ⟨id A,id A⟩ ∘ f =  (p1 A A ∘ ⟨id A,id A⟩) ∘ f ∧
+ p1 A A ∘ ⟨id A,id A⟩ ∘ g =  (p1 A A ∘ ⟨id A,id A⟩) ∘ g’
+ by metis_tac[p1_hom,compose_assoc] >>
+metis_tac[p1_of_pa,idL,id1]
 QED
 
 Theorem fac_diag_eq:
@@ -1138,13 +1163,27 @@ Theorem to_p_with_1:
 ∀A a. a∶ one → (A × one) ⇒ ∃a0. a0∶one → A ∧
       a = ⟨a0, id one⟩
 Proof
-cheat
+rw[] >> qexists_tac ‘p1 A one o a’ >>
+‘p1 A one o a∶ one → A’ by metis_tac[compose_hom,p1_hom] >>
+‘⟨p1 A one o a, id one⟩∶ one → (A × one)’ by metis_tac[id1,pa_hom] >>
+rw[] >> irule to_p_eq_applied >> qexistsl_tac [‘A’,‘one’,‘one’] >>
+simp[] >>
+‘p2 A one o a∶ one → one’ by metis_tac[p2_hom,compose_hom] >>
+‘p2 A one o a = id one’ by metis_tac[id1,to1_unique] >>
+‘p2 A one ∘ ⟨p1 A one ∘ a,id one⟩ = id one’
+ by metis_tac[p2_of_pa,id1] >>
+simp[] >>
+metis_tac[id1,p1_of_pa]
 QED
 
 Theorem one_to_two_cases:
 ∀f. f∶ one → two ⇒ f = i1 one one ∨ f = i2 one one
 Proof
-cheat
+rw[] >> drule to_copa_fac >> rw[] (* 2 *)
+>- (‘x0 = id one’ by metis_tac[id1,to1_unique] >> simp[] >>
+   metis_tac[i1_hom,idR]) >>
+‘x0' = id one’ by metis_tac[id1,to1_unique] >> simp[] >>
+metis_tac[i2_hom,idR] 
 QED
    
 Theorem one_to_two_eq:
