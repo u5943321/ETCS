@@ -68,7 +68,13 @@ rw[] >> Cases_on ‘X ≅ zero’ >> Cases_on ‘Y ≅ zero’
       ‘h2 = a' o b’ by metis_tac[idL,compose_assoc] >>
       metis_tac[compose_assoc]))
 QED
-
+(*a function taking an arrow and give its hom?
+ a program given two arrows and show  they are eq via assoc*)
+(*
+Theorem iso_zero_iso_zero_hom:
+∀X Y. X ≅ zero ∧ Y ≅ zero ⇒ ∃h. X → Y
+Proof
+*)
 
 Theorem prop_2_half2:
 ∀X Y A a b. is_mono a ∧ is_mono b ∧ a∶ X → A ∧ b∶ Y → A ∧
@@ -77,8 +83,21 @@ Theorem prop_2_half2:
             (∃h. h∶ X → Y ∧ b o h = a)
 Proof
 rpt strip_tac >> Cases_on ‘Y≅ zero’
->- cheat
->- (‘∃g. g∶ A → Y ∧ g o b = id Y’
+>- (‘X ≅ zero’
+     by
+      (SPOSE_NOT_THEN ASSUME_TAC >>
+      ‘∃x. x∶ one → X’ by metis_tac[ax6] >>
+      ‘a o x∶ one → A’ by metis_tac[compose_hom] >>
+      ‘∃xb'. xb'∶one → Y’ by metis_tac[] >>
+      metis_tac[iso_zero_no_mem]) >>
+   fs[are_iso_is_iso] >>
+   ‘∃f''. f''∶zero → Y ∧ f'' ∘ f = id Y ∧ f ∘ f'' = id zero’
+    by metis_tac[is_iso_thm] >>
+   qexists_tac ‘f'' o f'’ >>
+   ‘f'' ∘ f'∶X → Y’ by metis_tac[compose_hom] >> simp[] >>
+   irule from_iso_zero_eq >> qexistsl_tac [‘X’,‘A’] >>
+   metis_tac[compose_hom,are_iso_is_iso])    
+>- (‘∃g. g∶ A → Y ∧ g o b = id Y’ >>
     by metis_tac[mono_non_zero_post_inv] >>
    qexists_tac ‘g o a’ >> strip_tac
    >- metis_tac[compose_hom] >> 
@@ -990,7 +1009,18 @@ strip_tac >> strip_tac >> strip_tac >> strip_tac >>
 ‘dom h = R ∧ cod h = A’ by metis_tac[hom_def] >>
 metis_tac[bar_def]
 QED
-            
+
+
+
+Theorem Thm6_g_ev_psi:
+!R A s0 a f0. a∶ one → A ∧ s0∶ A →  exp A two ∧ f0∶ R → A ==>
+ev A two ∘ ⟨p1 A one,s0 ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 ∘ p1 R one =
+ ev R two o ⟨p1 R one, tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ s0 ∘ a ∘ p2 R one⟩
+Proof
+rw[] >>
+‘ev R two ∘
+ ⟨p1 R one,tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ s0 ∘ a ∘ p2 R one⟩’
+        
         
 Theorem Thm6_g_ev:
 ∀a a' f0 f1 R A.
@@ -1004,6 +1034,12 @@ Theorem Thm6_g_ev:
  (∃r. r∶ one → R ∧ f0 o r = a ∧ f1 o r = a'))
 Proof 
 rw[] >> drule bar_thm >> rw[] >>
+(*needed*)
+‘ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 ∶ R → two’ by cheat >>
+‘ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 ∘ p1 R one =
+ ev R two o ⟨p1 R one, tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a ∘ p2 R one⟩ ’
+
+     
 ‘∃psi. psi∶ R → two ∧
        tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a = tp (psi ∘ p1 R one) ’ by cheat >>
 simp[] >>

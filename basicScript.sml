@@ -94,10 +94,16 @@ Theorem compose_assoc_5_2_left1_left:
   f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ∧ f5∶ B → C ⇒
   f5 o (f4 o f3) o f2 o f1 = (f5 o f4) o f3 o f2 o f1
 Proof
-rw[]
+rw[] >> rpt (CHANGED_TAC comptac) >>rpt (CHANGED_TAC assoctac) >> metis_tac[]
 QED
+
+
+
+                              
 (*
 val _ = augment_srw_ss [SatisfySimps.SATISFY_ss]*)
+
+    
 fun pairs_from_list l =
  case l of [] => []
           | (a :: l0) => (map (fn b => (b,a)) l0) @ (map (fn b => (a,b)) l0) @ (pairs_from_list l0)    
@@ -114,24 +120,43 @@ fun comptac (asl,t) =
  end (asl,t)
 
 
+fun triples_from_list l =
+ case l of [] => []
+          | (a :: l0) =>  (map (fn b => (a, fst b, snd b)) (pairs_from_list l0)) @
+                          (map (fn b => (fst b, a, snd b)) (pairs_from_list l0)) @
+                          (map (fn b => (fst b, snd b, a)) (pairs_from_list l0)) @
+                          (triples_from_list l0)
+
+
+fun ahom (thm1,thm2,thm3) = SOME (MATCH_MP compose_assoc (CONJ thm1 (CONJ thm2 thm3)))
+                            handle HOL_ERR _ => NONE
+
+fun assoctac (asl,t) =
+ let val athms = map ASSUME asl
+     val ts = triples_from_list athms
+     val thms = List.mapPartial ahom ts
+ in
+    map_every strip_assume_tac thms
+ end (asl,t)
+              
+
+                          
+Definition triples_from_list:
+triples_from_list [] = [] ∧
+triples_from_list (a :: l) = (MAP (λb. (a, FST b, SND b)) (pairs_from_list l)) ++
+                             (MAP (λb. (FST b, a, SND b)) (pairs_from_list l)) ++
+                             (MAP (λb. (FST b, SND b, a)) (pairs_from_list l)) ++
+                             (triples_from_list l)
+End 
+
+
  
 Definition pairs_from_list:
 pairs_from_list [] = [] ∧
 pairs_from_list (a :: l) = (MAP (λb. (b,a)) l) ++ (MAP (λb. (a,b)) l) ++ (pairs_from_list l)
 End
 
-EVAL “pairs_from_list [a;b;c;d]”        
-
-fun pairs_from_list l =
- case l of [] => []
-          | (a :: l0) => (map (fn b => (b,a)) l0) @ (map (fn b => (a,b)) l0) @ (pairs_from_list l0)    
-
-
-pairs_from_list [1,2,3,4]
-
-fun chom (thm1,thm2) = SOME (MATCH_MP compose_hom (CONJ thm1 thm2))
-                       handle HOL_ERR _ => NONE
-                       
+(*
 chom (TRUTH,TRUTH)                      
 
 List.mapPartial
@@ -140,22 +165,21 @@ val t = hd (#1 $ top_goal ())
 
 strip_comb t
 
-T ~~ F            
+T ~~ F            *)
                 
 Theorem compose_assoc_5_4_left:
 ∀A B C X Y Z f1 f2 f3 f4 f5.
   f1∶ X → Y ∧ f2∶ Y → Z ∧ f3∶ Z → A ∧ f4∶ A → B ∧ f5∶ B → C ⇒
   f5 o f4 o f3 o f2 o f1 = (f5 o f4 o f3 o f2) o f1
 Proof
-rpt strip_tac >> rpt (CHANGED_TAC comptac)
-
-
-        
+rpt strip_tac >> rpt (CHANGED_TAC comptac) ASSUME a
+rpt (CHANGED_TAC assoctac)  >> metis_tac[]
+    (*     
 drule_all compose_assoc >> drule_all compose_hom >> pop_assum 
 comptac
           
 last_assum (mp_then Any assume_tac compose_assoc)
-simp[compose_assoc,compose_hom] 
+simp[compose_assoc,compose_hom] *)
 QED                 
 (*take a list and gen all possible pairs, and drop when it gives exception *)
 
