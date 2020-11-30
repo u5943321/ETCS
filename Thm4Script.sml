@@ -1,3 +1,8 @@
+open HolKernel Parse boolLib bossLib;
+open ETCSaxiomTheory basicTheory Thm1Theory Thm2Theory Thm3Theory;
+
+val _ = new_theory "Thm4";
+
 
 
 (*display one + one as 2?*)
@@ -122,4 +127,9 @@ qexists_tac ‘q o xb’ >> simp[] >>
 metis_tac[p1_of_pa]
 QED
    
+
+
+
+
+val _ = export_theory();
 
