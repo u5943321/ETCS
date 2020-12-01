@@ -158,8 +158,6 @@ qexists_tac ‘tp ϕ’ >> simp[] >> rw[] >>
 simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *) 
 >- (‘ϕ o ⟨x, tp (psi ∘ p1 R one)⟩ =
     ev A two ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 R one) o p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ x’ by metis_tac[compose_partial_ev] >> 
-   (*need lemma*)
-   (*use fact that epi has section*)
    ‘ϕ o ⟨x, tp (psi ∘ p1 R one)⟩ = i₁’ by metis_tac[] >>
    drule fac_char_via_any_map >> strip_tac >>
    first_x_assum (qspecl_then [‘h2R o ψ’,‘R'’,‘A × (exp R two)’,
@@ -295,13 +293,6 @@ simp[EQ_IMP_THM] >> rpt strip_tac (* 2 *)
        first_x_assum irule >> rw[] >>
        metis_tac[compose_hom,pa_hom]) >>
        metis_tac[])
-(*
-     cheat >>
-   ‘h2R ∘ ⟨r,tp (psi ∘ p2 one R)⟩ = ⟨x,tp (psi ∘ p2 one R)⟩’
-    by cheat >>
-   metis_tac[]
-   (*use fac_char*)*)
-  
 QED
 
 
@@ -684,14 +675,7 @@ qabbrev_tac ‘psi = ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨
        simp[] >>
        ‘p2 R one = to1 A ∘ f0 ∘ p1 R one’
         by (irule to1_unique >> metis_tac[compose_hom]) >>
-       metis_tac[])) >>
-          
-(*     
-‘∃psi. psi∶ R → two ∧
-       tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a = tp (psi ∘ p1 R one) ’ by cheat >>
-*)
-
-       
+       metis_tac[])) >>    
 simp[] >>
 ‘bar f1 ∘
         tp (ev A two ∘ ⟨f0 ∘ p1 R (exp A two),p2 R (exp A two)⟩) ∘ sg A ∘ a ∘
@@ -707,8 +691,7 @@ simp[] >>
 simp[] >>
 ‘∀r. r∶ one → R ⇒ (f0 o r = a ⇔ psi o r = i2 one one)’
  suffices_by metis_tac[] >>
-rw[] >>(*
-‘psi = ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0’ by cheat need a lemma about psi*)
+rw[] >>
 simp[Abbr‘psi’] >>
 ‘(ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 o r =
               i2 one one ⇔ f0 o r = a)’
@@ -717,7 +700,6 @@ simp[Abbr‘psi’] >>
 ‘ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0 ∘ r =
  (ev A two ∘ ⟨p1 A one,sg A ∘ a ∘ p2 A one⟩ ∘ ⟨id A,to1 A⟩ ∘ f0) ∘ r’ suffices_by metis_tac[] >>
 irule compose_assoc_5_4_left >> metis_tac[]
-(*smart way for such matching?*)
 QED
 
 Theorem Thm6_g_ev':
@@ -1028,7 +1010,6 @@ rw[] >>
        ((∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a') ⇔
        ∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a')’
  by (ho_match_mp_tac Thm6_page29_means_just_that >> rw[]) >>
-    (* why metis_tac[Thm6_page29_means_just_that] does not work in this case *)
 irule equiv_to_same_element >>   
 metis_tac[equiv_to_same_element]
 QED

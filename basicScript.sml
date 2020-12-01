@@ -41,22 +41,6 @@ fun assoctac (asl,t) =
  end (asl,t)
 
 
- (*
-val compose = prim_mk_const {Name = "o",          Thy = "min"}                       
-
-fun list_from_comp a =
- strip_binop (dest_binop (ERR "dest_select" "not a \"@\"") Div) a
- *)
-(*
-Definition comp_to_list:
-comp_to_list a = strip_binop (dest_binop implication (ERR "dest_binop" "not a composition")) a
-End
- 
-fun hom_of_arrow a =
-    hoa = 
- in map_every_strip_assume_tac hoa
-*)            
-              
     
 
 Theorem compose_assoc_4_3_left:
@@ -65,16 +49,6 @@ Theorem compose_assoc_4_3_left:
   (f4 ∘ f3 ∘ f2) ∘ f1 = f4 ∘ f3 ∘ f2 ∘ f1
 Proof
 gs[hom_def,compose_assoc0,compose_hom0]
- (*       
-rw[] >> rpt (CHANGED_TAC comptac) >>rpt (CHANGED_TAC assoctac) >> metis_tac[]*)
-(*rw[] >>
-‘f2 o f1∶ X → Z’ by metis_tac[compose_hom] >>
-‘f4 ∘ f3 ∘ (f2 ∘ f1) = (f4 ∘ f3) ∘ f2 ∘ f1’
- by metis_tac[compose_assoc] >>
-‘f4 o f3∶ Z → B’ by metis_tac[compose_hom] >>
-‘(f4 ∘ f3) ∘ f2 ∘ f1 = ((f4 ∘ f3) ∘ f2) ∘ f1’
- by metis_tac[compose_assoc] >>
-metis_tac[compose_assoc]*)
 QED  
 
 
@@ -281,14 +255,7 @@ Theorem compose_assoc_5_4_left:
 Proof
 rpt strip_tac >> rpt (CHANGED_TAC comptac) >>
 rpt (CHANGED_TAC assoctac)  >> metis_tac[]
-    (*     
-drule_all compose_assoc >> drule_all compose_hom >> pop_assum 
-comptac
-          
-last_assum (mp_then Any assume_tac compose_assoc)
-simp[compose_assoc,compose_hom] *)
 QED                 
-(*take a list and gen all possible pairs, and drop when it gives exception *)
 
 
 
@@ -600,10 +567,7 @@ SPOSE_NOT_THEN ASSUME_TAC >>
   by metis_tac[ax1_4] >>
 metis_tac[]
 QED
-
-(*okay up to here*)
-
-(*do not need mono condition*)       
+  
        
 Theorem prop_5_lemma:
 ∀A B x. ¬(x∶one → (A + B) ∧ (∃x0 x0'. x0∶one → A ∧ x0'∶one → B ∧
@@ -1117,10 +1081,12 @@ rw[EXISTS_UNIQUE_THM] (* 2 *)
    metis_tac[compose_assoc])
 QED
 
+(*
+        
 Theorem pb_exists_thm = SIMP_RULE bool_ss [SKOLEM_THM,GSYM RIGHT_EXISTS_IMP_THM] pb_exists        
 
 
-val pb_def = new_specification ("pb_def",["pbo","pb1","pb2"],pb_exists_thm)
+val pb_def = new_specification ("pb_def",["pbo","pb1","pb2"],pb_exists_thm)*)
         (*
 Theorem test:
 !A. ?B. A = B
@@ -1772,13 +1738,44 @@ rw[] >> Cases_on ‘X ≅ zero’ >> Cases_on ‘Y ≅ zero’
       ‘h2 = a' o b’ by metis_tac[idL,compose_assoc] >>
       metis_tac[compose_assoc]))
 QED
-(*a function taking an arrow and give its hom?
- a program given two arrows and show  they are eq via assoc*)
-(*
-Theorem iso_zero_iso_zero_hom:
-∀X Y. X ≅ zero ∧ Y ≅ zero ⇒ ∃h. X → Y
+
+
+Theorem inc_inc_iso_as_subobj:
+∀A X Y a b h1 h2. is_mono a ∧ is_mono b ∧ a∶ X → A ∧ b∶ Y → A ∧
+                  h1∶ X → Y ∧ h2∶ Y → X ∧
+                  b o h1 = a ∧ a o h2 = b ⇒
+         h1 o h2 = id Y ∧ h2 o h1 = id X
 Proof
-*)
+rw[] >> Cases_on ‘X ≅ zero’ >> Cases_on ‘Y ≅ zero’ (* 6 *)
+>- metis_tac[from_iso_zero_eq,compose_hom,id1]
+>- metis_tac[to_zero_zero]
+>- metis_tac[to_zero_zero]
+>- (qabbrev_tac ‘b = a o h2’ >>
+   ‘∃b'. b'∶ A → Y ∧ b' o b = id Y’
+    by metis_tac[mono_non_zero_post_inv] >>
+   ‘∃a'. a'∶ A → X ∧ a' o a = id X’
+    by metis_tac[mono_non_zero_post_inv] >>
+   simp[are_iso_is_iso] >>
+   ‘b' o (a o h2) = id Y’
+       by metis_tac[Abbr‘b’] >>
+      ‘b' o b o h1 = b' o a’
+       by metis_tac[] >>
+      ‘h1 = b' o a’ by metis_tac[idL, compose_assoc] >>
+      metis_tac[compose_assoc])
+>- metis_tac[from_iso_zero_eq,compose_hom,id1]
+>- metis_tac[to_zero_zero]
+>- metis_tac[to_zero_zero]
+>- (qabbrev_tac ‘b = a o h2’ >>
+   ‘∃b'. b'∶ A → Y ∧ b' o b = id Y’
+    by metis_tac[mono_non_zero_post_inv] >>
+   ‘∃a'. a'∶ A → X ∧ a' o a = id X’
+    by metis_tac[mono_non_zero_post_inv] >>
+   simp[are_iso_is_iso] >>
+   ‘a' o a o h2 = a' o b’
+       by metis_tac[Abbr‘b’] >>
+   ‘h2 = a' o b’ by metis_tac[idL,compose_assoc] >>
+   metis_tac[compose_assoc])
+QED        
 
 Theorem prop_2_half2:
 ∀X Y A a b. is_mono a ∧ is_mono b ∧ a∶ X → A ∧ b∶ Y → A ∧
@@ -1838,6 +1835,21 @@ rw[] >> irule inc_inc_iso0 >>
  by (irule prop_2_half2 >> rw[] >> metis_tac[]) >>
 metis_tac[]
 QED
+
+
+Theorem prop_2_corollary_as_subobj:
+∀X Y A a b. a∶ X → A ∧ b∶ Y → A ∧ is_mono a ∧ is_mono b ∧
+            (∀y. y∶ one → Y ⇒ ∃x. x∶ one → X ∧ a o x = b o y) ∧
+            (∀x. x∶ one → X ⇒ ∃y. y∶ one → Y ∧ a o x = b o y) ⇒
+           ?h1 h2. b o h1 = a /\ a o h2 = b /\ h1∶X → Y ∧ h2∶Y → X ∧ h1 ∘ h2 = id Y ∧ h2 ∘ h1 = id X
+Proof
+rw[] >>
+‘∃h1. h1∶ X → Y ∧ b o h1 = a’
+ by (irule prop_2_half2 >> rw[] >> metis_tac[]) >>
+‘∃h2. h2∶ Y → X ∧ a o h2 = b’
+ by (irule prop_2_half2 >> rw[] >> metis_tac[]) >>
+qexistsl_tac [‘h1’,‘h2’] >> metis_tac[inc_inc_iso_as_subobj]
+QED        
 
         
 
@@ -1917,298 +1929,4 @@ rw[EQ_IMP_THM] (* 2 *)
 >- (qexists_tac ‘eq_induce f g h’ >> metis_tac[eq_induce_hom,eq_fac])
 QED
 
-(*
-val _ = overload_on("two", “one + one”);        
-           
-Theorem mem_of_name_eqa:
-∀psi R r. psi∶ R → two ∧ r∶ one → R ⇒
-               (psi o r = i2 one one ⇔
-                ∃r'. r'∶ one → eqo (ev R two) (i2 one one o to1 (R × exp R two)) ∧
-                    eqa (ev R two) (i2 one one o to1 (R × exp R two)) o r' = ⟨r, tp (psi ∘ p1 R one)⟩)
-Proof
-rw[] >>
-‘ev R two∶ (R × (exp R two)) → two’ by metis_tac[ev_hom] >>
-‘to1 (R × exp R two)∶ (R × (exp R two)) → one’
- by metis_tac[to1_hom] >>
-‘i2 one one∶ one → two’ by metis_tac[i2_hom] >>
-‘p1 R one∶ (R × one) → R’ by metis_tac[p1_hom] >>
-‘psi o p1 R one∶ (R × one) → two’ by metis_tac[compose_hom] >>
-‘tp (psi ∘ p1 R one)∶ one → exp R two’ by metis_tac[tp_hom] >>
-‘⟨r,tp (psi ∘ p1 R one)⟩∶one → (R × (exp R two))’
- by metis_tac[pa_hom] >> 
-‘(i2 one one ∘ to1 (R × exp R two))∶ (R × (exp R two)) → two’
- by metis_tac[compose_hom] >> 
-‘(∃r'.
-                 r'∶one → eqo (ev R two) (i2 one one ∘ to1 (R × exp R two)) ∧
-                 eqa (ev R two) (i2 one one ∘ to1 (R × exp R two)) ∘ r' =
-                 ⟨r,tp (psi ∘ p1 R one)⟩) ⇔
-   (ev R two) o ⟨r,tp (psi ∘ p1 R one)⟩ = (i2 one one ∘ to1 (R × exp R two)) o ⟨r,tp (psi ∘ p1 R one)⟩’
-  by (irule fac_through_eq_iff >> metis_tac[]) >>
-rw[] >>
-‘(i2 one one ∘ to1 (R × exp R two)) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ =
- i2 one one ∘ to1 (R × exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩’
- by metis_tac[compose_assoc] >>
-‘to1 (R × exp R two) ∘ ⟨r,tp (psi ∘ p1 R one)⟩ = id one’
- by (irule to1_unique >> metis_tac[id1,compose_hom]) >>
-simp[] >>
-‘i2 one one ∘ id one = i2 one one’ by metis_tac[idR] >>
-simp[] >> metis_tac[tp_element_ev]
-QED
-
-Theorem compose_with_id_to1:
-∀x A. x∶ one → A ⇒ ⟨id A,to1 A⟩ ∘ x = ⟨x, id one⟩
-Proof
-rw[] >>
-‘id A∶ A → A ∧ to1 A∶ A → one’ by metis_tac[to1_hom,id1] >>
-‘⟨id A,to1 A⟩∶ A → (A × one)’ by metis_tac[pa_hom] >>
-‘⟨id A,to1 A⟩ ∘ x∶ one → (A × one)’ by metis_tac[compose_hom] >>
-‘id one∶ one → one’ by metis_tac[id1] >>
-‘⟨x,id one⟩∶ one → (A × one)’ by metis_tac[pa_hom] >>
-irule to_p_eq_applied >>
-qexistsl_tac [‘A’,‘one’,‘one’] >> simp[] >>
-‘p1 A one ∘ ⟨id A,to1 A⟩ o x = (p1 A one ∘ ⟨id A,to1 A⟩) o x ∧
- p2 A one ∘ ⟨id A,to1 A⟩ o x = (p2 A one ∘ ⟨id A,to1 A⟩) o x’
- by metis_tac[p1_hom,p2_hom,compose_assoc] >>
-simp[] >>
-‘(p1 A one ∘ ⟨id A,to1 A⟩) = id A ∧
- p1 A one o ⟨x, id one⟩ = x’ by metis_tac[p1_of_pa] >>
-‘(p2 A one ∘ ⟨id A,to1 A⟩) = to1 A ∧
- p2 A one o ⟨x, id one⟩ = id one’ by metis_tac[p2_of_pa] >>
-simp[] >> metis_tac[to1_unique,idL,compose_hom]
-QED
-
-
-Theorem ev_compose_split:
-∀A B X Y f g. g∶ X → exp A Y ∧ f∶ B → X  ⇒
-          (ev A Y) o ⟨p1 A B, g o f o p2 A B⟩ = 
-          ((ev A Y) o ⟨p1 A X, g o p2 A X⟩) o
-           ⟨p1 A B,f o p2 A B⟩
-Proof
-rw[] >>
-‘ev A Y∶ (A × exp A Y) → Y’ by metis_tac[ev_hom] >>
-‘p1 A X∶ (A × X) → A ∧ p2 A X∶ (A × X) → X ∧
- p1 A B∶ (A × B) → A ∧ p2 A B∶ (A × B) → B’
- by metis_tac[p1_hom,p2_hom] >>
-‘g o p2 A X∶ (A × X) → exp A Y ∧ f o p2 A B∶ (A × B) → X’
- by metis_tac[compose_hom] >>
-‘⟨p1 A B,f ∘ p2 A B⟩∶ (A × B) → (A × X)’ by metis_tac[pa_hom] >>
-‘⟨p1 A X,g ∘ p2 A X⟩∶ (A × X) → (A × exp A Y)’
- by metis_tac[pa_hom] >>
-‘(ev A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩) ∘ ⟨p1 A B,f ∘ p2 A B⟩ =
- ev A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩ ∘ ⟨p1 A B,f ∘ p2 A B⟩’
- by metis_tac[compose_assoc,pa_hom] >>
-‘⟨p1 A B,g ∘ f ∘ p2 A B⟩ =
- ⟨p1 A X,g ∘ p2 A X⟩ ∘ ⟨p1 A B,f ∘ p2 A B⟩’
- suffices_by metis_tac[] >>
-irule parallel_p_one_side >> metis_tac[]
-QED
-
-Theorem two_steps_compose_combine:
-∀A X Y f g. f∶ X → A ∧ g∶ X → Y ⇒
-       ⟨p1 A X,g o p2 A X⟩ o ⟨f, id X⟩ = ⟨f,g⟩
-Proof
-rw[] >>
-‘p1 A X∶ (A × X) → A ∧ p2 A X∶ (A × X) → X ∧ id X∶ X → X’
- by metis_tac[p1_hom,p2_hom,id1] >>
-‘g o p2 A X∶ (A × X) → Y’ by metis_tac[compose_hom] >>
-irule to_p_eq_applied >> qexistsl_tac [‘A’,‘Y’,‘X’] >>
-‘⟨p1 A X,g ∘ p2 A X⟩∶ (A × X) → (A × Y)’ by metis_tac[pa_hom] >>
-‘⟨f,id X⟩∶ X → (A × X)’ by metis_tac[pa_hom] >>
-‘⟨f,g⟩∶ X → (A × Y)’ by metis_tac[pa_hom] >>
-‘p1 A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩ ∘ ⟨f,id X⟩ =
- (p1 A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩) ∘ ⟨f,id X⟩’
- by metis_tac[p1_hom,compose_assoc] >>
-‘p2 A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩ ∘ ⟨f,id X⟩ =
- (p2 A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩) ∘ ⟨f,id X⟩’
- by metis_tac[p2_hom,compose_assoc] >>
-‘(p1 A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩) = p1 A X’
- by metis_tac[p1_of_pa] >>
-‘(p2 A Y ∘ ⟨p1 A X,g ∘ p2 A X⟩) = g ∘ p2 A X’
- by metis_tac[p2_of_pa] >>
-simp[] >>
-‘(g ∘ p2 A X) ∘ ⟨f,id X⟩ = g ∘ p2 A X ∘ ⟨f,id X⟩’
- by metis_tac[compose_assoc] >>
-simp[] >>
-‘p2 A X ∘ ⟨f,id X⟩ = id X’ by metis_tac[p2_of_pa] >>
-simp[] >> metis_tac[p1_of_pa,p2_of_pa,idR,compose_hom]
-QED
-        
-        
-Theorem compose_partial_ev:
-∀A X Y x psi ϕ.
-  x∶ one → A ∧ psi∶ X → Y ∧ ϕ∶ (A × exp X Y) → Y ⇒ 
-             ϕ ∘ ⟨x,tp (psi ∘ p1 X one)⟩ =
-             ev A Y ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 X one) o p2 A one⟩ ∘
-             ⟨id A,to1 A⟩ ∘ x
-Proof
-rw[] >>
-‘tp ϕ∶ exp X Y → exp A Y’ by metis_tac[tp_hom] >>
-drule ev_compose_split  >> strip_tac >>
-‘p1 X one∶ (X × one) → X’ by metis_tac[p1_hom] >>
-‘psi o p1 X one∶ (X × one) → Y’ by metis_tac[compose_hom] >>
-‘tp (psi o p1 X one)∶ one → exp X Y’ by metis_tac[tp_hom] >>
-first_x_assum drule >> rw[] >>
-‘⟨id A,to1 A⟩ ∘ x =  ⟨x, id one⟩’
- by metis_tac[compose_with_id_to1] >>
-simp[] >>
-‘p1 A one∶ (A × one) → A ∧ p2 A one∶ (A × one) → one’
- by metis_tac[p1_hom,p2_hom] >>
-‘tp ϕ ∘ tp (psi ∘ p1 X one) ∘ p2 A one∶ (A × one) → exp A Y’
- by metis_tac[compose_hom] >>
-‘⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 X one) ∘ p2 A one⟩∶
- (A × one) → (A × exp A Y)’ by metis_tac[pa_hom] >>
-‘⟨x,id one⟩∶ one → (A × one)’ by metis_tac[id1,pa_hom] >>
-‘ev A Y∶ (A × exp A Y) → Y’ by metis_tac[ev_hom] >>
-‘ev A Y ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 X one) ∘ p2 A one⟩ ∘
-        ⟨x,id one⟩ =
- (ev A Y ∘ ⟨p1 A one,tp ϕ ∘ tp (psi ∘ p1 X one) ∘ p2 A one⟩) ∘
-        ⟨x,id one⟩’ by metis_tac[compose_assoc] >>
-simp[] >>
-‘ev A Y ∘ ⟨p1 A (exp X Y),tp ϕ ∘ p2 A (exp X Y)⟩ = ϕ’
- by metis_tac[ev_of_tp] >>
-simp[] >>
-‘tp (psi ∘ p1 X one) ∘ p2 A one∶ (A × one) → exp X Y’
- by metis_tac[compose_hom] >>
-‘(ϕ ∘ ⟨p1 A one,tp (psi ∘ p1 X one) ∘ p2 A one⟩) ∘ ⟨x,id one⟩ =
-  ϕ ∘ ⟨p1 A one,tp (psi ∘ p1 X one) ∘ p2 A one⟩ ∘ ⟨x,id one⟩’
-  by metis_tac[compose_assoc,pa_hom] >>
-simp[] >>
-‘⟨x,tp (psi ∘ p1 X one)⟩ =
- ⟨p1 A one,tp (psi ∘ p1 X one) ∘ p2 A one⟩ ∘ ⟨x,id one⟩’
- suffices_by metis_tac[] >>
-metis_tac[two_steps_compose_combine]
-QED
-        
-
-
-
-
-Theorem is_trans_thm:
-∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
-         (is_trans f0 f1 ⇔
-         ∀X h0 h1.
-             h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
-             ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)
-Proof
-rw[] >>
-metis_tac[is_trans_def,hom_def]
-QED
-
-
-
-Theorem is_refl_thm:
-∀f0 f1 R A. f0∶ R → A ∧ f1∶ R → A ⇒
-         (is_refl f0 f1 ⇔
-         ∃d. d∶ A → R ∧ f0 ∘ d = id A ∧ f1 ∘ d = id A)
-Proof
-rw[] >>
-metis_tac[is_refl_def,hom_def]
-QED
-
-val is_refl_thm_l2r =
-      is_refl_thm
-      |> SPEC_ALL |> SPEC_ALL |> SPEC_ALL |> SPEC_ALL
-      |> UNDISCH |> EQ_IMP_RULE |> #1 |> UNDISCH
-      |> DISCH “f0∶R → A ∧ f1∶R → A” |> DISCH_ALL
-      |> Q.GEN ‘R’ |> Q.GEN ‘A’ |> Q.GEN ‘f0’ |> Q.GEN ‘f1’  
-            
-Theorem is_refl_equiv_to_itself:
-∀f0 f1 a A R.
- is_refl f0 f1 ∧ f0∶ R → A ∧ f1∶ R → A ∧ a∶ one → A ⇒
- ∃r. r∶ one → R ∧ f0 o r = a ∧ f1 o r = a
-Proof
-rw[] >> drule is_refl_thm_l2r >> rw[] >>
-first_x_assum drule_all >> rw[] >>
-qexists_tac ‘d o a’ >>
-‘d o a∶ one → R’ by metis_tac[compose_hom] >>
-metis_tac[compose_assoc,idL]
-QED
-
-   
-Theorem equiv_to_same_element:
-∀a0 a1 f0 f1 R A.
- a0∶ one → A ∧ a1∶ one → A ∧ f0∶ R → A ∧ f1∶ R → A ∧
- is_refl f0 f1 ∧
-  (∀a'.
-             a'∶one → A ⇒
-             ((∃r. r∶one → R ∧ f0 ∘ r = a0 ∧ f1 ∘ r = a') ⇔
-              ∃r. r∶one → R ∧ f0 ∘ r = a1 ∧ f1 ∘ r = a')) ⇒
-  ∃r. r∶ one → R ∧ f0 o r = a0 ∧ f1 o r = a1
-Proof
-rw[] >> metis_tac[is_refl_equiv_to_itself]
-QED
-
-
-
-Theorem symm_trans_rel_lemma:
-∀f0 f1 a R A r.
- is_symm f0 f1 ∧ is_trans f0 f1 ∧
- f0∶ R → A ∧ f1∶ R → A ∧ a∶ one → A ∧ r∶ one → R ⇒
-       ((∃r'. r'∶one → R ∧ f0 ∘ r' = f0 ∘ r ∧ f1 ∘ r' = a) ⇔
-        (∃r''. r''∶one → R ∧ f0 ∘ r'' = f1 ∘ r ∧ f1 ∘ r'' = a))
-Proof
-rw[EQ_IMP_THM] (* 2 *)
->- (‘∃t. t∶ R → R ∧ f0 o t = f1 ∧ f1 o t = f0’
-     by metis_tac[is_symm_def,hom_def] >>
-   ‘f1 o t ∘ r' = f0 ∘ r’
-    by metis_tac[compose_assoc] >>
-   ‘(is_trans f0 f1 ⇔
-          ∀X h0 h1.
-              h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
-              ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)’ by (irule is_trans_thm >> metis_tac[]) >>  rfs[] >>
-   ‘t o r'∶ one → R’ by metis_tac[compose_hom] >>
-  first_x_assum (qspecl_then [‘one’,‘t o r'’,‘r’] assume_tac)>>
-  ‘∃u. u∶one → R ∧ f0 ∘ u = f0 ∘ t ∘ r' ∧ f1 ∘ u = f1 ∘ r’
-   by metis_tac[] >>
-  qexists_tac ‘t o u’ >>
-  ‘t o u∶ one → R’ by metis_tac[compose_hom] >>
-  metis_tac[compose_assoc])
->- (‘(is_trans f0 f1 ⇔
-          ∀X h0 h1.
-              h0∶X → R ∧ h1∶X → R ∧ f1 ∘ h0 = f0 ∘ h1 ⇒
-              ∃u. u∶X → R ∧ f0 ∘ u = f0 ∘ h0 ∧ f1 ∘ u = f1 ∘ h1)’ by (irule is_trans_thm >> metis_tac[]) >>  rfs[])
-QED
-
-
-
-
-Theorem to_p_with_1:
-∀A a. a∶ one → (A × one) ⇒ ∃a0. a0∶one → A ∧
-      a = ⟨a0, id one⟩
-Proof
-rw[] >> qexists_tac ‘p1 A one o a’ >>
-‘p1 A one o a∶ one → A’ by metis_tac[compose_hom,p1_hom] >>
-‘⟨p1 A one o a, id one⟩∶ one → (A × one)’ by metis_tac[id1,pa_hom] >>
-rw[] >> irule to_p_eq_applied >> qexistsl_tac [‘A’,‘one’,‘one’] >>
-simp[] >>
-‘p2 A one o a∶ one → one’ by metis_tac[p2_hom,compose_hom] >>
-‘p2 A one o a = id one’ by metis_tac[id1,to1_unique] >>
-‘p2 A one ∘ ⟨p1 A one ∘ a,id one⟩ = id one’
- by metis_tac[p2_of_pa,id1] >>
-simp[] >>
-metis_tac[id1,p1_of_pa]
-QED
-
-Theorem one_to_two_cases:
-∀f. f∶ one → two ⇒ f = i1 one one ∨ f = i2 one one
-Proof
-rw[] >> drule to_copa_fac >> rw[] (* 2 *)
->- (‘x0 = id one’ by metis_tac[id1,to1_unique] >> simp[] >>
-   metis_tac[i1_hom,idR]) >>
-‘x0' = id one’ by metis_tac[id1,to1_unique] >> simp[] >>
-metis_tac[i2_hom,idR] 
-QED
-   
-Theorem one_to_two_eq:
-∀f g. f∶ one → two ∧ g∶ one → two ∧
-      (f = i2 one one ⇔ g = i2 one one) ⇒ f = g
-Proof
-rw[] >> Cases_on ‘f = i2 one one’
->- metis_tac[]
->- (‘g ≠ i2 one one’ by metis_tac[] >>
-   metis_tac[one_to_two_cases])
-QED
-        
-*)            
-                
 val _ = export_theory();

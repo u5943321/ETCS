@@ -1,0 +1,10 @@
+open HolKernel Parse boolLib bossLib;
+
+val _ = new_theory "charalt";
+
+Theorem char_pb:
+
+
+
+val _ = export_theory();
+
